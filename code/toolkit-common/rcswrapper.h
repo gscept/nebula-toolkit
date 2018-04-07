@@ -10,7 +10,7 @@
 */
 #include "core/types.h"
 #include "util/string.h"
-#include "toolkitutil/logger.h"
+#include "logger.h"
 #include "io/stream.h"
 
 //------------------------------------------------------------------------------

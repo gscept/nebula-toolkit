@@ -16,7 +16,7 @@
 #if __ANYFX__
 #include "afxcompiler.h"
 #endif
-#include "converters/binaryxmlconverter.h"
+#include "toolkit-common/converters/binaryxmlconverter.h"
 
 using namespace Util;
 using namespace IO;
@@ -563,7 +563,7 @@ ShaderCompiler::CompileSPIRV(const Util::String& srcPath)
 			// set flags
 			flags.push_back("/NOSUB");			// deactivate subroutine usage, effectively expands all subroutines as functions
 			flags.push_back("/GBLOCK");			// put all shader variables outside of an explicit block in one global block
-			flags.push_back(Util::String::Sprintf("/DEFAULTSET %d", NEBULAT_DEFAULT_GROUP).AsCharPtr());	// since we want the most frequently switched set as high as possible, we send the default set to 8, must match the NEBULAT_DEFAULT_GROUP in std.fxh and DEFAULT_GROUP in coregraphics/config.h
+			flags.push_back(Util::String::Sprintf("/DEFAULTSET %d", NEBULAT_BATCH_GROUP).AsCharPtr());	// since we want the most frequently switched set as high as possible, we send the default set to 8, must match the NEBULAT_DEFAULT_GROUP in std.fxh and DEFAULT_GROUP in coregraphics/config.h
 
 			// if using debug, output raw shader code
 			if (this->debug)

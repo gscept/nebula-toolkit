@@ -11,11 +11,11 @@
     (C) 2013-2016 Individual contributors, see AUTHORS file
 */
 #include "app/consoleapplication.h"
-#include "toolkitutil/projectinfo.h"
-#include "toolkitutil/platform.h"
-#include "toolkitutil/logger.h"
-#include "toolkitutil/toolkitversion.h"
-#include "toolkitutil/toolkitconsolehandler.h"
+#include "projectinfo.h"
+#include "platform.h"
+#include "logger.h"
+#include "toolkitversion.h"
+#include "toolkitconsolehandler.h"
 
 //------------------------------------------------------------------------------
 namespace ToolkitUtil

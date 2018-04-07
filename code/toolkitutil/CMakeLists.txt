@@ -92,15 +92,6 @@ fips_begin_module(toolkitutil)
 				n3xmlmodifier.cc
 				n3xmlmodifier.h
 			)
-		fips_dir(converters)
-			fips_files(
-				binaryxmlconverter.cc
-				binaryxmlconverter.h
-				#n2batchconverter.cc
-				#n2batchconverter.h
-				#n2converter.cc
-				#n2converter.h
-			)
 	IF(NOT N_MINIMAL_TOOLKIT)
 		fips_dir(posteffect)
 			fips_files(

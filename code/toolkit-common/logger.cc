@@ -4,7 +4,7 @@
 //  (C) 2013-2016 Individual contributors, see AUTHORS file
 //------------------------------------------------------------------------------
 #include "stdneb.h"
-#include "toolkitutil/logger.h"
+#include "logger.h"
 
 namespace ToolkitUtil
 {

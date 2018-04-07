@@ -10,8 +10,8 @@
     (C) 2008 Radon Labs GmbH
     (C) 2013-2016 Individual contributors, see AUTHORS file
 */
-#include "toolkitutil/toolkitapp.h"
-#include "toolkitutil/shadercompiler.h"
+#include "toolkit-common/toolkitapp.h"
+#include "shadercompiler.h"
 
 //------------------------------------------------------------------------------
 namespace Toolkit

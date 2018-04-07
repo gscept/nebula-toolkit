@@ -4,8 +4,8 @@
 //  (C) 2013-2016 Individual contributors, see AUTHORS file
 //------------------------------------------------------------------------------
 #include "stdneb.h"
-#include "toolkitutil/rcswrapper.h"
-#include "toolkitutil/applauncher.h"
+#include "rcswrapper.h"
+#include "applauncher.h"
 #include "io/ioserver.h"
 #include "io/memorystream.h"
 #include "io/xmlreader.h"

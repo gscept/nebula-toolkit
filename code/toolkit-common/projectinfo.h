@@ -16,7 +16,7 @@
     (C) 2013-2016 Individual contributors, see AUTHORS file
 */
 #include "core/types.h"
-#include "toolkitutil/platform.h"
+#include "platform.h"
 #include "util/dictionary.h"
 #include "io/uri.h"
 

@@ -7,6 +7,7 @@
 #include "io/ioserver.h"
 #include "io/xmlreader.h"
 #include "coregraphics/config.h"
+#include "app/application.h"
 
 #if __DX11__
 #include <d3dx11.h>
@@ -106,7 +107,7 @@ ShaderCompiler::CompileShaders()
 		retval = this->CompileSPIRV(this->srcShaderBaseDir);
 	}
 
-    if (this->srcFrameShaderCustomDir.IsValid())
+    if (this->srcShaderCustomDir.IsValid() && URI(this->srcShaderCustomDir) != URI(this->srcShaderBaseDir))
     {
         // attempt to compile custom shaders
         if (this->language == "HLSL")
@@ -162,11 +163,14 @@ ShaderCompiler::CompileFrameShaders()
 		srcPath.Format("%s/%s", this->srcFrameShaderBaseDir.AsCharPtr(), srcFiles[i].AsCharPtr());
 		String dstPath;
 		dstPath.Format("%s/%s", this->dstFrameShaderDir.AsCharPtr(), srcFiles[i].AsCharPtr());
-		success &= ioServer->CopyFile(srcPath, dstPath);
-		n_printf("Copied base frame script: %s ---> %s \n", srcPath.AsCharPtr(), dstPath.AsCharPtr());
+		if (this->CheckRecompile(srcPath, dstPath))
+		{
+			success &= ioServer->CopyFile(srcPath, dstPath);
+			n_printf("Converted base frame script: %s ---> %s \n", srcPath.AsCharPtr(), dstPath.AsCharPtr());
+		}
 	}
 
-    if (this->srcFrameShaderCustomDir.IsValid())
+    if (this->srcFrameShaderCustomDir.IsValid() && URI(this->srcFrameShaderCustomDir) != URI(this->srcFrameShaderBaseDir))
     {
         // for each custom frame shader...
         srcFiles = ioServer->ListFiles(this->srcFrameShaderCustomDir, "*.json");
@@ -177,8 +181,11 @@ ShaderCompiler::CompileFrameShaders()
             srcPath.Format("%s/%s", this->srcFrameShaderCustomDir.AsCharPtr(), srcFiles[i].AsCharPtr());
             String dstPath;
             dstPath.Format("%s/%s", this->dstFrameShaderDir.AsCharPtr(), srcFiles[i].AsCharPtr());
-			success &= ioServer->CopyFile(srcPath, dstPath);
-            n_printf("Copied custom frame script: %s ---> %s \n", srcPath.AsCharPtr(), dstPath.AsCharPtr());
+			if (this->CheckRecompile(srcPath, dstPath))
+			{
+				success &= ioServer->CopyFile(srcPath, dstPath);
+				n_printf("Converted custom frame script: %s ---> %s \n", srcPath.AsCharPtr(), dstPath.AsCharPtr());
+			}
         }
     }
     
@@ -210,6 +217,7 @@ ShaderCompiler::CompileMaterials()
 	// create converter
 	BinaryXmlConverter converter;
 	ToolkitUtil::Logger logger;
+	logger.SetVerbose(false);
 	converter.SetPlatform(Platform::Win32);
 
     // remove old directories
@@ -230,12 +238,18 @@ ShaderCompiler::CompileMaterials()
 		String dstPath;
         dstPath.Format("%s/%s", materialTemplateDstDir.AsCharPtr(), srcFiles[i].AsCharPtr());
 
-		// convert to binary xml
-		success &= converter.ConvertFile(srcPath, dstPath, logger);
-		n_printf("Copied base material template table: %s ---> %s \n", srcPath.AsCharPtr(), dstPath.AsCharPtr());
+		URI src(srcPath);
+		URI dst(dstPath);
+
+		if (this->CheckRecompile(srcPath, dstPath))
+		{
+			// convert to binary xml
+			success &= converter.ConvertFile(srcPath, dstPath, logger);
+			n_printf("Converted base material template table: %s ---> %s \n", src.LocalPath().AsCharPtr(), dst.LocalPath().AsCharPtr());
+		}
 	}
 
-    if (this->srcMaterialCustomDir.IsValid())
+    if (this->srcMaterialCustomDir.IsValid() && URI(this->srcMaterialCustomDir) != URI(this->srcMaterialBaseDir))
     {
         // for each custom material table...
         srcFiles = ioServer->ListFiles(customMaterialTemplateSrcDir, "*.xml");
@@ -251,9 +265,15 @@ ShaderCompiler::CompileMaterials()
             file.StripFileExtension();
             dstPath.Format("%s/%s_custom.xml", materialTemplateDstDir.AsCharPtr(), file.AsCharPtr());
 
-            // copy file
-			success &= converter.ConvertFile(srcPath, dstPath, logger);
-            n_printf("Copied custom material table: %s ---> %s \n", srcPath.AsCharPtr(), dstPath.AsCharPtr());
+			URI src(srcPath);
+			URI dst(dstPath);
+
+			if (this->CheckRecompile(srcPath, dstPath))
+			{
+				// copy file
+				success &= converter.ConvertFile(srcPath, dstPath, logger);
+				n_printf("Converted custom material table: %s ---> %s \n", src.LocalPath().AsCharPtr(), dst.LocalPath().AsCharPtr());
+			}
         }
     }
     
@@ -287,9 +307,6 @@ ShaderCompiler::CompileHLSL(const Util::String& srcPath)
 		// get file
 		String file = srcFiles[j];
 
-		// compile
-		n_printf("Compiling: %s\n", file.AsCharPtr());
-
 		// format string with file
 		String srcFile = srcPath + "/" + file;
 
@@ -298,11 +315,18 @@ ShaderCompiler::CompileHLSL(const Util::String& srcPath)
 		destFile.StripFileExtension();
 		file.StripFileExtension();
 
+		URI src(srcFile);
+		URI dst(destFile);
+
+
 		// add to dictionary
 		this->shaderNames.Append(file);
 
 		if (this->CheckRecompile(srcFile, destFile))
 		{
+			// compile
+			n_printf("Compiling:\n   %s -> %s\n", src.LocalPath().AsCharPtr(), dst.LocalPath().AsCharPtr());
+
 #if __DX11__
 			ID3D10Blob* compiledShader = 0;
 			ID3D10Blob* errorBlob = 0;
@@ -361,7 +385,6 @@ ShaderCompiler::CompileHLSL(const Util::String& srcPath)
 		}
 		else
 		{
-			n_printf("No need to recompile %s\n", file.AsCharPtr());
 			retval = true;
 		}
 
@@ -397,9 +420,6 @@ ShaderCompiler::CompileGLSL(const Util::String& srcPath)
 		// get file
 		String file = srcFiles[j];
 
-		// compile
-		n_printf("Compiling: %s\n", file.AsCharPtr());
-
 		// format string with file
 		String srcFile = srcPath + "/" + file;
 
@@ -408,13 +428,17 @@ ShaderCompiler::CompileGLSL(const Util::String& srcPath)
 		destFile.StripFileExtension();
 		file.StripFileExtension();
 
+		URI src(srcFile);
+		URI dst(destFile);
+
 		// add to dictionary
 		this->shaderNames.Append(file);
 
 		if (this->CheckRecompile(srcFile, destFile))
 		{
-			URI src(srcFile);
-			URI dst(destFile);
+			// compile
+			n_printf("Compiling:\n   %s -> %s\n", src.LocalPath().AsCharPtr(), dst.LocalPath().AsCharPtr());
+
             URI shaderFolder("toolkit:work/shaders/gl");
 			std::vector<std::string> defines;
 			std::vector<std::string> flags;
@@ -471,10 +495,6 @@ ShaderCompiler::CompileGLSL(const Util::String& srcPath)
                 errors = 0;
             }
 		}
-		else
-		{
-			n_printf("No need to recompile %s\n", file.AsCharPtr());
-		}
 	}
 
 	// stop AnyFX compilation
@@ -512,9 +532,6 @@ ShaderCompiler::CompileSPIRV(const Util::String& srcPath)
 	{
 		// get file
 		String file = srcFiles[j];
-
-		// compile
-		n_printf("Compiling: %s\n", file.AsCharPtr());
 
 		// format string with file
 		String srcFile = srcPath + "/" + file;
@@ -557,9 +574,13 @@ ShaderCompiler::CompileSPIRV(const Util::String& srcPath)
 			needRecompile |= this->CheckRecompile(dep, destFile);
 		}
 		needRecompile |= this->CheckRecompile(srcFile, destFile);
+		needRecompile |= this->CheckRecompile(App::Application::Instance()->GetCmdLineArgs().GetCmdName(), destFile);
 
 		if (needRecompile)
 		{
+			// compile
+			n_printf("Compiling %s:\n   %s -> %s\n", srcFile.AsCharPtr(), src.LocalPath().AsCharPtr(), dst.LocalPath().AsCharPtr());
+
 			// set flags
 			flags.push_back("/NOSUB");			// deactivate subroutine usage, effectively expands all subroutines as functions
 			flags.push_back("/GBLOCK");			// put all shader variables outside of an explicit block in one global block
@@ -601,10 +622,6 @@ ShaderCompiler::CompileSPIRV(const Util::String& srcPath)
 				delete errors;
 				errors = 0;
 			}
-		}
-		else
-		{
-			n_printf("No need to recompile %s\n", file.AsCharPtr());
 		}
 	}
 

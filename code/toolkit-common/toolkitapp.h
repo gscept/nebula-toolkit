@@ -31,7 +31,7 @@ public:
 	virtual void Close();
 
     /// retrieve nebula build date and version
-    const Util::String & GetToolkitVersion() const;
+    const Util::String& GetToolkitVersion() const;
 
 protected:
     /// parse command line arguments

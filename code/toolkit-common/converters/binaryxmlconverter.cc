@@ -124,8 +124,6 @@ BinaryXmlConverter::RecurseConvert(const String& sourceDir, const String& destDi
 bool
 BinaryXmlConverter::ConvertFile(const String& srcFile, const String& dstFile, Logger& logger)
 {
-    logger.Print("> %s -> %s\n", srcFile.AsCharPtr(), dstFile.AsCharPtr());
-    
     if (!this->LoadFile(srcFile, logger))
     {   
         return false;
@@ -286,8 +284,6 @@ BinaryXmlConverter::ValidateInternalRepresentation(const String& srcFile, Logger
         logger.Error("Too many XML nodes in '%s' (must be < 65535)!\n", srcFile.AsCharPtr());
         return false;
     }
-    SizeT numAttrs = this->RecurseCountAttrs(this->rootNode, 0);
-    logger.Print("%d unique strings, %d nodes, %d attrs\n", this->stringTable.Size(), numNodes, numAttrs);
     return true;
 }
 

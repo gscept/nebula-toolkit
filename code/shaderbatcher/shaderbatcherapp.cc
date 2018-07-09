@@ -21,6 +21,13 @@ ShaderBatcherApp::ParseCmdLineArgs()
     {
         this->shaderCompiler.SetForceFlag(this->args.GetBoolFlag("-force"));
         this->shaderCompiler.SetDebugFlag(this->args.GetBoolFlag("-debug"));
+		const Util::String& output = this->args.GetString("-out");
+		if (!output.IsEmpty())
+		{
+			this->shaderCompiler.SetDstShaderDir(output + "/shaders");
+			this->shaderCompiler.SetDstFrameShaderDir(output + "/frame");
+			this->shaderCompiler.SetDstMaterialsDir(output + "/materials");
+		}
         return true;
     }
     return false;
@@ -81,17 +88,18 @@ void
 ShaderBatcherApp::Run()
 {
     bool success = true;
-    // parse command line args
-    if (success && !this->ParseCmdLineArgs())
-    {
-        success = false;
-    }
 
     // setup the project info object
     if (success && !this->SetupProjectInfo())
     {
         success = false;
     }
+
+	// parse command line args
+	if (success && !this->ParseCmdLineArgs())
+	{
+		success = false;
+	}
 
     // call the shader compiler tool
     if (success && !this->shaderCompiler.CompileShaders())

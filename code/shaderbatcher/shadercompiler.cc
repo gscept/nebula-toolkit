@@ -482,7 +482,7 @@ ShaderCompiler::CompileGLSL(const Util::String& srcPath)
 			{
 				if (errors)
 				{
-					n_error("%s\n", errors->buffer);
+					n_printf("%s\n", errors->buffer);
 					delete errors;
 					errors = 0;
 				}
@@ -490,7 +490,7 @@ ShaderCompiler::CompileGLSL(const Util::String& srcPath)
 			}
             else if (errors)
             {
-                n_error("%s\n", errors->buffer);
+				n_printf("%s\n", errors->buffer);
                 delete errors;
                 errors = 0;
             }
@@ -610,7 +610,7 @@ ShaderCompiler::CompileSPIRV(const Util::String& srcPath)
 			{
 				if (errors)
 				{
-					n_error("%s\n", errors->buffer);
+					n_printf("%s\n", errors->buffer);
 					delete errors;
 					errors = 0;
 				}
@@ -618,7 +618,7 @@ ShaderCompiler::CompileSPIRV(const Util::String& srcPath)
 			}
 			else if (errors)
 			{
-				n_error("%s\n", errors->buffer);
+				n_printf("%s\n", errors->buffer);
 				delete errors;
 				errors = 0;
 			}

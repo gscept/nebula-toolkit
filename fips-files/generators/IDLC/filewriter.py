@@ -42,11 +42,31 @@ class FileWriter:
     #------------------------------------------------------------------------------
     ##
     #
-    def WriteLine(self, string) :
+    def WriteLine(self, string):
         self.Write(string)
         self.file.write(self.eol)
         self.line += 1
         self.column = 0
+
+    #------------------------------------------------------------------------------
+    ##
+    #
+    def InsertNebulaDivider(self):
+        self.WriteLine("")
+        self.WriteLine("//------------------------------------------------------------------------------")
+        self.WriteLine("/**")
+        self.WriteLine("*/")
+
+    #------------------------------------------------------------------------------
+    ##
+    #
+    def InsertNebulaComment(self, comment):
+        self.WriteLine("")
+        self.WriteLine("//------------------------------------------------------------------------------")
+        self.WriteLine("/**")
+        self.Write("    ")
+        self.WriteLine(comment)
+        self.WriteLine("*/")
 
     #------------------------------------------------------------------------------
     ##

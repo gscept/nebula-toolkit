@@ -3,7 +3,7 @@ import genutil as util
 #------------------------------------------------------------------------------
 ##
 #
-def TypeToString(attrType):
+def ConvertToCamelNotation(attrType):
     T = attrType.lower()
     if (T == "byte"):
         return "Byte"
@@ -43,6 +43,50 @@ def TypeToString(attrType):
         return "Entity"
     else:
         util.error('"{}" is not a valid type!'.format(T))
+
+#------------------------------------------------------------------------------
+##
+#
+def GetTypeString(attrType):
+    T = attrType.lower()
+    if (T == "byte"):
+        return "char"
+    elif (T == "ubyte"):
+        return "ubyte"
+    elif (T == "short"):
+        return "short"
+    elif (T == "ushort"):
+        return "ushort"
+    elif (T == "int"):
+        return "int"
+    elif (T == "uint"):
+        return "uint"
+    elif (T == "float"):
+        return "float"
+    elif (T == "long"):
+        return "long"
+    elif (T == "ulong"):
+        return "ulong"
+    elif (T == "double"):
+        return "double"
+    elif (T == "bool"):
+        return "bool"
+    elif (T == "float4"):
+        return "Math::float4"
+    elif (T == "vector"):
+        return "Math::vector"
+    elif (T == "point"):
+        return "Math::point"
+    elif (T == "matrix44"):
+        return "Math::matrix44"
+    elif (T == "string"):
+        return "Util::String"
+    elif (T == "resource"):
+        return "Util::String"
+    elif (T == "entity"):
+        return "Game::Entity"
+    else:
+        return attrType
 
 #------------------------------------------------------------------------------
 ##

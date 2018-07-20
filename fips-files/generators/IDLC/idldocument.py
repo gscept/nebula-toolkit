@@ -1,4 +1,4 @@
-DEFAULT_NAMESPACE = "Components"
+default_namespace = "Components"
 
 #------------------------------------------------------------------------------
 ## Write header for include file
@@ -39,7 +39,29 @@ def BeginNamespace(f, document):
     if "namespace" in document:
         f.Write(document["namespace"])
     else:
-        f.Write(DEFAULT_NAMESPACE)
+        f.Write(default_namespace)
+    f.WriteLine("")
+    f.WriteLine("{")
+
+#------------------------------------------------------------------------------
+##
+#
+def EndNamespace(f, document):
+    f.Write("} // namespace ")
+    if "namespace" in document:
+        f.Write(document["namespace"])
+    else:
+        f.Write(default_namespace)
+    f.Write("\n")
+    f.WriteLine("//------------------------------------------------------------------------------")
+
+#------------------------------------------------------------------------------
+##
+#
+def BeginNamespaceOverride(f, document, namespace):
+    f.WriteLine("//------------------------------------------------------------------------------")
+    f.Write("namespace ")
+    f.Write(namespace)
     f.WriteLine("")
     f.WriteLine("{")
     f.IncreaseIndent()
@@ -47,12 +69,9 @@ def BeginNamespace(f, document):
 #------------------------------------------------------------------------------
 ##
 #
-def EndNamespace(f, document):
+def EndNamespaceOverride(f, document, namespace):
     f.DecreaseIndent()
     f.Write("} // namespace ")
-    if "namespace" in document:
-        f.Write(document["namespace"])
-    else:
-        f.Write(DEFAULT_NAMESPACE)
+    f.Write(namespace)
     f.Write("\n")
     f.WriteLine("//------------------------------------------------------------------------------")

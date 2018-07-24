@@ -1,5 +1,32 @@
 import genutil as util
 
+
+#------------------------------------------------------------------------------
+## Constants
+#
+PACKED_PER_ATTRIBUTE = 0
+PACKED_PER_INSTANCE = 1
+
+#------------------------------------------------------------------------------
+##
+#
+def GetEventEnum(string):
+    s = string.lower()
+    if s == "beginframe":
+        return "ComponentEvent::OnBeginFrame"
+    elif s == "render":
+        return "ComponentEvent::OnRender"
+    elif s == "endframe":
+        return "ComponentEvent::OnEndFrame"
+    elif s == "renderdebug":
+        return "ComponentEvent::OnRenderDebug"
+    elif s == "activate":
+        return "ComponentEvent::OnActivate"
+    elif s == "deactivate":
+        return "ComponentEvent::OnDeactivate"
+    else:
+        util.error('"{}" is not a valid event!'.format(string))
+
 #------------------------------------------------------------------------------
 ##
 #
@@ -99,3 +126,12 @@ def AccessModeToClassString(accessMode):
         return "Attr::ReadOnly"
     else:
         util.error('"{}" is not a valid access mode!'.format(access))
+
+#------------------------------------------------------------------------------
+##
+#
+def GetDataLayout(string):
+    if string == "PACKED_PER_ATTRIBUTE":
+        return PACKED_PER_ATTRIBUTE
+    elif string == "PACKED_PER_INSTANCE":
+        return PACKED_PER_INSTANCE

@@ -5,6 +5,7 @@ import idlcomponent as IDLComponent
 import sjson
 import filewriter
 import genutil as util
+import ntpath
 
 class IDLCodeGenerator:
     def __init__(self):
@@ -18,6 +19,10 @@ class IDLCodeGenerator:
         self.documentPath = input
         self.documentBaseName = os.path.splitext(input)[0]
         self.documentDirName = os.path.dirname(self.documentBaseName)
+
+        head, tail = ntpath.split(self.documentBaseName)
+        self.documentFileName = tail or ntpath.basename(head)
+
         fstream = open(self.documentPath, 'r')
         self.document = sjson.loads(fstream.read());
 
@@ -27,7 +32,7 @@ class IDLCodeGenerator:
     #
     def GenerateHeader(self, hdrPath) :
         f = filewriter.FileWriter()
-        
+
         # TODO: Parse all dependencies
 
         attributeLibraries = []
@@ -36,12 +41,14 @@ class IDLCodeGenerator:
 
         # Generate attributes include file
         if "attributes" in self.document:
-            fileName = '{}attributes.h'.format(self.documentBaseName).lower()
+            fileName = '{}attributes.h'.format(self.documentFileName).lower()
+            fullFilePath = '{}attributes.h'.format(self.documentBaseName).lower()
+            
 
             # TODO: We need to find the correct path to include in our components for this file.
             attributeLibraries.append(fileName)
 
-            f.Open(fileName)
+            f.Open(fullFilePath)
             IDLDocument.WriteIncludeHeader(f)
             IDLDocument.WriteAttributeLibraryDeclaration(f)
             IDLDocument.BeginNamespaceOverride(f, self.document, "Attr")
@@ -53,14 +60,15 @@ class IDLCodeGenerator:
         if "components" in self.document:
             for componentName, component in self.document["components"].iteritems():
                 f.Open('{}/{}base.h'.format(self.documentDirName, componentName).lower())
+                componentWriter = IDLComponent.ComponentClassWriter(f, self.document, component, componentName)
                 IDLDocument.WriteIncludeHeader(f)
                 IDLDocument.WriteIncludes(f, self.document)
                 IDLComponent.WriteIncludes(f, attributeLibraries)
                 IDLDocument.BeginNamespace(f, self.document)
-                IDLComponent.WriteClassDeclaration(f, self.document, component, componentName)
+                componentWriter.WriteClassDeclaration()
                 IDLDocument.EndNamespace(f, self.document)
                 f.Close()
-            
+
 
 
 
@@ -69,12 +77,16 @@ class IDLCodeGenerator:
     #
     def GenerateSource(self, srcPath) :
         f = filewriter.FileWriter()
-        f.Open(srcPath)
-        f.WriteLine("//------------------------------------------------------------------------------")
-        f.WriteLine('//  {}base.cc'.format(srcPath))
-        f.WriteLine("//  (C) Individual contributors, see AUTHORS file")
-        f.WriteLine("//")
-        f.WriteLine("//  MACHINE GENERATED, DON'T EDIT!")
-        f.WriteLine("//------------------------------------------------------------------------------")
-        f.WriteLine("")
-        f.Close()
+
+        if "components" in self.document:
+            for componentName, component in self.document["components"].iteritems():
+                f.Open('{}/{}base.cc'.format(self.documentDirName, componentName).lower())
+                IDLDocument.WriteSourceHeader(f, self.documentFileName)
+                IDLDocument.AddInclude(f, '{}base.h'.format(componentName).lower())
+                f.WriteLine("")
+                componentWriter = IDLComponent.ComponentClassWriter(f, self.document, component, componentName)
+                IDLDocument.BeginNamespace(f, self.document)
+                componentWriter.WriteClassImplementation()
+                IDLDocument.EndNamespace(f, self.document)
+                f.Close()
+        

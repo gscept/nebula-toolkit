@@ -1,12 +1,10 @@
 import genutil as util
 import idltypes as IDLTypes
 
-#------------------------------------------------------------------------------
-## Constants
-#
-PACKED_PER_ATTRIBUTE = 0
-PACKED_PER_INSTANCE = 1
+AttributeNotFoundError = 'No attribute named {} could be found by component compiler! Please make sure it\'s defined or imported as a dependency in the current .nidl file.'
 
+def Capitalize(s):
+    return s[:1].upper() + s[1:]
 
 #------------------------------------------------------------------------------
 ##
@@ -19,144 +17,564 @@ def WriteIncludes(f, attributeLibraries):
     for lib in attributeLibraries:
         f.WriteLine('#include "{}"'.format(lib))
 
-#------------------------------------------------------------------------------
-##
-#
-def WriteClassDeclaration(f, document, component, componentName):
-    className = '{}Base'.format(componentName)
-    dataLayout = PACKED_PER_ATTRIBUTE
-    hasAttributes = "attributes" in component
 
-    attributeNotFoundError = 'No attribute named {} could be found by component compiler! Please make sure it\'s defined or imported as a dependency in the current .nidl file.'
-
-    if hasAttributes and not "attributes" in document:
-        util.error('Component has attributes attached but none could be found by the component compiler! Please make sure they\'re defined or imported as a dependency in the current .nidl file.')
+class ComponentClassWriter:
+    def __init__(self, fileWriter, document, component, componentName):
+        self.f = fileWriter
+        self.document = document
+        self.component = component
+        self.componentName = componentName
+        self.className = '{}Base'.format(self.componentName)
+        self.useDelayedRemoval = "useDelayedRemoval" in component and component["useDelayedRemoval"] == True
         
-    # Read dataLayout from NIDL file
-    if "dataLayout" in component:
-        dataLayout = GetDataLayout(component["dataLayout"])
+        self.hasEvents = "events" in component
+        if self.hasEvents:
+            self.events = self.component["events"]
+            for i, event in enumerate(self.events):
+                self.events[i] = event.lower()
 
-    # Write instance structure for PPI components
-    if dataLayout == PACKED_PER_INSTANCE:
-        f.WriteLine('struct {}Instance'.format(componentName))
-        f.WriteLine("{")
-        f.IncreaseIndent()
-        if hasAttributes:
-            for attributeName in component["attributes"]:
-                if not attributeName in document["attributes"]:
-                    util.error(attributeNotFoundError.format(attributeName))
-                f.WriteLine('{} {};'.format(IDLTypes.GetTypeString(document["attributes"][attributeName]["type"]), attributeName))
-        f.DecreaseIndent()
-        f.WriteLine("}")
-        f.WriteLine("")
-        f.WriteLine("//------------------------------------------------------------------------------")    
+        self.dataLayout = IDLTypes.PACKED_PER_ATTRIBUTE
+        # Read dataLayout from NIDL file
+        if "dataLayout" in self.component:
+            self.dataLayout = IDLTypes.GetDataLayout(component["dataLayout"])
+
+        self.hasAttributes = "attributes" in self.component
+
+
+        if self.hasAttributes and not "attributes" in self.document:
+            util.error('Component has attributes attached but none could be found by the component compiler! Please make sure they\'re defined or imported as a dependency in the current .nidl file.')
+
+    #------------------------------------------------------------------------------
+    ##
+    #
+    def WriteClassDeclaration(self):
+        # Write instance structure for PPI components
+        if self.dataLayout == IDLTypes.PACKED_PER_INSTANCE:
+            self.f.WriteLine('struct {}Instance'.format(self.componentName))
+            self.f.WriteLine("{")
+            self.f.IncreaseIndent()
+            if self.hasAttributes:
+                for attributeName in self.component["attributes"]:
+                    if not attributeName in self.document["attributes"]:
+                        util.error(AttributeNotFoundError.format(attributeName))
+                    self.f.WriteLine('{} {};'.format(IDLTypes.GetTypeString(self.document["attributes"][attributeName]["type"]), attributeName))
+            self.f.DecreaseIndent()
+            self.f.WriteLine("}")
+            self.f.WriteLine("")
+            self.f.WriteLine("//------------------------------------------------------------------------------")
+
+        # Declare class
+        self.f.WriteLine('class {} : public Game::BaseComponent'.format(self.className))
+        self.f.WriteLine("{")
+
+        self.f.IncreaseIndent()
+        self.f.WriteLine('__DeclareClass({})'.format(self.className))
+        self.f.DecreaseIndent()
+        self.f.WriteLine("public:")
+        self.f.IncreaseIndent()
+        self.f.WriteLine("/// Default constructor")
+        self.f.WriteLine('{}();'.format(self.className))
+        self.f.WriteLine("/// Default destructor")
+        self.f.WriteLine('~{}();'.format(self.className))
+        self.f.WriteLine("")
+        self.f.WriteLine("/// Registers an entity to this component. Entity is inactive to begin with.")
+        self.f.WriteLine("void RegisterEntity(const Game::Entity& entity);")
+        self.f.WriteLine("")
+        self.f.WriteLine("/// Deregister Entity. This checks both active and inactive component instances.")
+        self.f.WriteLine("void DeregisterEntity(const Game::Entity& entity);")
+        self.f.WriteLine("")
+        self.f.WriteLine("/// Deregister all entities from both inactive and active. Garbage collection will take care of freeing up data.")
+        self.f.WriteLine("void DeregisterAll();")
+        self.f.WriteLine("")
+        self.f.WriteLine("/// Deregister all non-alive entities from both inactive and active. This can be extremely slow!")
+        self.f.WriteLine("void DeregisterAllDead();")
+        self.f.WriteLine("")
+        self.f.WriteLine("/// Cleans up right away and frees any memory that does not belong to an entity. This can be extremely slow!")
+        self.f.WriteLine("void CleanData();")
+        self.f.WriteLine("")
+        self.f.WriteLine("/// Destroys all instances of this component, and deregisters every entity.")
+        self.f.WriteLine("void DestroyAll();")
+        self.f.WriteLine("")
+        self.f.WriteLine("/// Checks whether the entity is registered. Checks both inactive and active datasets.")
+        self.f.WriteLine("bool IsRegistered(const Game::Entity& entity) const;")
+        self.f.WriteLine("")
+        self.f.WriteLine("/// Activate entity component instance.")
+        self.f.WriteLine("void Activate(const Game::Entity& entity);")
+        self.f.WriteLine("")
+        self.f.WriteLine("/// Deactivate entity component instance. Instance state will remain after reactivation but not after deregistering.")
+        self.f.WriteLine("void Deactivate(const Game::Entity& entity);")
+        self.f.WriteLine("")
+        self.f.WriteLine("/// Returns the index of the data array to the component instance")
+        self.f.WriteLine("/// Note that this only checks the active dataset")
+        self.f.WriteLine("uint32_t GetInstance(const Game::Entity& entity) const;")
+        self.f.WriteLine("")
+        self.f.WriteLine("/// Returns the owner entity id of provided instance id")
+        self.f.WriteLine("Game::Entity GetOwner(const uint32_t& instance) const;")
+        self.f.WriteLine("")
+        self.f.WriteLine("/// Optimize data array and pack data")
+        self.f.WriteLine("SizeT Optimize();")
+        self.f.WriteLine("")
+        self.f.WriteLine("/// Returns an attribute value as a variant from index.")
+        self.f.WriteLine("Util::Variant GetAttributeValue(uint32_t instance, IndexT attributeIndex) const;")
+        self.f.WriteLine("/// Returns an attribute value as a variant from attribute id.")
+        self.f.WriteLine("Util::Variant GetAttributeValue(uint32_t instance, Attr::AttrId attributeId) const;")
+        self.f.WriteLine("")
+
+        if not self.useDelayedRemoval:
+            self.f.WriteLine("/// Called from entitymanager if this component is registered with a deletion callback.")
+            self.f.WriteLine("/// Removes entity immediately from both active and inactive component instances.")
+            self.f.WriteLine("void OnEntityDeleted(Entity entity);")
+
+        self.f.DecreaseIndent()
+        self.f.WriteLine("protected:")
+        self.f.IncreaseIndent()
+        self.f.WriteLine("/// Read/write access to attributes.")
+        if self.hasAttributes:
+            for attributeName in self.component["attributes"]:
+                if not attributeName in self.document["attributes"]:
+                    util.error(AttributeNotFoundError.format(attributeName))
+                self.f.WriteLine('const {}& GetAttr{}(const uint32_t& instance);'.format(IDLTypes.GetTypeString(self.document["attributes"][attributeName]["type"]), Capitalize(attributeName)))
+                self.f.WriteLine('void SetAttr{}(const uint32_t& instance, const {}& value);'.format(Capitalize(attributeName), IDLTypes.GetTypeString(self.document["attributes"][attributeName]["type"])))
+        self.f.WriteLine("")
+        self.f.DecreaseIndent()
+        self.f.WriteLine("private:")
+        self.f.IncreaseIndent()
+
+        templateArgs = ""
+
+        if (self.hasAttributes):
+            if self.dataLayout == IDLTypes.PACKED_PER_ATTRIBUTE:
+                numAttributes = len(self.component["attributes"])
+                for i, attributeName in enumerate(self.component["attributes"]):
+                    if not attributeName in self.document["attributes"]:
+                        util.error(AttributeNotFoundError.format(attributeName))
+                    templateArgs += IDLTypes.GetTypeString(self.document["attributes"][attributeName]["type"])
+                    if i != (numAttributes - 1):
+                        templateArgs += ", "
+            else:
+                templateArgs += '{}Instance'.format(self.componentName)
+
+        componentData = 'Game::ComponentData<{}> {};'
+
+        self.f.WriteLine("/// Holds all active entities data")
+        self.f.WriteLine(componentData.format(templateArgs, "data"))
+        self.f.WriteLine("/// Holds all inactive component instances.")
+        self.f.WriteLine(componentData.format(templateArgs, "inactiveData"))
+        self.f.DecreaseIndent()
+        self.f.WriteLine("};")
+        self.f.WriteLine("")
+
+    #------------------------------------------------------------------------------
+    ##
+    #
+    def WriteConstructorImplementation(self):
+        self.f.InsertNebulaDivider()
+        self.f.WriteLine("{}::{}()".format(self.className, self.className))
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
+        if self.hasEvents:
+            for event in self.component["events"]:
+                self.f.WriteLine("this->events.SetBit({});".format(IDLTypes.GetEventEnum(event)))
+            self.f.WriteLine("")
+
+        numAttributes = 1
+        if self.hasAttributes:
+            numAttributes += len(self.component["attributes"])
+
+        self.f.WriteLine("this->attributes.SetSize({});".format(numAttributes))
+
+        self.f.WriteLine("this->attributes[0] = Attr::Owner;")
+
+        if self.hasAttributes:
+            for i, attributeName in enumerate(self.component["attributes"]):
+                self.f.WriteLine("this->attributes[{}] = Attr::{};".format(i + 1, Capitalize(attributeName)))
+
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.WriteLine("")
+
+    #------------------------------------------------------------------------------
+    ##
+    #
+    def WriteDestructorImplementation(self):
+        self.f.InsertNebulaDivider()
+        self.f.WriteLine("{}::~{}()".format(self.className, self.className))
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
+        self.f.WriteLine("// empty")
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.WriteLine("")
+
+    #------------------------------------------------------------------------------
+    ##
+    #
+    def WriteRegisterEntityImplementation(self):
+        self.f.InsertNebulaDivider()
+        self.f.WriteLine("void")
+        self.f.WriteLine("{}::RegisterEntity(const Entity& entity)".format(self.className))
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
+        self.f.WriteLine("this->inactiveData.RegisterEntity(entity);")
+
+        if not self.useDelayedRemoval:
+            self.f.WriteLine("EntityManager::Instance()->RegisterDeletionCallback(entity, this);")
+
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.WriteLine("")
+
+    #------------------------------------------------------------------------------
+    ##
+    #
+    def WriteDeregisterEntityImplementation(self):
+        self.f.InsertNebulaDivider()
+        self.f.WriteLine("void")
+        self.f.WriteLine("{}::DeregisterEntity(const Entity& entity)".format(self.className))
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
+        self.f.WriteLine("uint32_t index = this->data.GetInstance(entity);")
+        self.f.WriteLine("if (index != InvalidIndex)")
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
+
+        if self.useDelayedRemoval:
+            self.f.WriteLine("this->data.DeregisterEntity(entity);")
+        else:
+            self.f.WriteLine("this->data.DeregisterEntityImmediate(entity);")
+            self.f.WriteLine("EntityManager::Instance()->DeregisterDeletionCallback(entity, this);")
+
+        self.f.WriteLine("return;")
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.WriteLine("")
+        self.f.WriteLine("index = this->inactiveData.GetInstance(entity);")
+        self.f.WriteLine("if (index != InvalidIndex)")
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
+        self.f.WriteLine("this->inactiveData.DeregisterEntityImmediate(entity, index);")
+
+        if not self.useDelayedRemoval:
+            self.f.WriteLine("EntityManager::Instance()->DeregisterDeletionCallback(entity, this);")
+
+        self.f.WriteLine("return;")
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.WriteLine("")
+
+    #------------------------------------------------------------------------------
+    ##
+    #
+    def WriteOnEntityDeletedImplementation(self):
+        if not self.useDelayedRemoval:
+            self.f.InsertNebulaDivider()
+            self.f.WriteLine("void")
+            self.f.WriteLine("{}::OnEntityDeleted(Entity entity)".format(self.className))
+            self.f.WriteLine("{")
+            self.f.IncreaseIndent()
+            self.f.WriteLine("uint32_t index = this->data.GetInstance(entity);")
+            self.f.WriteLine("if (index != InvalidIndex)")
+            self.f.WriteLine("{")
+            self.f.IncreaseIndent()
+            self.f.WriteLine("    this->data.DeregisterEntityImmediate(entity);")
+            self.f.WriteLine("    return;")
+            self.f.DecreaseIndent()
+            self.f.WriteLine("}")
+            self.f.WriteLine("")
+            self.f.WriteLine("index = this->inactiveData.GetInstance(entity);")
+            self.f.WriteLine("if (index != InvalidIndex)")
+            self.f.WriteLine("{")
+            self.f.IncreaseIndent()
+            self.f.WriteLine("    this->inactiveData.DeregisterEntityImmediate(entity, index);")
+            self.f.WriteLine("    return;")
+            self.f.DecreaseIndent()
+            self.f.WriteLine("}")
+            self.f.DecreaseIndent()
+            self.f.WriteLine("}")
+            self.f.WriteLine("")
+
+    #------------------------------------------------------------------------------
+    ##
+    #
+    def WriteCleanupMethods(self):
+        self.f.InsertNebulaComment("@todo	if needed: deregister deletion callbacks")
+        self.f.WriteLine("void")
+        self.f.WriteLine("{}::DeregisterAll()".format(self.className))
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
+        self.f.WriteLine("this->data.DeregisterAll();")
+        self.f.WriteLine("this->inactiveData.DeregisterAll();")
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.WriteLine("")
+        self.f.InsertNebulaComment("@todo	if needed: deregister deletion callbacks")
+        self.f.WriteLine("void")
+        self.f.WriteLine("{}::DeregisterAllDead()".format(self.className))
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
+        self.f.WriteLine("this->data.DeregisterAllInactive();")
+        self.f.WriteLine("this->inactiveData.DeregisterAllInactive();")
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.WriteLine("")
+        self.f.InsertNebulaComment("@todo	if needed: deregister deletion callbacks")
+        self.f.WriteLine("void")
+        self.f.WriteLine("{}::CleanData()".format(self.className))
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
+        self.f.WriteLine("this->data.Clean();")
+        self.f.WriteLine("this->inactiveData.Clean();")
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.WriteLine("")
+        self.f.InsertNebulaComment("@todo	if needed: deregister deletion callbacks")
+        self.f.WriteLine("void")
+        self.f.WriteLine("{}::DestroyAll()".format(self.className))
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
+        self.f.WriteLine("this->data.DestroyAll();")
+        self.f.WriteLine("this->inactiveData.DestroyAll();")
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.WriteLine("")
+
+    #------------------------------------------------------------------------------
+    ##
+    #
+    def WriteIsRegisteredImplementation(self):
+        self.f.InsertNebulaDivider()
+        self.f.WriteLine("bool")
+        self.f.WriteLine("{}::IsRegistered(const Entity& entity) const".format(self.className))
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
+        self.f.WriteLine("return this->data.GetInstance(entity) != InvalidIndex || this->inactiveData.GetInstance(entity) != InvalidIndex;")
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.WriteLine("")
+
+    #------------------------------------------------------------------------------
+    ##
+    #
+    def WriteActivateImplementation(self):
+        self.f.InsertNebulaDivider()
+        self.f.WriteLine("void")
+        self.f.WriteLine("{}::Activate(const Entity& entity)".format(self.className))
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
+        self.f.WriteLine("n_assert2(this->IsRegistered(entity), \"Cannot activate component for an entity that is not registered!\");")
+        self.f.WriteLine("")
+        self.f.WriteLine("if (this->data.GetInstance(entity) != InvalidIndex || !EntityManager::Instance()->IsAlive(entity)) return;")
+        self.f.WriteLine("")
+        self.f.WriteLine("auto inactiveInstance = this->inactiveData.GetInstance(entity);")
+        self.f.WriteLine("")
+        self.f.WriteLine("if (inactiveInstance != InvalidIndex)")
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
+        self.f.WriteLine("uint32_t newInstance = this->data.RegisterEntity(entity);")
+
+        if self.dataLayout == IDLTypes.PACKED_PER_INSTANCE:
+            self.f.WriteLine("this->data.SetInstanceData(newInstance, this->inactiveData.data.Get<1>(inactiveInstance));")
+        else:
+            self.f.Write("this->data.SetInstanceData(newInstance")
+            if self.hasAttributes:
+                for i, attributeName in enumerate(self.component["attributes"]):
+                    self.f.Write(", this->inactiveData.data.Get<{}>(inactiveInstance)".format(i + 1))
+            self.f.WriteLine(");")
+
+
+        if self.hasEvents and "deactivate" in self.events:
+            self.f.WriteLine("")
+            self.f.WriteLine("this->OnActivate(newInstance);")
+
+
+        self.f.WriteLine("")
+        self.f.WriteLine("this->inactiveData.DeregisterEntityImmediate(entity, inactiveInstance);")
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.WriteLine("")
+
+    #------------------------------------------------------------------------------
+    ##
+    #
+    def WriteDeactivateImplementation(self):
+        self.f.InsertNebulaDivider()
+        self.f.WriteLine("void")
+        self.f.WriteLine("{}::Deactivate(const Entity& entity)".format(self.className))
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
+        self.f.WriteLine("n_assert2(this->IsRegistered(entity), \"Cannot Deactivate component for an entity that is not even registered!\");")
+        self.f.WriteLine("")
+        self.f.WriteLine("if (!this->data.GetInstance(entity) || !EntityManager::Instance()->IsAlive(entity)) return;")
+        self.f.WriteLine("")
+        self.f.WriteLine("auto instance = this->data.GetInstance(entity);")
+        self.f.WriteLine("")
+        self.f.WriteLine("if (instance != InvalidIndex)")
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
+
+        if self.hasEvents and "deactivate" in self.events:
+            self.f.WriteLine("this->OnDeactivate(instance);")
+            self.f.WriteLine("")
+
+        self.f.WriteLine("uint32_t inactiveInstance = this->inactiveData.RegisterEntity(entity);")
+
+        if self.dataLayout == IDLTypes.PACKED_PER_INSTANCE:
+            self.f.WriteLine("this->inactiveData.SetInstanceData(newInstance, this->data.data.Get<1>(inactiveInstance));")
+        else:
+            self.f.Write("this->inactiveData.SetInstanceData(inactiveInstance")
+            if self.hasAttributes:
+                for i, attributeName in enumerate(self.component["attributes"]):
+                    self.f.Write(", this->data.data.Get<{}>(instance)".format(i + 1))
+            self.f.WriteLine(");")
+
+        self.f.WriteLine("this->data.DeregisterEntityImmediate(entity, instance);")
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.WriteLine("")
+
+    #------------------------------------------------------------------------------
+    ##
+    #
+    def WriteGetInstanceImplementation(self):
+        self.f.InsertNebulaDivider()
+        self.f.WriteLine("uint32_t")
+        self.f.WriteLine("{}::GetInstance(const Entity& entity) const".format(self.className))
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
+        self.f.WriteLine("return this->data.GetInstance(entity);")
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.WriteLine("")
     
-    # Declare class
-    f.WriteLine('class {} : public Game::BaseComponent'.format(className))
-    f.WriteLine("{")
+    #------------------------------------------------------------------------------
+    ##
+    #
+    def WriteGetOwnerImplementation(self):
+        self.f.InsertNebulaDivider()
+        self.f.WriteLine("Entity")
+        self.f.WriteLine("{}::GetOwner(const uint32_t& instance) const".format(self.className))
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
+        self.f.WriteLine("return this->data.GetOwner(instance);")
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.WriteLine("")
 
-    f.IncreaseIndent()
-    f.WriteLine('__DeclareClass({})'.format(className))
-    f.DecreaseIndent()
-    f.WriteLine("public:")
-    f.IncreaseIndent()
-    f.WriteLine("/// Default constructor")
-    f.WriteLine('{}();'.format(className))
-    f.WriteLine("/// Default destructor")
-    f.WriteLine('~{}();'.format(className))
-    f.WriteLine("")
-    f.WriteLine("/// Registers an entity to this component. Entity is inactive to begin with.")
-    f.WriteLine("void RegisterEntity(const Game::Entity& entity);")
-    f.WriteLine("")
-    f.WriteLine("/// Deregister Entity. This checks both active and inactive component instances.")
-    f.WriteLine("void DeregisterEntity(const Game::Entity& entity);")
-    f.WriteLine("")
-    f.WriteLine("/// Deregister all entities from both inactive and active. Garbage collection will take care of freeing up data.")
-    f.WriteLine("void DeregisterAll();")
-    f.WriteLine("")
-    f.WriteLine("/// Deregister all non-alive entities from both inactive and active. This can be extremely slow!")
-    f.WriteLine("void DeregisterAllDead();")
-    f.WriteLine("")
-    f.WriteLine("/// Cleans up right away and frees any memory that does not belong to an entity. This can be extremely slow!")
-    f.WriteLine("void CleanData();")
-    f.WriteLine("")
-    f.WriteLine("/// Destroys all instances of this component, and deregisters every entity.")
-    f.WriteLine("void DestroyAll();")
-    f.WriteLine("")
-    f.WriteLine("/// Checks whether the entity is registered. Checks both inactive and active datasets.")
-    f.WriteLine("bool IsRegistered(const Game::Entity& entity) const;")
-    f.WriteLine("")
-    f.WriteLine("/// Activate entity component instance.")
-    f.WriteLine("void Activate(const Game::Entity& entity);")
-    f.WriteLine("")
-    f.WriteLine("/// Deactivate entity component instance. Instance state will remain after reactivation but not after deregistering.")
-    f.WriteLine("void Deactivate(const Game::Entity& entity);")
-    f.WriteLine("")
-    f.WriteLine("/// Returns the index of the data array to the component instance")
-    f.WriteLine("/// Note that this only checks the active dataset")
-    f.WriteLine("uint32_t GetInstance(const Game::Entity& entity) const;")
-    f.WriteLine("")
-    f.WriteLine("/// Returns the owner entity id of provided instance id")
-    f.WriteLine("Game::Entity GetOwner(const uint32_t& instance) const;")
-    f.WriteLine("")
-    f.WriteLine("/// Optimize data array and pack data")
-    f.WriteLine("SizeT Optimize();")
-    f.WriteLine("")
-    f.WriteLine("/// Returns an attribute value as a variant from index.")
-    f.WriteLine("Util::Variant GetAttributeValue(uint32_t instance, IndexT attributeIndex) const;")
-    f.WriteLine("/// Returns an attribute value as a variant from attribute id.")
-    f.WriteLine("Util::Variant GetAttributeValue(uint32_t instance, Attr::AttrId attributeId) const;")
-    f.WriteLine("")
-    f.DecreaseIndent()
-    f.WriteLine("protected:")
-    f.IncreaseIndent()
-    f.WriteLine("/// Read/write access to attributes.")
-    if hasAttributes:
-        for attributeName in component["attributes"]:
-            if not attributeName in document["attributes"]:
-                util.error(attributeNotFoundError.format(attributeName))
-            f.WriteLine('const {}& GetAttr{}(const uint32_t& instance);'.format(IDLTypes.GetTypeString(document["attributes"][attributeName]["type"]), attributeName.capitalize()))
-            f.WriteLine('void SetAttr{}(const uint32_t& instance, const {}& value);'.format(attributeName.capitalize(), IDLTypes.GetTypeString(document["attributes"][attributeName]["type"])))
-    f.WriteLine("")  
-    f.DecreaseIndent()
-    f.WriteLine("private:")
-    f.IncreaseIndent()
+    #------------------------------------------------------------------------------
+    ##
+    #
+    def WriteOptimizeImplementation(self):
+        self.f.InsertNebulaDivider()
+        self.f.WriteLine("SizeT")
+        self.f.WriteLine("{}::Optimize()".format(self.className))
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
+        
+        if self.useDelayedRemoval:
+            self.f.WriteLine("SizeT numErased = 0;")
+            self.f.WriteLine("numErased += this->inactiveData.Optimize();")
+            self.f.WriteLine("numErased += this->data.Optimize();")
+            self.f.WriteLine("return numErased;")
+        else:
+            self.f.WriteLine("return 0;")
+        
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.WriteLine("")
 
-    templateArgs = ""
+    #------------------------------------------------------------------------------
+    ##
+    #
+    def WriteGetAttributeMethod(self):
+        if not self.hasAttributes:
+            return
 
-    if dataLayout == PACKED_PER_ATTRIBUTE:
-        numAttributes = len(component["attributes"])
-        for i, attributeName in enumerate(component["attributes"]):
-            if not attributeName in document["attributes"]:
-                util.error(attributeNotFoundError.format(attributeName))
-            templateArgs += IDLTypes.GetTypeString(document["attributes"][attributeName]["type"])
-            if i != (numAttributes - 1):
-                templateArgs += ", "
-    else:
-        templateArgs += '{}Instance'.format(componentName)
+        self.f.InsertNebulaDivider()
+        self.f.WriteLine("Util::Variant")
+        self.f.WriteLine("{}::GetAttributeValue(uint32_t instance, IndexT attributeIndex) const".format(self.className))
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
+        self.f.WriteLine("switch (attributeIndex)")
+        self.f.WriteLine("{")
+        self.f.IncreaseIndent()
 
-    componentData = 'Game::ComponentData<{}> {};'
+        self.f.WriteLine("case 0: return Util::Variant(this->data.data.Get<0>(instance).id);")
+        for i, attributeName in enumerate(self.component["attributes"]):
+            index = i
+            if index == 0: 
+                continue
+            self.f.Write("case {}: ".format(index))
+            if self.dataLayout == IDLTypes.PACKED_PER_INSTANCE:
+                index = 1
+                self.f.WriteLine("return Util::Variant(this->data.data.Get<{}>(instance).{});".format(index, attributeName))
+            else:
+                self.f.WriteLine("return Util::Variant(this->data.data.Get<{}>(instance));".format(index))
+        self.f.WriteLine("default:")
+        self.f.WriteLine("    n_assert2(false, \"Component doesn't contain this attribute!\");")
+        self.f.WriteLine("    return Util::Variant();")
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.DecreaseIndent()
+        self.f.WriteLine("}")
+        self.f.WriteLine("")
 
-    f.WriteLine("/// Holds all active entities data")
-    f.WriteLine(componentData.format(templateArgs, "data"))
-    f.WriteLine("/// Holds all inactive component instances.")
-    f.WriteLine(componentData.format(templateArgs, "inactiveData"))
-    f.DecreaseIndent()
+    #------------------------------------------------------------------------------
+    ## note     If we're ever having autosynced attributes, this is where to put the sync code
+    #
+    def WriteAttrAccessImplementations(self):
+        if self.hasAttributes:
+            for i, attributeName in enumerate(self.component["attributes"]):
+                T = IDLTypes.GetTypeString(self.document["attributes"][attributeName]["type"])
+                if not attributeName in self.document["attributes"]:
+                    util.error(AttributeNotFoundError.format(attributeName))
+                self.f.InsertNebulaDivider()
+                self.f.WriteLine("const {}&".format(T))
+                self.f.WriteLine("{}::GetAttr{}(const uint32_t& instance)".format(self.className, Capitalize(attributeName)))
+                self.f.WriteLine("{")
+                self.f.IncreaseIndent()
+                if self.dataLayout == IDLTypes.PACKED_PER_INSTANCE:
+                    self.f.WriteLine("return this->data.data.Get<1>(instance).{};".format(attributeName))
+                else:
+                    self.f.WriteLine("return this->data.data.Get<{}>(instance);".format(i + 1))            
+                self.f.DecreaseIndent()
+                self.f.WriteLine("}")
+                self.f.WriteLine("")        
+        
+                self.f.InsertNebulaDivider()
+                self.f.WriteLine("void")
+                self.f.WriteLine("{}::SetAttr{}(const uint32_t& instance, const {}& value)".format(self.className, Capitalize(attributeName), T))
+                self.f.WriteLine("{")
+                self.f.IncreaseIndent()
+                if self.dataLayout == IDLTypes.PACKED_PER_INSTANCE:
+                    self.f.WriteLine("this->data.data.Get<1>(instance).{} = value;".format(attributeName))
+                else:
+                    self.f.WriteLine("this->data.data.Get<{}>(instance) = value;".format(i + 1))            
+                self.f.DecreaseIndent()
+                self.f.WriteLine("}")
+                self.f.WriteLine("")
+        
+        
+    #------------------------------------------------------------------------------
+    ##
+    #
+    def WriteClassImplementation(self):
+        self.WriteConstructorImplementation()
+        self.WriteDestructorImplementation()
+        self.WriteRegisterEntityImplementation()
+        self.WriteDeregisterEntityImplementation()
+        self.WriteCleanupMethods()
+        self.WriteIsRegisteredImplementation()
+        self.WriteActivateImplementation()
+        self.WriteDeactivateImplementation()
+        self.WriteGetInstanceImplementation()
+        self.WriteGetOwnerImplementation()
+        self.WriteOptimizeImplementation()
+        self.WriteGetAttributeMethod()
+        self.WriteAttrAccessImplementations()
 
-    f.WriteLine("};")
-    f.WriteLine("")
-
-#------------------------------------------------------------------------------
-##
-#
-def WriteClassImplementation(f, document, component, componentName):
-    return
-
-#------------------------------------------------------------------------------
-##
-#
-def GetDataLayout(string):
-    if string == "PACKED_PER_ATTRIBUTE":
-        return PACKED_PER_ATTRIBUTE
-    elif string == "PACKED_PER_INSTANCE":
-        return PACKED_PER_INSTANCE

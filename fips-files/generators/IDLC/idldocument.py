@@ -31,6 +31,23 @@ def WriteAttributeLibraryDeclaration(f):
     f.WriteLine("")
 
 #------------------------------------------------------------------------------
+## Write source file header
+#
+def WriteSourceHeader(f, filename):
+    f.WriteLine("//------------------------------------------------------------------------------")
+    f.WriteLine('//  {}base.cc'.format(filename.lower()))
+    f.WriteLine("//  (C) Individual contributors, see AUTHORS file")
+    f.WriteLine("//")
+    f.WriteLine("//  MACHINE GENERATED, DON'T EDIT!")
+    f.WriteLine("//------------------------------------------------------------------------------")
+
+#------------------------------------------------------------------------------
+##
+#
+def AddInclude(f, relativePath):
+    f.WriteLine('#include "{}"'.format(relativePath))
+
+#------------------------------------------------------------------------------
 ##
 #
 def BeginNamespace(f, document):

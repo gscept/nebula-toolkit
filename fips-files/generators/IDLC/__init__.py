@@ -24,7 +24,7 @@ class IDLCodeGenerator:
         self.documentFileName = tail or ntpath.basename(head)
 
         fstream = open(self.documentPath, 'r')
-        self.document = sjson.loads(fstream.read());
+        self.document = sjson.loads(fstream.read())
 
 
     #------------------------------------------------------------------------------
@@ -33,16 +33,12 @@ class IDLCodeGenerator:
     def GenerateHeader(self, hdrPath) :
         f = filewriter.FileWriter()
 
-        # TODO: Parse all dependencies
-
         attributeLibraries = []
-
-        # TODO: Add attribute libraries so that we can send them on to the components that need them
 
         # Generate attributes include file
         if "attributes" in self.document:
-            fileName = '{}attributes.h'.format(self.documentFileName).lower()
-            fullFilePath = '{}attributes.h'.format(self.documentBaseName).lower()
+            fileName = '{}.h'.format(self.documentFileName).lower()
+            fullFilePath = '{}.h'.format(self.documentBaseName).lower()
             
 
             # TODO: We need to find the correct path to include in our components for this file.
@@ -51,10 +47,30 @@ class IDLCodeGenerator:
             f.Open(fullFilePath)
             IDLDocument.WriteIncludeHeader(f)
             IDLDocument.WriteAttributeLibraryDeclaration(f)
+            
+            IDLDocument.BeginNamespace(f, self.document)
+            IDLAttribute.WriteEnumeratedTypes(f, self.document)
+            IDLDocument.EndNamespace(f, self.document)
+            f.WriteLine("")
+
             IDLDocument.BeginNamespaceOverride(f, self.document, "Attr")
             IDLAttribute.WriteAttributeHeaderDeclarations(f, self.document)
             IDLDocument.EndNamespaceOverride(f, self.document, "Attr")
             f.Close()
+
+
+        # Add additional dependencies to document.
+        for dependency in self.document["dependencies"]:
+            fileName = '{}.h'.format(os.path.splitext(dependency)[0]).lower()
+            attributeLibraries.append(fileName)
+
+            fstream = open(dependency, 'r')
+            depDocument = sjson.loads(fstream.read())
+
+            deps = depDocument["attributes"]
+            # Add all attributes to this document
+            self.document["attributes"].update(deps)
+
 
         # Generate components base classes headers
         if "components" in self.document:

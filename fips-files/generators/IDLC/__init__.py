@@ -38,13 +38,15 @@ class IDLCodeGenerator:
         # Generate attributes include file
         if "attributes" in self.document:
             fileName = '{}.h'.format(self.documentFileName).lower()
-            fullFilePath = '{}.h'.format(self.documentBaseName).lower()
+            headerFilePath = '{}.h'.format(self.documentBaseName).lower()
+            sourceFilePath = '{}.cc'.format(self.documentBaseName).lower()
             
-
             # TODO: We need to find the correct path to include in our components for this file.
             attributeLibraries.append(fileName)
 
-            f.Open(fullFilePath)
+            #---------------------
+            # Create header file
+            f.Open(headerFilePath)
             IDLDocument.WriteIncludeHeader(f)
             IDLDocument.WriteAttributeLibraryDeclaration(f)
             
@@ -58,18 +60,29 @@ class IDLCodeGenerator:
             IDLDocument.EndNamespaceOverride(f, self.document, "Attr")
             f.Close()
 
+            #---------------------
+            # Create source file
+            f.Open(sourceFilePath)
+            IDLDocument.WriteSourceHeader(f, self.documentFileName)
+            IDLDocument.AddInclude(f, fileName)
+
+            IDLDocument.BeginNamespaceOverride(f, self.document, "Attr")
+            IDLAttribute.WriteAttributeDefinitions(f, self.document)
+            IDLDocument.EndNamespaceOverride(f, self.document, "Attr")
+            f.Close()
 
         # Add additional dependencies to document.
-        for dependency in self.document["dependencies"]:
-            fileName = '{}.h'.format(os.path.splitext(dependency)[0]).lower()
-            attributeLibraries.append(fileName)
+        if "dependencies" in self.document:
+            for dependency in self.document["dependencies"]:
+                fileName = '{}.h'.format(os.path.splitext(dependency)[0]).lower()
+                attributeLibraries.append(fileName)
 
-            fstream = open(dependency, 'r')
-            depDocument = sjson.loads(fstream.read())
+                fstream = open(dependency, 'r')
+                depDocument = sjson.loads(fstream.read())
 
-            deps = depDocument["attributes"]
-            # Add all attributes to this document
-            self.document["attributes"].update(deps)
+                deps = depDocument["attributes"]
+                # Add all attributes to this document
+                self.document["attributes"].update(deps)
 
 
         # Generate components base classes headers
@@ -97,7 +110,7 @@ class IDLCodeGenerator:
         if "components" in self.document:
             for componentName, component in self.document["components"].iteritems():
                 f.Open('{}/{}base.cc'.format(self.documentDirName, componentName).lower())
-                IDLDocument.WriteSourceHeader(f, self.documentFileName)
+                IDLDocument.WriteSourceHeader(f, "{}base".format(self.documentFileName))
                 IDLDocument.AddInclude(f, '{}base.h'.format(componentName).lower())
                 f.WriteLine("")
                 componentWriter = IDLComponent.ComponentClassWriter(f, self.document, component, componentName)

@@ -4,17 +4,28 @@ import genutil as util
 def Capitalize(s):
     return s[:1].upper() + s[1:]
 
+def GetTypeCamelNotation(attributeName, attribute, document):
+    if not "type" in attribute:
+        util.fmtError('Attribute type is required. Attribute "{}" does not name a type!'.format(attributeName))
+    typeString = IDLTypes.ConvertToCamelNotation(attribute["type"])
+
+    if not typeString:
+        # Figure out what type it actually is.
+        if attribute["type"] in document["enums"]:
+            typeString = IDLTypes.ConvertToCamelNotation("uint") # type for enums is uint
+        else:
+            util.fmtError('"{}" is not a valid type!'.format(attribute["type"]))
+    return typeString
+
 #------------------------------------------------------------------------------
 ##
 #
 def WriteAttributeHeaderDeclarations(f, document):
     for attributeName, attribute in document["attributes"].iteritems():
-        if not "type" in attribute:
-            util.error('Attribute type is required. Attribute "{}" does not name a type!'.format(attributeName))
-        typeString = IDLTypes.ConvertToCamelNotation(attribute["type"])
+        typeString = GetTypeCamelNotation(attributeName, attribute, document)
 
         if not "fourcc" in attribute:
-            util.error('Attribute FourCC is required. Attribute "{}" does not have a fourcc!'.format(attributeName))
+            util.fmtError('Attribute FourCC is required. Attribute "{}" does not have a fourcc!'.format(attributeName))
         fourcc = attribute["fourcc"]
 
         accessMode = "rw"
@@ -23,6 +34,31 @@ def WriteAttributeHeaderDeclarations(f, document):
         
         f.WriteLine('Declare{}({}, \'{}\', {});'.format(typeString, attributeName, fourcc, accessMode))
 
+#------------------------------------------------------------------------------
+##
+#
+def WriteAttributeDefinitions(f, document):
+    for attributeName, attribute in document["attributes"].iteritems():
+        typeString = GetTypeCamelNotation(attributeName, attribute, document)
+        
+        if not "fourcc" in attribute:
+            util.fmtError('Attribute FourCC is required. Attribute "{}" does not have a fourcc!'.format(attributeName))
+        fourcc = attribute["fourcc"]
+
+        accessMode = "rw"
+        if "access" in attribute:
+            accessMode = IDLTypes.AccessModeToClassString(attribute["access"])
+        
+        defVal = None
+        if "default" in attribute:
+            default = IDLTypes.DefaultToString(attribute["default"])
+            defVal = "{}({})".format(IDLTypes.GetTypeString(attribute["type"]), default)
+
+        if defVal:
+            f.WriteLine('Define{}WithDefault({}, \'{}\', {}, {});'.format(typeString, attributeName, fourcc, accessMode, defVal))
+        else:
+            f.WriteLine('Define{}({}, \'{}\', {});'.format(typeString, attributeName, fourcc, accessMode))
+        
 #------------------------------------------------------------------------------
 ##
 #

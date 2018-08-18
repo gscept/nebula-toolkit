@@ -42,7 +42,7 @@ class ComponentClassWriter:
 
 
         if self.hasAttributes and not "attributes" in self.document:
-            util.error('Component has attributes attached but none could be found by the component compiler! Please make sure they\'re defined or imported as a dependency in the current .nidl file.')
+            util.fmtError('Component has attributes attached but none could be found by the component compiler! Please make sure they\'re defined or imported as a dependency in the current .nidl file.')
 
     #------------------------------------------------------------------------------
     ##
@@ -56,7 +56,7 @@ class ComponentClassWriter:
             if self.hasAttributes:
                 for attributeName in self.component["attributes"]:
                     if not attributeName in self.document["attributes"]:
-                        util.error(AttributeNotFoundError.format(attributeName))
+                        util.fmtError(AttributeNotFoundError.format(attributeName))
                     self.f.WriteLine('{} {};'.format(IDLTypes.GetTypeString(self.document["attributes"][attributeName]["type"]), attributeName))
             self.f.DecreaseIndent()
             self.f.WriteLine("}")
@@ -132,7 +132,7 @@ class ComponentClassWriter:
         if self.hasAttributes:
             for attributeName in self.component["attributes"]:
                 if not attributeName in self.document["attributes"]:
-                    util.error(AttributeNotFoundError.format(attributeName))
+                    util.fmtError(AttributeNotFoundError.format(attributeName))
                 self.f.WriteLine('const {}& GetAttr{}(const uint32_t& instance);'.format(IDLTypes.GetTypeString(self.document["attributes"][attributeName]["type"]), Capitalize(attributeName)))
                 self.f.WriteLine('void SetAttr{}(const uint32_t& instance, const {}& value);'.format(Capitalize(attributeName), IDLTypes.GetTypeString(self.document["attributes"][attributeName]["type"])))
         self.f.WriteLine("")
@@ -147,7 +147,7 @@ class ComponentClassWriter:
                 numAttributes = len(self.component["attributes"])
                 for i, attributeName in enumerate(self.component["attributes"]):
                     if not attributeName in self.document["attributes"]:
-                        util.error(AttributeNotFoundError.format(attributeName))
+                        util.fmtError(AttributeNotFoundError.format(attributeName))
                     templateArgs += IDLTypes.GetTypeString(self.document["attributes"][attributeName]["type"])
                     if i != (numAttributes - 1):
                         templateArgs += ", "
@@ -532,7 +532,7 @@ class ComponentClassWriter:
             for i, attributeName in enumerate(self.component["attributes"]):
                 T = IDLTypes.GetTypeString(self.document["attributes"][attributeName]["type"])
                 if not attributeName in self.document["attributes"]:
-                    util.error(AttributeNotFoundError.format(attributeName))
+                    util.fmtError(AttributeNotFoundError.format(attributeName))
                 self.f.InsertNebulaDivider()
                 self.f.WriteLine("const {}&".format(T))
                 self.f.WriteLine("{}::GetAttr{}(const uint32_t& instance)".format(self.className, Capitalize(attributeName)))

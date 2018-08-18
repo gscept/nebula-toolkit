@@ -25,7 +25,7 @@ def GetEventEnum(string):
     elif s == "deactivate":
         return "ComponentEvent::OnDeactivate"
     else:
-        util.error('"{}" is not a valid event!'.format(string))
+        util.fmtError('"{}" is not a valid event!'.format(string))
 
 #------------------------------------------------------------------------------
 ##
@@ -69,7 +69,7 @@ def ConvertToCamelNotation(attrType):
     elif (T == "entity"):
         return "Entity"
     else:
-        util.error('"{}" is not a valid type!'.format(T))
+        return None
 
 #------------------------------------------------------------------------------
 ##
@@ -118,6 +118,25 @@ def GetTypeString(attrType):
 #------------------------------------------------------------------------------
 ##
 #
+def DefaultToString(default):
+    if type(default) is int:
+        return str(default)
+    elif type(default) is float:
+        return "{}f".format(default)
+    elif type(default) is list:
+        string = ""
+        for number in default:
+            if len(string) != 0:
+                string += ", "
+            # recursion mother fucker
+            string += DefaultToString(number)
+        return string
+    elif type(default) is str:
+        return default
+    
+#------------------------------------------------------------------------------
+##
+#
 def AccessModeToClassString(accessMode):
     access = accessMode.lower()
     if (access == "rw"):
@@ -125,7 +144,7 @@ def AccessModeToClassString(accessMode):
     elif (access == "r"):
         return "Attr::ReadOnly"
     else:
-        util.error('"{}" is not a valid access mode!'.format(access))
+        util.fmtError('"{}" is not a valid access mode!'.format(access))
 
 #------------------------------------------------------------------------------
 ##

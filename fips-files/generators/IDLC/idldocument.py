@@ -17,11 +17,11 @@ def WriteIncludeHeader(f):
 ## parse and write include statements to file
 #
 def WriteIncludes(f, document):
-    for include in document["includes"]:
-        f.Write("#include \"")
-        f.Write(include)
-        f.Write("\"\n")
-    # todo: Dependencies
+    if "includes" in document:
+        for include in document["includes"]:
+            f.Write("#include \"")
+            f.Write(include)
+            f.Write("\"\n")
 
 #------------------------------------------------------------------------------
 ## Write attribute library declarations to file.
@@ -35,7 +35,7 @@ def WriteAttributeLibraryDeclaration(f):
 #
 def WriteSourceHeader(f, filename):
     f.WriteLine("//------------------------------------------------------------------------------")
-    f.WriteLine('//  {}base.cc'.format(filename.lower()))
+    f.WriteLine('//  {}.cc'.format(filename.lower()))
     f.WriteLine("//  (C) Individual contributors, see AUTHORS file")
     f.WriteLine("//")
     f.WriteLine("//  MACHINE GENERATED, DON'T EDIT!")

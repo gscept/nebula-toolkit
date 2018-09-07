@@ -26,7 +26,7 @@ class ComponentClassWriter:
         self.componentName = componentName
         self.className = '{}Base'.format(self.componentName)
         self.useDelayedRemoval = "useDelayedRemoval" in component and component["useDelayedRemoval"] == True
-        
+
         self.hasEvents = "events" in component
         if self.hasEvents:
             self.events = self.component["events"]
@@ -98,12 +98,6 @@ class ComponentClassWriter:
         self.f.WriteLine("/// Checks whether the entity is registered. Checks both inactive and active datasets.")
         self.f.WriteLine("bool IsRegistered(const Game::Entity& entity) const;")
         self.f.WriteLine("")
-        self.f.WriteLine("/// Activate entity component instance.")
-        self.f.WriteLine("void Activate(const Game::Entity& entity);")
-        self.f.WriteLine("")
-        self.f.WriteLine("/// Deactivate entity component instance. Instance state will remain after reactivation but not after deregistering.")
-        self.f.WriteLine("void Deactivate(const Game::Entity& entity);")
-        self.f.WriteLine("")
         self.f.WriteLine("/// Returns the index of the data array to the component instance")
         self.f.WriteLine("/// Note that this only checks the active dataset")
         self.f.WriteLine("uint32_t GetInstance(const Game::Entity& entity) const;")
@@ -156,7 +150,7 @@ class ComponentClassWriter:
 
         componentData = 'Game::ComponentData<{}> {};'
 
-        self.f.WriteLine("/// Holds all entitiy instances data")
+        self.f.WriteLine("/// Holds all entity instances data")
         self.f.WriteLine(componentData.format(templateArgs, "data"))
         self.f.DecreaseIndent()
         self.f.WriteLine("};")
@@ -213,10 +207,14 @@ class ComponentClassWriter:
         self.f.WriteLine("{}::RegisterEntity(const Entity& entity)".format(self.className))
         self.f.WriteLine("{")
         self.f.IncreaseIndent()
-        self.f.WriteLine("this->data.RegisterEntity(entity);")
+        self.f.WriteLine("auto instance = this->data.RegisterEntity(entity);")
 
         if not self.useDelayedRemoval:
             self.f.WriteLine("EntityManager::Instance()->RegisterDeletionCallback(entity, this);")
+
+        if self.hasEvents and "onactivate" in self.events:
+            self.f.WriteLine("")
+            self.f.WriteLine("this->OnActivate(instance);")
 
         self.f.DecreaseIndent()
         self.f.WriteLine("}")
@@ -235,6 +233,10 @@ class ComponentClassWriter:
         self.f.WriteLine("if (index != InvalidIndex)")
         self.f.WriteLine("{")
         self.f.IncreaseIndent()
+
+        if self.hasEvents and "ondeactivate" in self.events:
+            self.f.WriteLine("this->OnDeactivate(index);")
+            self.f.WriteLine("")
 
         if self.useDelayedRemoval:
             self.f.WriteLine("this->data.DeregisterEntity(entity);")
@@ -329,56 +331,6 @@ class ComponentClassWriter:
     #------------------------------------------------------------------------------
     ##
     #
-    def WriteActivateImplementation(self):
-        self.f.InsertNebulaDivider()
-        self.f.WriteLine("void")
-        self.f.WriteLine("{}::Activate(const Entity& entity)".format(self.className))
-        self.f.WriteLine("{")
-        self.f.IncreaseIndent()
-        self.f.WriteLine("n_assert2(this->IsRegistered(entity), \"Cannot activate component for an entity that is not registered!\");")
-        self.f.WriteLine("")
-        self.f.WriteLine("auto instance = this->data.GetInstance(entity);")
-        self.f.WriteLine("")
-        self.f.WriteLine("if (instance == InvalidIndex || !EntityManager::Instance()->IsAlive(entity)) return;")
-        self.f.WriteLine("")
-        self.f.WriteLine("instance = this->data.Activate(instance);")
-
-        if self.hasEvents and "activate" in self.events:
-            self.f.WriteLine("")
-            self.f.WriteLine("this->OnActivate(newInstance);")
-
-        self.f.DecreaseIndent()
-        self.f.WriteLine("}")
-        self.f.WriteLine("")
-
-    #------------------------------------------------------------------------------
-    ##
-    #
-    def WriteDeactivateImplementation(self):
-        self.f.InsertNebulaDivider()
-        self.f.WriteLine("void")
-        self.f.WriteLine("{}::Deactivate(const Entity& entity)".format(self.className))
-        self.f.WriteLine("{")
-        self.f.IncreaseIndent()
-        self.f.WriteLine("n_assert2(this->IsRegistered(entity), \"Cannot Deactivate component for an entity that is not even registered!\");")
-        self.f.WriteLine("")
-        self.f.WriteLine("auto instance = this->data.GetInstance(entity);")
-        self.f.WriteLine("")
-        self.f.WriteLine("if (instance == InvalidIndex || !EntityManager::Instance()->IsAlive(entity)) return;")
-
-        if self.hasEvents and "deactivate" in self.events:
-            self.f.WriteLine("this->OnDeactivate(instance);")
-            self.f.WriteLine("")
-
-        self.f.WriteLine("this->data.Deactivate(instance);");
-
-        self.f.DecreaseIndent()
-        self.f.WriteLine("}")
-        self.f.WriteLine("")
-
-    #------------------------------------------------------------------------------
-    ##
-    #
     def WriteGetInstanceImplementation(self):
         self.f.InsertNebulaDivider()
         self.f.WriteLine("uint32_t")
@@ -389,7 +341,7 @@ class ComponentClassWriter:
         self.f.DecreaseIndent()
         self.f.WriteLine("}")
         self.f.WriteLine("")
-    
+
     #------------------------------------------------------------------------------
     ##
     #
@@ -413,12 +365,12 @@ class ComponentClassWriter:
         self.f.WriteLine("{}::Optimize()".format(self.className))
         self.f.WriteLine("{")
         self.f.IncreaseIndent()
-        
+
         if self.useDelayedRemoval:
             self.f.WriteLine("return this->data.Optimize();;")
         else:
             self.f.WriteLine("return 0;")
-        
+
         self.f.DecreaseIndent()
         self.f.WriteLine("}")
         self.f.WriteLine("")
@@ -442,7 +394,7 @@ class ComponentClassWriter:
         self.f.WriteLine("case 0: return Util::Variant(this->data.data.Get<0>(instance).id);")
         for i, attributeName in enumerate(self.component["attributes"]):
             index = i
-            if index == 0: 
+            if index == 0:
                 continue
             self.f.Write("case {}: ".format(index))
             if self.dataLayout == IDLTypes.PACKED_PER_INSTANCE:
@@ -476,11 +428,11 @@ class ComponentClassWriter:
                 if self.dataLayout == IDLTypes.PACKED_PER_INSTANCE:
                     self.f.WriteLine("return this->data.data.Get<1>(instance).{};".format(attributeName))
                 else:
-                    self.f.WriteLine("return this->data.data.Get<{}>(instance);".format(i + 1))            
+                    self.f.WriteLine("return this->data.data.Get<{}>(instance);".format(i + 1))
                 self.f.DecreaseIndent()
                 self.f.WriteLine("}")
-                self.f.WriteLine("")        
-        
+                self.f.WriteLine("")
+
                 self.f.InsertNebulaDivider()
                 self.f.WriteLine("void")
                 self.f.WriteLine("{}::SetAttr{}(const uint32_t& instance, const {}& value)".format(self.className, Capitalize(attributeName), T))
@@ -489,12 +441,12 @@ class ComponentClassWriter:
                 if self.dataLayout == IDLTypes.PACKED_PER_INSTANCE:
                     self.f.WriteLine("this->data.data.Get<1>(instance).{} = value;".format(attributeName))
                 else:
-                    self.f.WriteLine("this->data.data.Get<{}>(instance) = value;".format(i + 1))            
+                    self.f.WriteLine("this->data.data.Get<{}>(instance) = value;".format(i + 1))
                 self.f.DecreaseIndent()
                 self.f.WriteLine("}")
                 self.f.WriteLine("")
-        
-        
+
+
     #------------------------------------------------------------------------------
     ##
     #
@@ -505,8 +457,6 @@ class ComponentClassWriter:
         self.WriteDeregisterEntityImplementation()
         self.WriteCleanupMethods()
         self.WriteIsRegisteredImplementation()
-        self.WriteActivateImplementation()
-        self.WriteDeactivateImplementation()
         self.WriteGetInstanceImplementation()
         self.WriteGetOwnerImplementation()
         self.WriteOptimizeImplementation()

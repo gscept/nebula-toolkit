@@ -20,9 +20,9 @@ def GetEventEnum(string):
         return "ComponentEvent::OnEndFrame"
     elif s == "renderdebug":
         return "ComponentEvent::OnRenderDebug"
-    elif s == "activate":
+    elif s == "onactivate":
         return "ComponentEvent::OnActivate"
-    elif s == "deactivate":
+    elif s == "ondeactivate":
         return "ComponentEvent::OnDeactivate"
     else:
         util.fmtError('"{}" is not a valid event!'.format(string))
@@ -133,7 +133,7 @@ def DefaultToString(default):
         return string
     elif type(default) is str:
         return default
-    
+
 #------------------------------------------------------------------------------
 ##
 #

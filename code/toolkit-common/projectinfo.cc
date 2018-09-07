@@ -10,6 +10,8 @@
 #include "io/xmlreader.h"
 #include "system/nebulasettings.h"
 #include "system/environment.h"
+#include "app/application.h"
+#include "util/commandlineargs.h"
 
 
 namespace ToolkitUtil
@@ -87,15 +89,36 @@ ProjectInfo::Setup()
 {
     n_assert(!this->IsValid());
 
-    // setup project and toolkit path assign
-    String projPath = this->QueryProjectPathFromRegistry();
+	String projPath;
+
+	// check for cmdline overrides for project
+	const Util::CommandLineArgs & args = App::Application::Instance()->GetCmdLineArgs();
+	if (args.HasArg("-workdir"))
+	{
+		projPath = args.GetString("-workdir");
+	}
+	else
+	{
+		// grab from registry instead (default)
+		projPath = this->QueryProjectPathFromRegistry();
+	}		    
     if (projPath.IsEmpty())
     {
         return NoProjPathInRegistry;
     }
-    String toolkitPath = this->QueryToolkitPathFromRegistry();
-    n_assert(toolkitPath.IsValid());
-    AssignRegistry::Instance()->SetAssign(Assign("proj", projPath));
+	AssignRegistry::Instance()->SetAssign(Assign("proj", projPath));
+
+	// same for toolkit, first overrides, then registry
+	String toolkitPath;
+	if (args.HasArg("-toolkit"))
+	{
+		toolkitPath = args.GetString("-toolkit");
+	}
+	else
+	{
+		toolkitPath = this->QueryToolkitPathFromRegistry();
+	}    
+    n_assert(toolkitPath.IsValid());    
     AssignRegistry::Instance()->SetAssign(Assign("toolkit", toolkitPath));
 
     // parse project info XML file
@@ -189,7 +212,6 @@ String
 ProjectInfo::QueryProjectPathFromRegistry()
 {
     String projDirectory;
-
     if (NebulaSettings::Exists("gscept","ToolkitShared", "workdir"))
     {
         projDirectory = NebulaSettings::ReadString("gscept","ToolkitShared", "workdir");

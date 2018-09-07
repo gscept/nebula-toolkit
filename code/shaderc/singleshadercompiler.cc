@@ -92,7 +92,7 @@ SingleShaderCompiler::CompileFrameShader(const Util::String& srcf)
 	}
 
 	// make sure target dir exists
-    Util::String frameDest = this->dstDir + "/frame";
+    Util::String frameDest = this->dstDir + "/frame/";
 	ioServer->CreateDirectory(frameDest);
     frameDest.Append(srcf.ExtractFileName());
     ioServer->CopyFile(srcf, frameDest);

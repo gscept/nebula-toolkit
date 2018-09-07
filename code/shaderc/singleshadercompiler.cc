@@ -46,7 +46,7 @@ SingleShaderCompiler::CompileShader(const Util::String& src)
 {
 	if (!this->dstDir.IsValid())
 	{
-		n_error("No destination for shader compile");
+		n_printf("shaderc error: No destination for shader compile");
 		return false;
 	}
 	
@@ -55,7 +55,7 @@ SingleShaderCompiler::CompileShader(const Util::String& src)
 	// check if source 
 	if (!ioServer->FileExists(src))
 	{
-		n_error("ERROR: shader source '%s' not found!\n", src.AsCharPtr());
+		n_printf("[shaderc] error: shader source '%s' not found!\n", src.AsCharPtr());
 		return false;
 	}
 
@@ -87,7 +87,7 @@ SingleShaderCompiler::CompileFrameShader(const Util::String& srcf)
 	// check if source dir exists
 	if (!ioServer->FileExists(URI(srcf)))
 	{
-		n_error("ERROR: frame shader source  '%s' not found!\n", srcf.AsCharPtr());
+		n_printf("[shaderc] error: frame shader source  '%s' not found!\n", srcf.AsCharPtr());
 		return false;
 	}
 
@@ -96,7 +96,7 @@ SingleShaderCompiler::CompileFrameShader(const Util::String& srcf)
 	ioServer->CreateDirectory(frameDest);
 
     ioServer->CopyFile(srcf, frameDest);
-	n_printf("Converted base frame script: %s ---> %s \n", srcf.AsCharPtr(), frameDest.AsCharPtr());
+	n_printf("[shaderc] Converted base frame script: %s ---> %s \n", srcf.AsCharPtr(), frameDest.AsCharPtr());
 	
 	return true;
 }
@@ -127,7 +127,7 @@ SingleShaderCompiler::CompileMaterial(const Util::String & srcf)
     URI dst(dest);
     Logger dummy;
     // convert to binary xml
-    n_printf("Converting base material template table: %s ---> %s \n", src.LocalPath().AsCharPtr(), dst.LocalPath().AsCharPtr());
+    n_printf("[shaderc] Converting base material template table: %s ---> %s \n", src.LocalPath().AsCharPtr(), dst.LocalPath().AsCharPtr());
 	return converter.ConvertFile(srcf, dest, dummy);
 }
 
@@ -162,7 +162,7 @@ SingleShaderCompiler::CompileGLSL(const Util::String& srcf)
 
 
     // compile
-    n_printf("Compiling:\n   %s -> %s\n", src.LocalPath().AsCharPtr(), dst.LocalPath().AsCharPtr());
+    n_printf("[shaderc] Compiling:\n   %s -> %s\n", src.LocalPath().AsCharPtr(), dst.LocalPath().AsCharPtr());
 
     std::vector<std::string> defines;
     std::vector<std::string> flags;
@@ -258,7 +258,7 @@ SingleShaderCompiler::CompileSPIRV(const Util::String& srcf)
 
 
     // compile
-    n_printf("Compiling:\n   %s -> %s\n", src.LocalPath().AsCharPtr(), dst.LocalPath().AsCharPtr());
+    n_printf("[shaderc] Compiling:\n   %s -> %s\n", src.LocalPath().AsCharPtr(), dst.LocalPath().AsCharPtr());
     
     std::vector<std::string> defines;
     std::vector<std::string> flags;

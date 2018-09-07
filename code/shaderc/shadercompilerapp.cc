@@ -20,7 +20,7 @@ ShaderCompilerApp::ParseCmdLineArgs()
     {   
         if (!this->args.HasArg("-t") || !this->args.HasArg("-i") || !this->args.HasArg("-o"))
         {
-            n_error("No compile type, input file or output specified\n");
+            n_printf("shaderc error: No compile type, input file or output specified\n");
             return false;
         }
 
@@ -57,7 +57,7 @@ ShaderCompilerApp::Run()
 	{
         return;
 	}
-    bool success;
+    bool success = false;
     if (this->type == "frame")
     {
         success = this->shaderCompiler.CompileFrameShader(this->src);
@@ -69,6 +69,10 @@ ShaderCompilerApp::Run()
     else if (this->type == "shader")
     {        
         success = this->shaderCompiler.CompileShader(this->src);
+    }
+    else
+    {
+        n_printf("[shaderc] error: unknown type: %s\n", this->type.AsCharPtr());
     }
 
     if (success)

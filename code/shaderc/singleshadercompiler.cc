@@ -94,7 +94,7 @@ SingleShaderCompiler::CompileFrameShader(const Util::String& srcf)
 	// make sure target dir exists
     Util::String frameDest = this->dstDir + "/frame";
 	ioServer->CreateDirectory(frameDest);
-
+    frameDest.Append(srcf.ExtractFileName());
     ioServer->CopyFile(srcf, frameDest);
 	n_printf("[shaderc] Converted base frame script: %s ---> %s \n", srcf.AsCharPtr(), frameDest.AsCharPtr());
 	
@@ -251,7 +251,7 @@ SingleShaderCompiler::CompileSPIRV(const Util::String& srcf)
     Util::String file = srcf.ExtractFileName();
     file.StripFileExtension();
     // format destination
-    String destFile = this->dstDir + "/shaders/" + file;
+    String destFile = this->dstDir + "/shaders/" + file + ".fxb";
 
     URI src(srcf);
     URI dst(destFile);

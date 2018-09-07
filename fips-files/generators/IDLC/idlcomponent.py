@@ -83,10 +83,10 @@ class ComponentClassWriter:
         self.f.WriteLine("/// Deregister Entity. This checks both active and inactive component instances.")
         self.f.WriteLine("void DeregisterEntity(const Game::Entity& entity);")
         self.f.WriteLine("")
-        self.f.WriteLine("/// Deregister all entities from both inactive and active. Garbage collection will take care of freeing up data.")
+        self.f.WriteLine("/// Deregister all entities. Garbage collection will take care of freeing up data.")
         self.f.WriteLine("void DeregisterAll();")
         self.f.WriteLine("")
-        self.f.WriteLine("/// Deregister all non-alive entities from both inactive and active. This can be extremely slow!")
+        self.f.WriteLine("/// Deregister all non-alive entities, both inactive and active. This can be extremely slow!")
         self.f.WriteLine("void DeregisterAllDead();")
         self.f.WriteLine("")
         self.f.WriteLine("/// Cleans up right away and frees any memory that does not belong to an entity. This can be extremely slow!")
@@ -156,10 +156,8 @@ class ComponentClassWriter:
 
         componentData = 'Game::ComponentData<{}> {};'
 
-        self.f.WriteLine("/// Holds all active entities data")
+        self.f.WriteLine("/// Holds all entitiy instances data")
         self.f.WriteLine(componentData.format(templateArgs, "data"))
-        self.f.WriteLine("/// Holds all inactive component instances.")
-        self.f.WriteLine(componentData.format(templateArgs, "inactiveData"))
         self.f.DecreaseIndent()
         self.f.WriteLine("};")
         self.f.WriteLine("")
@@ -181,13 +179,13 @@ class ComponentClassWriter:
         if self.hasAttributes:
             numAttributes += len(self.component["attributes"])
 
-        self.f.WriteLine("this->attributes.SetSize({});".format(numAttributes))
+        self.f.WriteLine("this->attributeIds.SetSize({});".format(numAttributes))
 
-        self.f.WriteLine("this->attributes[0] = Attr::Owner;")
+        self.f.WriteLine("this->attributeIds[0] = Attr::Owner;")
 
         if self.hasAttributes:
             for i, attributeName in enumerate(self.component["attributes"]):
-                self.f.WriteLine("this->attributes[{}] = Attr::{};".format(i + 1, Capitalize(attributeName)))
+                self.f.WriteLine("this->attributeIds[{}] = Attr::{};".format(i + 1, Capitalize(attributeName)))
 
         self.f.DecreaseIndent()
         self.f.WriteLine("}")
@@ -215,7 +213,7 @@ class ComponentClassWriter:
         self.f.WriteLine("{}::RegisterEntity(const Entity& entity)".format(self.className))
         self.f.WriteLine("{")
         self.f.IncreaseIndent()
-        self.f.WriteLine("this->inactiveData.RegisterEntity(entity);")
+        self.f.WriteLine("this->data.RegisterEntity(entity);")
 
         if not self.useDelayedRemoval:
             self.f.WriteLine("EntityManager::Instance()->RegisterDeletionCallback(entity, this);")
@@ -247,19 +245,6 @@ class ComponentClassWriter:
         self.f.WriteLine("return;")
         self.f.DecreaseIndent()
         self.f.WriteLine("}")
-        self.f.WriteLine("")
-        self.f.WriteLine("index = this->inactiveData.GetInstance(entity);")
-        self.f.WriteLine("if (index != InvalidIndex)")
-        self.f.WriteLine("{")
-        self.f.IncreaseIndent()
-        self.f.WriteLine("this->inactiveData.DeregisterEntityImmediate(entity, index);")
-
-        if not self.useDelayedRemoval:
-            self.f.WriteLine("EntityManager::Instance()->DeregisterDeletionCallback(entity, this);")
-
-        self.f.WriteLine("return;")
-        self.f.DecreaseIndent()
-        self.f.WriteLine("}")
         self.f.DecreaseIndent()
         self.f.WriteLine("}")
         self.f.WriteLine("")
@@ -278,17 +263,8 @@ class ComponentClassWriter:
             self.f.WriteLine("if (index != InvalidIndex)")
             self.f.WriteLine("{")
             self.f.IncreaseIndent()
-            self.f.WriteLine("    this->data.DeregisterEntityImmediate(entity);")
-            self.f.WriteLine("    return;")
-            self.f.DecreaseIndent()
-            self.f.WriteLine("}")
-            self.f.WriteLine("")
-            self.f.WriteLine("index = this->inactiveData.GetInstance(entity);")
-            self.f.WriteLine("if (index != InvalidIndex)")
-            self.f.WriteLine("{")
-            self.f.IncreaseIndent()
-            self.f.WriteLine("    this->inactiveData.DeregisterEntityImmediate(entity, index);")
-            self.f.WriteLine("    return;")
+            self.f.WriteLine("this->data.DeregisterEntityImmediate(entity);")
+            self.f.WriteLine("return;")
             self.f.DecreaseIndent()
             self.f.WriteLine("}")
             self.f.DecreaseIndent()
@@ -305,7 +281,6 @@ class ComponentClassWriter:
         self.f.WriteLine("{")
         self.f.IncreaseIndent()
         self.f.WriteLine("this->data.DeregisterAll();")
-        self.f.WriteLine("this->inactiveData.DeregisterAll();")
         self.f.DecreaseIndent()
         self.f.WriteLine("}")
         self.f.WriteLine("")
@@ -314,8 +289,7 @@ class ComponentClassWriter:
         self.f.WriteLine("{}::DeregisterAllDead()".format(self.className))
         self.f.WriteLine("{")
         self.f.IncreaseIndent()
-        self.f.WriteLine("this->data.DeregisterAllInactive();")
-        self.f.WriteLine("this->inactiveData.DeregisterAllInactive();")
+        self.f.WriteLine("this->data.DeregisterAllInvalid();")
         self.f.DecreaseIndent()
         self.f.WriteLine("}")
         self.f.WriteLine("")
@@ -325,7 +299,6 @@ class ComponentClassWriter:
         self.f.WriteLine("{")
         self.f.IncreaseIndent()
         self.f.WriteLine("this->data.Clean();")
-        self.f.WriteLine("this->inactiveData.Clean();")
         self.f.DecreaseIndent()
         self.f.WriteLine("}")
         self.f.WriteLine("")
@@ -335,7 +308,6 @@ class ComponentClassWriter:
         self.f.WriteLine("{")
         self.f.IncreaseIndent()
         self.f.WriteLine("this->data.DestroyAll();")
-        self.f.WriteLine("this->inactiveData.DestroyAll();")
         self.f.DecreaseIndent()
         self.f.WriteLine("}")
         self.f.WriteLine("")
@@ -349,7 +321,7 @@ class ComponentClassWriter:
         self.f.WriteLine("{}::IsRegistered(const Entity& entity) const".format(self.className))
         self.f.WriteLine("{")
         self.f.IncreaseIndent()
-        self.f.WriteLine("return this->data.GetInstance(entity) != InvalidIndex || this->inactiveData.GetInstance(entity) != InvalidIndex;")
+        self.f.WriteLine("return this->data.GetInstance(entity) != InvalidIndex;")
         self.f.DecreaseIndent()
         self.f.WriteLine("}")
         self.f.WriteLine("")
@@ -365,34 +337,16 @@ class ComponentClassWriter:
         self.f.IncreaseIndent()
         self.f.WriteLine("n_assert2(this->IsRegistered(entity), \"Cannot activate component for an entity that is not registered!\");")
         self.f.WriteLine("")
-        self.f.WriteLine("if (this->data.GetInstance(entity) != InvalidIndex || !EntityManager::Instance()->IsAlive(entity)) return;")
+        self.f.WriteLine("auto instance = this->data.GetInstance(entity);")
         self.f.WriteLine("")
-        self.f.WriteLine("auto inactiveInstance = this->inactiveData.GetInstance(entity);")
+        self.f.WriteLine("if (instance == InvalidIndex || !EntityManager::Instance()->IsAlive(entity)) return;")
         self.f.WriteLine("")
-        self.f.WriteLine("if (inactiveInstance != InvalidIndex)")
-        self.f.WriteLine("{")
-        self.f.IncreaseIndent()
-        self.f.WriteLine("uint32_t newInstance = this->data.RegisterEntity(entity);")
+        self.f.WriteLine("instance = this->data.Activate(instance);")
 
-        if self.dataLayout == IDLTypes.PACKED_PER_INSTANCE:
-            self.f.WriteLine("this->data.SetInstanceData(newInstance, this->inactiveData.data.Get<1>(inactiveInstance));")
-        else:
-            self.f.Write("this->data.SetInstanceData(newInstance")
-            if self.hasAttributes:
-                for i, attributeName in enumerate(self.component["attributes"]):
-                    self.f.Write(", this->inactiveData.data.Get<{}>(inactiveInstance)".format(i + 1))
-            self.f.WriteLine(");")
-
-
-        if self.hasEvents and "deactivate" in self.events:
+        if self.hasEvents and "activate" in self.events:
             self.f.WriteLine("")
             self.f.WriteLine("this->OnActivate(newInstance);")
 
-
-        self.f.WriteLine("")
-        self.f.WriteLine("this->inactiveData.DeregisterEntityImmediate(entity, inactiveInstance);")
-        self.f.DecreaseIndent()
-        self.f.WriteLine("}")
         self.f.DecreaseIndent()
         self.f.WriteLine("}")
         self.f.WriteLine("")
@@ -408,32 +362,16 @@ class ComponentClassWriter:
         self.f.IncreaseIndent()
         self.f.WriteLine("n_assert2(this->IsRegistered(entity), \"Cannot Deactivate component for an entity that is not even registered!\");")
         self.f.WriteLine("")
-        self.f.WriteLine("if (!this->data.GetInstance(entity) || !EntityManager::Instance()->IsAlive(entity)) return;")
-        self.f.WriteLine("")
         self.f.WriteLine("auto instance = this->data.GetInstance(entity);")
         self.f.WriteLine("")
-        self.f.WriteLine("if (instance != InvalidIndex)")
-        self.f.WriteLine("{")
-        self.f.IncreaseIndent()
+        self.f.WriteLine("if (instance == InvalidIndex || !EntityManager::Instance()->IsAlive(entity)) return;")
 
         if self.hasEvents and "deactivate" in self.events:
             self.f.WriteLine("this->OnDeactivate(instance);")
             self.f.WriteLine("")
 
-        self.f.WriteLine("uint32_t inactiveInstance = this->inactiveData.RegisterEntity(entity);")
+        self.f.WriteLine("this->data.Deactivate(instance);");
 
-        if self.dataLayout == IDLTypes.PACKED_PER_INSTANCE:
-            self.f.WriteLine("this->inactiveData.SetInstanceData(newInstance, this->data.data.Get<1>(inactiveInstance));")
-        else:
-            self.f.Write("this->inactiveData.SetInstanceData(inactiveInstance")
-            if self.hasAttributes:
-                for i, attributeName in enumerate(self.component["attributes"]):
-                    self.f.Write(", this->data.data.Get<{}>(instance)".format(i + 1))
-            self.f.WriteLine(");")
-
-        self.f.WriteLine("this->data.DeregisterEntityImmediate(entity, instance);")
-        self.f.DecreaseIndent()
-        self.f.WriteLine("}")
         self.f.DecreaseIndent()
         self.f.WriteLine("}")
         self.f.WriteLine("")
@@ -477,10 +415,7 @@ class ComponentClassWriter:
         self.f.IncreaseIndent()
         
         if self.useDelayedRemoval:
-            self.f.WriteLine("SizeT numErased = 0;")
-            self.f.WriteLine("numErased += this->inactiveData.Optimize();")
-            self.f.WriteLine("numErased += this->data.Optimize();")
-            self.f.WriteLine("return numErased;")
+            self.f.WriteLine("return this->data.Optimize();;")
         else:
             self.f.WriteLine("return 0;")
         

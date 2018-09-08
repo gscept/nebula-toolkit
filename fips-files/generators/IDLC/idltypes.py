@@ -34,8 +34,6 @@ def ConvertToCamelNotation(attrType):
     T = attrType.lower()
     if (T == "byte"):
         return "Byte"
-    elif (T == "ubyte"):
-        return "UByte"
     elif (T == "short"):
         return "Short"
     elif (T == "ushort"):
@@ -44,28 +42,38 @@ def ConvertToCamelNotation(attrType):
         return "Int"
     elif (T == "uint"):
         return "UInt"
+    elif (T == "int64"):
+        return "Int64"
+    elif (T == "uint64"):
+        return "UInt64"
     elif (T == "float"):
         return "Float"
-    elif (T == "long"):
-        return "Long"
-    elif (T == "ulong"):
-        return "ULong"
     elif (T == "double"):
         return "Double"
     elif (T == "bool"):
         return "Bool"
+    elif (T == "float2"):
+        return "Float2"
     elif (T == "float4"):
         return "Float4"
     elif (T == "vector"):
         return "Vector"
     elif (T == "point"):
         return "Point"
+    elif (T == "quaternion"):
+        return "Quaternion"
     elif (T == "matrix44"):
         return "Matrix44"
     elif (T == "string"):
         return "String"
     elif (T == "resource"):
         return "String"
+    elif (T == "blob"):
+        return "Blob"
+    elif (T == "guid"):
+        return "Guid"
+    elif (T == "void*"):
+        return "VoidPtr"
     elif (T == "entity"):
         return "Entity"
     else:
@@ -77,9 +85,7 @@ def ConvertToCamelNotation(attrType):
 def GetTypeString(attrType):
     T = attrType.lower()
     if (T == "byte"):
-        return "char"
-    elif (T == "ubyte"):
-        return "ubyte"
+        return "byte"
     elif (T == "short"):
         return "short"
     elif (T == "ushort"):
@@ -90,26 +96,36 @@ def GetTypeString(attrType):
         return "uint"
     elif (T == "float"):
         return "float"
-    elif (T == "long"):
-        return "long"
-    elif (T == "ulong"):
-        return "ulong"
+    elif (T == "int64"):
+        return "int64_t"
+    elif (T == "uint64"):
+        return "uint64_t"
     elif (T == "double"):
         return "double"
     elif (T == "bool"):
         return "bool"
+    elif (T == "float2"):
+        return "Math::float2"
     elif (T == "float4"):
         return "Math::float4"
     elif (T == "vector"):
         return "Math::vector"
     elif (T == "point"):
         return "Math::point"
+    elif (T == "quaternion"):
+        return "Math::quaternion"
     elif (T == "matrix44"):
         return "Math::matrix44"
     elif (T == "string"):
         return "Util::String"
     elif (T == "resource"):
         return "Util::String"
+    elif (T == "blob"):
+        return "Util::Blob"
+    elif (T == "guid"):
+        return "Util::Guid"
+    elif (T == "void*"):
+        return "void*"
     elif (T == "entity"):
         return "Game::Entity"
     else:
@@ -122,6 +138,7 @@ def DefaultToString(default):
     if type(default) is int:
         return str(default)
     elif type(default) is float:
+        # todo: if we've got a double type, we don't need to add f specifier
         return "{}f".format(default)
     elif type(default) is list:
         string = ""

@@ -96,7 +96,7 @@ SingleShaderCompiler::CompileFrameShader(const Util::String& srcf)
 	ioServer->CreateDirectory(frameDest);
     frameDest.Append(srcf.ExtractFileName());
     ioServer->CopyFile(srcf, frameDest);
-	n_printf("[shaderc] Converted base frame script: %s ---> %s \n", srcf.AsCharPtr(), frameDest.AsCharPtr());
+	n_printf("[shaderc] Converted base frame script:\n   %s ---> %s \n", srcf.AsCharPtr(), frameDest.AsCharPtr());
 	
 	return true;
 }
@@ -127,7 +127,7 @@ SingleShaderCompiler::CompileMaterial(const Util::String & srcf)
     URI dst(dest);
     Logger dummy;
     // convert to binary xml
-    n_printf("[shaderc] Converting base material template table: %s ---> %s \n", src.LocalPath().AsCharPtr(), dst.LocalPath().AsCharPtr());
+    n_printf("[shaderc] Converting base material template table:\n   %s ---> %s \n", src.LocalPath().AsCharPtr(), dst.LocalPath().AsCharPtr());
 	return converter.ConvertFile(srcf, dest, dummy);
 }
 

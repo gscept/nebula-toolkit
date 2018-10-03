@@ -45,6 +45,8 @@ public:
 	bool CompileMaterial(const Util::String& src);
 	/// compile frame shader
 	bool CompileFrameShader(const Util::String& src);
+	/// calculate include dependencies
+	bool CreateDependencies(const Util::String& src);
 	
 private:
 	

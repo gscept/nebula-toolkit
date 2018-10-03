@@ -185,7 +185,7 @@ SingleShaderCompiler::CompileGLSL(const Util::String& srcf)
     flags.push_back("/GBLOCK");		// put all shader variables outside of explicit buffers in one global block
 
     // if using debug, output raw shader code
-    if (this->debug)
+    if (!this->debug)
     {
         flags.push_back("/O");
     }
@@ -249,6 +249,7 @@ SingleShaderCompiler::CompileSPIRV(const Util::String& srcf)
 
 	
     Util::String file = srcf.ExtractFileName();
+    Util::String folder = srcf.ExtractDirName();
     file.StripFileExtension();
     // format destination
     String destFile = this->dstDir + "/shaders/" + file + ".fxb";
@@ -267,7 +268,7 @@ SingleShaderCompiler::CompileSPIRV(const Util::String& srcf)
     defines.push_back(define.AsCharPtr());
 
     // first include this folder
-    define.Format("-I%s/", URI(srcf).LocalPath().AsCharPtr());
+    define.Format("-I%s/", URI(folder).LocalPath().AsCharPtr());
     defines.push_back(define.AsCharPtr());
 
     for (auto inc = this->includeDirs.Begin(); inc != this->includeDirs.End(); inc++)
@@ -284,7 +285,7 @@ SingleShaderCompiler::CompileSPIRV(const Util::String& srcf)
     flags.push_back(Util::String::Sprintf("/DEFAULTSET %d", NEBULAT_BATCH_GROUP).AsCharPtr());	// since we want the most frequently switched set as high as possible, we send the default set to 8, must match the NEBULAT_DEFAULT_GROUP in std.fxh and DEFAULT_GROUP in coregraphics/config.h
 
     // if using debug, output raw shader code
-    if (this->debug)
+    if (!this->debug)
     {
         flags.push_back("/O");
     }
@@ -327,5 +328,74 @@ SingleShaderCompiler::CompileSPIRV(const Util::String& srcf)
 
     return true;
 }
+
+
+//------------------------------------------------------------------------------
+/**
+*/
+bool
+SingleShaderCompiler::CreateDependencies(const Util::String& srcf)
+{
+const Ptr<IoServer>& ioServer = IoServer::Instance();
+
+#ifndef __ANYFX__
+	n_printf("Error: Cannot compile DX11 shaders without DX11 support\n");
+	return false;
+#endif
+
+	// start AnyFX compilation
+	//AnyFXBeginCompile();
+
+	
+    Util::String file = srcf.ExtractFileName();
+    Util::String folder = srcf.ExtractDirName();
+    file.StripFileExtension();
+    // format destination
+    String destDir = this->dstDir + "/shaders/";
+    String destFile = destDir + file + ".dep";
+
+    URI src(srcf);
+    URI dst(destFile);
+
+
+    // compile
+    n_printf("[shaderc] Analyzing:\n   %s\n", src.LocalPath().AsCharPtr());
+    
+    std::vector<std::string> defines;
+    
+    Util::String define;
+    define.Format("-D GLSL");
+    defines.push_back(define.AsCharPtr());
+
+    // first include this folder
+    define.Format("-I%s/", URI(folder).LocalPath().AsCharPtr());
+    defines.push_back(define.AsCharPtr());
+
+    for (auto inc = this->includeDirs.Begin(); inc != this->includeDirs.End(); inc++)
+    {
+        define.Format("-I%s/", URI(*inc).LocalPath().AsCharPtr());
+        defines.push_back(define.AsCharPtr());
+    }
+    
+    Util::String escapedSrc = src.LocalPath();
+    
+    ioServer->CreateDirectory(destDir);
+    Ptr<IO::Stream> output = ioServer->CreateStream(destFile);
+    Ptr<IO::TextWriter> writer = IO::TextWriter::Create();
+    writer->SetStream(output);
+    if(writer->Open())
+    {
+        std::vector<std::string> deps = AnyFXGenerateDependencies(escapedSrc.AsCharPtr(), defines);
+        for(auto str : deps)
+        {                        
+            writer->WriteString(str.c_str());
+            writer->WriteChar(';');
+        }
+        writer->Close();
+    }
+    
+    return true;
+}
+
 
 } // namespace ToolkitUtil

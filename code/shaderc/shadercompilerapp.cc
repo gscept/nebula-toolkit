@@ -68,7 +68,14 @@ ShaderCompilerApp::Run()
     }
     else if (this->type == "shader")
     {        
-        success = this->shaderCompiler.CompileShader(this->src);
+        if(this->args.HasArg("-M"))
+        {
+            success = this->shaderCompiler.CreateDependencies(this->src);
+        }
+        else
+        {
+            success = this->shaderCompiler.CompileShader(this->src);
+        }
     }
     else
     {

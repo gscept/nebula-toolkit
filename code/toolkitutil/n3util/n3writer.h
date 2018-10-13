@@ -9,7 +9,6 @@
 #include "util/stringatom.h"
 #include "util/variant.h"
 #include "math/bbox.h"
-#include "characters/characterskinlist.h"
 #include "n3util/n3writer.h"
 #include "toolkitutil/fbx/character/skinfragment.h"
 #include "particles/emitterattrs.h"

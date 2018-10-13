@@ -49,7 +49,7 @@ MeshBuilderSaver::SaveNvx2(const URI& uri, MeshBuilder& meshBuilder, Platform::C
 		MeshBuilderSaver::WriteTriangles(stream, meshBuilder, byteOrder);
 
         stream->Close();
-        stream = 0;
+        stream = nullptr;
         return true;
     }
     else
@@ -90,7 +90,7 @@ MeshBuilderSaver::SaveNvx3( const IO::URI& uri, MeshBuilder& meshBuilder, Platfo
 		MeshBuilderSaver::WriteTriangles(stream, meshBuilder, byteOrder);
 
 		stream->Close();
-		stream = 0;
+		stream = nullptr;
 		return true;
 	}
 	else

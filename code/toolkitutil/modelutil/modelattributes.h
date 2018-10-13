@@ -9,7 +9,7 @@
 */
 //------------------------------------------------------------------------------
 #include "core/refcounted.h"
-#include "base/exporttypes.h"
+#include "toolkit-common/base/exporttypes.h"
 #include "n3util/n3modeldata.h"
 #include "take.h"
 #include "io/stream.h"

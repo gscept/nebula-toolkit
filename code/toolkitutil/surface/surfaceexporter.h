@@ -8,7 +8,7 @@
 	(C) 2015-2016 Individual contributors, see AUTHORS file
 */
 //------------------------------------------------------------------------------
-#include "toolkitutil/base/exporterbase.h"
+#include "toolkit-common/base/exporterbase.h"
 namespace ToolkitUtil
 {
 class SurfaceExporter : public Base::ExporterBase

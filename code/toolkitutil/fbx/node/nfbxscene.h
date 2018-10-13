@@ -13,7 +13,7 @@
 #include "nfbxjointnode.h"
 #include "nfbxtransformnode.h"
 #include "meshutil/meshbuilder.h"
-#include "base/exporttypes.h"
+#include "toolkit-common/base/exporttypes.h"
 //------------------------------------------------------------------------------
 namespace ToolkitUtil
 {

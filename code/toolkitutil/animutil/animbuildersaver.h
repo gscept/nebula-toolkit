@@ -10,7 +10,7 @@
 */
 #include "io/uri.h"
 #include "toolkitutil/animutil/animbuilder.h"
-#include "toolkitutil/platform.h"
+#include "toolkit-common/platform.h"
 #include "io/stream.h"
 #include "system/byteorder.h"
 

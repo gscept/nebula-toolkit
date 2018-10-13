@@ -7,9 +7,9 @@
     
     (C) 2012-2016 Individual contributors, see AUTHORS file
 */
-#include "base/exporterbase.h"
+#include "toolkit-common/base/exporterbase.h"
 #include "node/nfbxscene.h"
-#include "base/exporttypes.h"
+#include "toolkit-common/base/exporttypes.h"
 #include "nfbxscenewriter.h"
 
 

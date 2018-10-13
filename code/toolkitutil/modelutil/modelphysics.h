@@ -10,7 +10,7 @@
 //------------------------------------------------------------------------------
 
 #include "core/refcounted.h"
-#include "base/exporttypes.h"
+#include "toolkit-common/base/exporttypes.h"
 #include "io/stream.h"
 #include "physics/model/templates.h"
 

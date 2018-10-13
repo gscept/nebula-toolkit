@@ -10,7 +10,7 @@
 #include "core/refcounted.h"
 #include "node/nfbxscene.h"
 #include "n3util/n3writer.h"
-#include "platform.h"
+#include "toolkit-common/platform.h"
 #include "modelutil/modelphysics.h"
 
 //------------------------------------------------------------------------------

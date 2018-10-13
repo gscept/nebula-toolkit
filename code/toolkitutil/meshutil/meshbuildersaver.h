@@ -8,7 +8,7 @@
 */
 #include "io/uri.h"
 #include "toolkitutil/meshutil/meshbuilder.h"
-#include "toolkitutil/platform.h"
+#include "toolkit-common/platform.h"
 #include "io/stream.h"
 #include "system/byteorder.h"
 

@@ -10,13 +10,13 @@
 	(C) 2015-2016 Individual contributors, see AUTHORS file
 */
 //------------------------------------------------------------------------------
-#include "toolkitutil/base/exporterbase.h"
+#include "toolkit-common/base/exporterbase.h"
 #include "toolkitutil/fbx/nfbxexporter.h"
 #include "texutil/textureconverter.h"
 #include "modelutil/modelbuilder.h"
 #include "modelutil/modeldatabase.h"
 #include "surface/surfaceexporter.h"
-#include "toolkitconsolehandler.h"
+#include "toolkit-common/toolkitconsolehandler.h"
 
 namespace ToolkitUtil
 {

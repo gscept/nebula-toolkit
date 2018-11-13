@@ -5,3 +5,5 @@ imports:
     fips-fbxsdk:
         git: ssh://git@git.ikplus.de:4715/nebula/fips-fbxsdk.git
         branch: vs2015_2019_0
+    fips-anyfx:
+        git: ssh://git@github.com:Duttenheim/fips-anyfx.git

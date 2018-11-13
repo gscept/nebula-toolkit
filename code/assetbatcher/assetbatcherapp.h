@@ -7,9 +7,9 @@
     
     (C) 2012-2016 Individual contributors, see AUTHORS file
 */
-#include "distributedtools/distributedtoolkitapp.h"
+#include "toolkit-common/distributedtools/distributedtoolkitapp.h"
 #include "modelutil/modeldatabase.h"
-#include "toolkitconsolehandler.h"
+#include "toolkit-common/toolkitconsolehandler.h"
 
 //------------------------------------------------------------------------------
 namespace Toolkit

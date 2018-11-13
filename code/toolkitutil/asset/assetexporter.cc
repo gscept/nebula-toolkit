@@ -6,7 +6,7 @@
 #include "assetexporter.h"
 #include "io/ioserver.h"
 #include "io/assignregistry.h"
-#include "toolkitconsolehandler.h"
+#include "toolkit-common/toolkitconsolehandler.h"
 
 using namespace Util;
 using namespace IO;
@@ -52,8 +52,8 @@ void
 AssetExporter::Close()
 {
 	this->surfaceExporter->Close();
-	this->surfaceExporter = 0;
-    this->modelBuilder = 0;
+	this->surfaceExporter = nullptr;
+    this->modelBuilder = nullptr;
     this->textureExporter.Discard();
     ExporterBase::Close();
 }
@@ -113,7 +113,7 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
 			log.AddEntry(console, "FBX", files[fileIndex]);
         }
 		this->fbxExporter->Close();
-		this->fbxExporter = 0;
+		this->fbxExporter = nullptr;
     }    
 
     if (this->mode & ExportModes::Models)
@@ -131,13 +131,16 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
             Ptr<ModelPhysics> physics = ModelDatabase::Instance()->LookupPhysics(modelName, true);
             this->modelBuilder->SetConstants(constants);
             this->modelBuilder->SetAttributes(attributes);
+#if PHYSEXPORT            
             this->modelBuilder->SetPhysics(physics);
-
+#endif
             // save models and physics
             String modelPath = String::Sprintf("mdl:%s.n3", modelName.AsCharPtr());
             this->modelBuilder->SaveN3(modelPath, this->platform);
+#if PHYSEXPORT
             String physicsPath = String::Sprintf("phys:%s.np3", modelName.AsCharPtr());
             this->modelBuilder->SaveN3Physics(physicsPath, this->platform);
+#endif            
 			log.AddEntry(console, "Model", files[fileIndex]);			
         }
     }

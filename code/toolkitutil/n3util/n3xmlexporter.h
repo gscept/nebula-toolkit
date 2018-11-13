@@ -10,7 +10,7 @@
 #include "io/xmlreader.h"
 #include "toolkitutil/binarymodelwriter.h"
 #include "io/uri.h"
-#include "base/exporterbase.h"
+#include "toolkit-common/base/exporterbase.h"
 
 //------------------------------------------------------------------------------
 namespace ToolkitUtil

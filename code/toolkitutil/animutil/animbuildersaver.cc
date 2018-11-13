@@ -53,7 +53,7 @@ AnimBuilderSaver::WriteHeader(const Ptr<Stream>& stream, const AnimBuilder& anim
 {
     // setup header
     Nax3Header nax3Header;
-    nax3Header.magic         = byteOrder.Convert<uint>(NEBULA3_NAX3_MAGICNUMBER);
+    nax3Header.magic         = byteOrder.Convert<uint>(NEBULA_NAX3_MAGICNUMBER);
     nax3Header.numClips      = byteOrder.Convert<uint>(animBuilder.GetNumClips());
     nax3Header.numKeys       = byteOrder.Convert<uint>(animBuilder.CountKeys());
 

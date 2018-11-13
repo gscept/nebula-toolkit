@@ -8,10 +8,12 @@
 #include "io/ioserver.h"
 #include "binarymodelwriter.h"
 #include "modelconstants.h"
-#include "physics/model/templates.h"
 #include "math/transform44.h"
+#if PHYSEXPORT
+#include "physics/model/templates.h"
 #include "physics/staticobject.h"
 #include "physics/physicsbody.h"
+#endif
 
 using namespace Util;
 using namespace IO;
@@ -25,8 +27,10 @@ __ImplementClass(ToolkitUtil::ModelBuilder, 'MDBU', Core::RefCounted);
 */
 ModelBuilder::ModelBuilder() : 
 	constants(0),
-	attributes(0),
-	physics(0)
+	attributes(0)
+#if PHYSEXPORT
+	,physics(0)
+#endif
 {
 	// empty
 }
@@ -36,9 +40,11 @@ ModelBuilder::ModelBuilder() :
 */
 ModelBuilder::~ModelBuilder()
 {
-    this->constants = 0;
-    this->attributes = 0;
+    this->constants = nullptr;
+    this->attributes = nullptr;
+#if PHYSEXPORT
     this->physics = 0;
+#endif	
 }
 
 //------------------------------------------------------------------------------
@@ -104,7 +110,7 @@ ModelBuilder::SaveN3( const IO::URI& uri, Platform::Code platform )
 
 	return false;
 }
-
+#if PHYSEXPORT
 //------------------------------------------------------------------------------
 /**
 */
@@ -148,48 +154,6 @@ ModelBuilder::SaveN3Physics( const IO::URI& uri, Platform::Code platform )
 	}
 
 	return false;
-
-}
-//------------------------------------------------------------------------------
-/**
-*/
-void
-ModelBuilder::WriteShapes(const Ptr<N3Writer>& writer)
-{
-	// get list of shapes
-	const Array<ModelConstants::ShapeNode>& shapes = this->constants->GetShapeNodes();
-
-	// iterate over shapes
-	IndexT i;
-	for (i = 0; i < shapes.Size(); i++)
-	{
-		// get shape
-		const ModelConstants::ShapeNode& shape = shapes[i];
-
-		// get name of shape
-		const String& name = shape.name;
-
-		// get state
-		const State& state = this->attributes->GetState(shape.path);
-
-		// write shape
-		writer->BeginStaticModel(shape.name,
-								 shape.transform,
-								 shape.primitiveGroupIndex,
-								 shape.boundingBox,
-								 shape.mesh,
-								 state,
-								 state.material);
-
-		// write lod if available
-		if (shape.useLOD)
-		{
-			writer->WriteLODDistances(shape.LODMax, shape.LODMin);
-		}
-
-		// end model
-		writer->EndModelNode();
-	}
 }
 
 //------------------------------------------------------------------------------
@@ -394,6 +358,50 @@ ModelBuilder::WritePhysics( const Ptr<N3Writer>& writer )
 	writer->EndColliders();
 	writer->EndPhysicsNode();
 }
+
+#endif
+//------------------------------------------------------------------------------
+/**
+*/
+void
+ModelBuilder::WriteShapes(const Ptr<N3Writer>& writer)
+{
+	// get list of shapes
+	const Array<ModelConstants::ShapeNode>& shapes = this->constants->GetShapeNodes();
+
+	// iterate over shapes
+	IndexT i;
+	for (i = 0; i < shapes.Size(); i++)
+	{
+		// get shape
+		const ModelConstants::ShapeNode& shape = shapes[i];
+
+		// get name of shape
+		const String& name = shape.name;
+
+		// get state
+		const State& state = this->attributes->GetState(shape.path);
+
+		// write shape
+		writer->BeginStaticModel(shape.name,
+								 shape.transform,
+								 shape.primitiveGroupIndex,
+								 shape.boundingBox,
+								 shape.mesh,
+								 state,
+								 state.material);
+
+		// write lod if available
+		if (shape.useLOD)
+		{
+			writer->WriteLODDistances(shape.LODMax, shape.LODMin);
+		}
+
+		// end model
+		writer->EndModelNode();
+	}
+}
+
 
 //------------------------------------------------------------------------------
 /**

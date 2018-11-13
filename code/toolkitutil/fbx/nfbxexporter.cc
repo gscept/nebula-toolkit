@@ -72,7 +72,7 @@ void
 NFbxExporter::Close()
 {
 	this->scene->Close();
-	this->scene = 0;
+	this->scene = nullptr;
 
 	ExporterBase::Close();
 }
@@ -297,12 +297,12 @@ NFbxExporter::EndExport()
 
 	// generate models
  	this->sceneWriter->GenerateModels(basePath, this->exportFlags, this->exportMode);	
- 	this->sceneWriter = 0;
+ 	this->sceneWriter = nullptr;
 
 	// cleanup data
 	this->scene->Cleanup();	
 	this->fbxScene->Clear();
-	this->fbxScene = 0;
+	this->fbxScene = nullptr;
 }
 
 //------------------------------------------------------------------------------

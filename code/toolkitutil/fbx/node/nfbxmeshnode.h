@@ -10,7 +10,7 @@
 #include "fbx/node/nfbxnode.h"
 #include "math/bbox.h"
 #include "meshutil/meshbuilder.h"
-#include "base/exporttypes.h"
+#include "toolkit-common/base/exporttypes.h"
 #include "fbx/character/skinfragment.h"
 
 //------------------------------------------------------------------------------

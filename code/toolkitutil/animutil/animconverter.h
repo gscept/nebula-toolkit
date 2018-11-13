@@ -8,9 +8,9 @@
     (C) 2009 Radon Labs GmbH
     (C) 2013-2016 Individual contributors, see AUTHORS file
 */
-#include "toolkitutil/platform.h"
-#include "toolkitutil/logger.h"
-#include "toolkitutil/animutil/animbuilder.h"
+#include "toolkit-common/platform.h"
+#include "toolkit-common/logger.h"
+#include "animutil/animbuilder.h"
 #include "io/uri.h"
 
 //------------------------------------------------------------------------------

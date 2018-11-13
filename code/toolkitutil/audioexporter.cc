@@ -7,7 +7,7 @@
 #include "audioexporter.h"
 #include "io/ioserver.h"
 #include "io/uri.h"
-#include "toolkitutil/applauncher.h"
+#include "toolkit-common/applauncher.h"
 #include "io/memorystream.h"
 
 namespace ToolkitUtil

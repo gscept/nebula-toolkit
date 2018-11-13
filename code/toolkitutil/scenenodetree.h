@@ -11,7 +11,7 @@
 #include "core/refcounted.h"
 #include "core/singleton.h"
 #include "toolkitutil/scenenode.h"
-#include "toolkitutil/logger.h"
+#include "toolkit-common/logger.h"
 
 //------------------------------------------------------------------------------
 namespace ToolkitUtil

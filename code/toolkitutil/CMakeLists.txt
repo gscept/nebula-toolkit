@@ -4,7 +4,7 @@
 
 fips_begin_module(toolkitutil)
     fips_vs_warning_level(3)
-    fips_include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CODE_ROOT}/foundation ${CODE_ROOT}/render ${CMAKE_CURRENT_SOURCE_DIR} ${CODE_ROOT}/)
+    fips_include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CODE_ROOT}/foundation ${CODE_ROOT}/render ${CODE_ROOT}/)
     fips_deps(foundation render ${FBX_LIB})
 		fips_files(			
 			assetfile.cc
@@ -194,3 +194,6 @@ ENDIF()
 				surfaceexporter.h
 			)
 fips_end_module()
+target_link_libraries(toolkitutil PUBLIC ${FBX_LIB})
+target_compile_definitions(toolkitutil PUBLIC FBXSDK_SHARED)
+target_include_directories(toolkitutil PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

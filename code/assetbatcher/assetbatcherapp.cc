@@ -76,7 +76,7 @@ AssetBatcherApp::Close()
     if (this->modelDatabase.isvalid())
     {
         this->modelDatabase->Close();
-        this->modelDatabase = 0;
+        this->modelDatabase = nullptr;
     }    
     DistributedToolkitApp::Close();
 }
@@ -236,8 +236,8 @@ AssetBatcherApp::CreateFileList()
 			// close stream and reader
 			reader->Close();
 		}
-		reader = 0;
-		readStream = 0;
+		reader = nullptr;
+		readStream = nullptr;
 	}
 	else
 	{				

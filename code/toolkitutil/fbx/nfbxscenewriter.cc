@@ -235,8 +235,10 @@ NFbxSceneWriter::CreateStaticModel( const Ptr<ToolkitUtil::N3Writer>& modelWrite
 	String physicsFile;
 	physicsFile.Format("src:assets/%s/%s.physics", category.AsCharPtr(), file.AsCharPtr());
 
+#if PHYSEXPORT
 	// update
 	this->UpdatePhysics(physicsFile, physics);
+#endif
 
 	// create model builder
 	Ptr<ModelBuilder> modelBuilder = ModelBuilder::Create();

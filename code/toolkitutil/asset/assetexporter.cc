@@ -41,8 +41,10 @@ AssetExporter::Open()
 	this->surfaceExporter = ToolkitUtil::SurfaceExporter::Create();
 	this->surfaceExporter->Open();
     this->modelBuilder = ToolkitUtil::ModelBuilder::Create();
+#ifdef BUILD_NVTT
     this->textureExporter.SetTexAttrTablePath("src:assets/");
     this->textureExporter.Setup(this->logger);
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -54,7 +56,9 @@ AssetExporter::Close()
 	this->surfaceExporter->Close();
 	this->surfaceExporter = nullptr;
     this->modelBuilder = nullptr;
+#ifdef BUILD_NVTT
     this->textureExporter.Discard();
+#endif
     ExporterBase::Close();
 }
 
@@ -147,6 +151,7 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
 
     if (this->mode & ExportModes::Textures)
     {
+#ifdef BUILD_NVTT
         // export textures
         Array<String> files = IoServer::Instance()->ListFiles(assetPath, "*.tga");
         files.AppendArray(IoServer::Instance()->ListFiles(assetPath, "*.bmp"));
@@ -162,6 +167,9 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
             this->textureExporter.ConvertTexture(assetPath + files[fileIndex], "temp:textureconverter");
 			log.AddEntry(console, "Texture", files[fileIndex]);			
         }
+#else
+        log.AddEntry(console, "Texture batching disabled","");
+#endif
     }
 
 	if (this->mode & ExportModes::Surfaces)

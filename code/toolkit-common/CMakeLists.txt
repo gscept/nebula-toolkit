@@ -83,3 +83,4 @@ fips_begin_module(toolkit-common)
 					distributedjob.h
 				)
 fips_end_module()
+target_include_directories(toolkit-common PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

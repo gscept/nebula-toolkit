@@ -56,7 +56,7 @@ public:
 	/// ends a skin node
 	void EndSkin();
 	/// begins a character node and writes skin, joints and animation resource
-	void BeginCharacter(const Util::String& modelName, const Util::Array<Skinlist>& skins, const Util::Array<Joint>& jointArray, const Util::String& animationResource, const Util::Array<JointMask>& jointMasks);
+	void BeginCharacter(const Util::String& modelName, const Util::Array<Skinlist>& skins, const Util::String& skeletonResource, const Util::String& animationResource, const Util::Array<JointMask>& jointMasks);
 	/// ends a character node
 	void EndCharacter();	
 	/// writes a static model using materials

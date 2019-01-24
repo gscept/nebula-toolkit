@@ -124,7 +124,7 @@ N3Writer::EndModel()
 */
 void N3Writer::BeginCharacter(const Util::String& modelName,
 							  const Util::Array<Skinlist>& skins, 
-							  const Util::Array<Joint>& jointArray, 
+							  const Util::String& skeletonResource, 
 							  const Util::String& animationResource, 
 							  const Util::Array<JointMask>& jointMasks)
 {
@@ -157,23 +157,10 @@ void N3Writer::BeginCharacter(const Util::String& modelName,
 	this->modelWriter->WriteString(animationResource);
 	this->modelWriter->EndTag();
 
-	// write the amount of joints
-	this->modelWriter->BeginTag("Number of joints", FourCC('NJNT'));
-	this->modelWriter->WriteInt(jointArray.Size());
+	// write associated skeleton resource
+	this->modelWriter->BeginTag("Skeleton Resource", FourCC('SKEL'));
+	this->modelWriter->WriteString(skeletonResource);
 	this->modelWriter->EndTag();
-
-	// write the actual joints
-	for (int i = 0; i < jointArray.Size(); i++)
-	{
-		this->modelWriter->BeginTag("Joint", FourCC('JONT'));
-		this->modelWriter->WriteInt(i);
-		this->modelWriter->WriteInt(jointArray[i].parent);
-		this->modelWriter->WriteFloat4(jointArray[i].translation);
-		this->modelWriter->WriteFloat4(Math::float4(jointArray[i].rotation.x(), jointArray[i].rotation.y(), jointArray[i].rotation.z(), jointArray[i].rotation.w()));
-		this->modelWriter->WriteFloat4(jointArray[i].scale);
-		this->modelWriter->WriteString(jointArray[i].name);
-		this->modelWriter->EndTag();
-	}
 
 	if (jointMasks.Size() > 0)
 	{

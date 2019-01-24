@@ -74,6 +74,12 @@ fips_begin_module(toolkitutil)
 				n3xmlmodifier.cc
 				n3xmlmodifier.h
 			)
+		fips_dir(skeletonutil)
+			fips_files(
+				skeletonbuilder.h
+				skeletonbuildersaver.cc
+				skeletonbuildersaver.h
+			)
 	IF(NOT N_MINIMAL_TOOLKIT)
 		fips_dir(posteffect)
 			fips_files(

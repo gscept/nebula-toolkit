@@ -41,7 +41,6 @@ AssetConverterApp::~AssetConverterApp()
     // empty
 }
 
-
 //------------------------------------------------------------------------------
 /**
 */
@@ -53,16 +52,30 @@ AssetConverterApp::Run()
         this->ShowHelp();
         return;
     }
+
+	bool success = true;
+
+	// setup the project info object
+	if (success && !this->SetupProjectInfo())
+	{
+		success = false;
+		this->SetReturnCode(-1);
+	}
+
+	// parse command line args
+	if (success && !this->ParseCmdLineArgs())
+	{
+		success = false;
+		this->SetReturnCode(-1);
+	}
+
     this->modelDatabase = ToolkitUtil::ModelDatabase::Create();
     this->modelDatabase->Open();
 
     Ptr<AssetExporter> exporter = AssetExporter::Create();
     
     Util::String dir = this->args.GetString("-dir");
-    
     ExporterBase::ExportFlag exportFlag = ExporterBase::All;
-	
-
     uint32_t mode = AssetExporter::All;
     
     if (this->args.HasArg("-mode"))
@@ -70,10 +83,10 @@ AssetConverterApp::Run()
         mode = 0;
         Util::String exportMode = this->args.GetString("-mode");
         Util::Array<Util::String> modeFlags = exportMode.Tokenize(",");
-        if (modeFlags.Find("fbx")) mode |= AssetExporter::ForceFBX;
-        if (modeFlags.Find("model")) mode |= AssetExporter::ForceModels;
-        if (modeFlags.Find("surface")) mode |= AssetExporter::ForceSurfaces;
-        if (modeFlags.Find("texture")) mode |= AssetExporter::ForceTextures;
+        if (modeFlags.Find("fbx")) mode |= AssetExporter::FBX;
+        if (modeFlags.Find("model")) mode |= AssetExporter::Models;
+        if (modeFlags.Find("surface")) mode |= AssetExporter::Surfaces;
+        if (modeFlags.Find("texture")) mode |= AssetExporter::Textures;
     }
     
     IO::AssignRegistry::Instance()->SetAssign(Assign("home","proj:"));
@@ -94,9 +107,7 @@ AssetConverterApp::Run()
 	if (exporter->HasErrors()) this->SetReturnCode(-1);
     this->modelDatabase->Close();
     this->modelDatabase = nullptr;
-
 }
-
 
 //------------------------------------------------------------------------------
 /**
@@ -110,7 +121,6 @@ AssetConverterApp::ShowHelp()
             "-help         --display this help\n"
 			 "-mode         --selects type to batch (fbx,model,texture,surface) defaults to all");
 }
-
 
 } // namespace Toolkit
 

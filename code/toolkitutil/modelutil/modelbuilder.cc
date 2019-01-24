@@ -421,7 +421,7 @@ ModelBuilder::WriteCharacter(const Ptr<N3Writer>& writer)
 		// begin character
 		writer->BeginCharacter(character.name,
 							   character.skinLists,
-							   character.joints,
+							   character.skeleton,
 							   character.animation,
 							   this->GetAttributes()->GetJointMasks());
 

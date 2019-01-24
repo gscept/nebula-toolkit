@@ -291,6 +291,9 @@ ModelConstants::Save(const Ptr<Stream>& stream)
 				// set animation resource
 				writer->SetString("animation", node.animation);
 
+				// set skeleton resource
+				writer->SetString("skeleton", node.skeleton);
+
 				// add skin lists
 				IndexT j;
 				for (j = 0; j < node.skinLists.Size(); j++)
@@ -319,37 +322,6 @@ ModelConstants::Save(const Ptr<Stream>& stream)
 					}
 
 					// end skin list
-					writer->EndNode();
-				}
-
-				// add joints
-				for (j = 0; j < node.joints.Size(); j++)
-				{
-					// get joint
-					const ToolkitUtil::Joint& joint = node.joints[j];
-
-					// write joint
-					writer->BeginNode("Joint");
-
-					// write name of jointer
-					writer->SetString("name", joint.name);
-
-					// write index of joint
-					writer->SetInt("index", joint.index);
-
-					// write parent index
-					writer->SetInt("parent", joint.parent);
-
-					// write transform
-					writer->SetFloat4("position", joint.translation);
-					writer->SetFloat4("rotation", Math::float4(
-						joint.rotation.x(), 
-						joint.rotation.y(), 
-						joint.rotation.z(), 
-						joint.rotation.w()));
-					writer->SetFloat4("scale", joint.scale);
-
-					// end joint
 					writer->EndNode();
 				}
 
@@ -697,36 +669,6 @@ ModelConstants::Load(const Ptr<Stream>& stream)
 					characterNode.skinLists.Append(skinList);
 				} 
 				while (reader->SetToNextChild("Skinlist"));
-
-
-				// iterate over joints
-				if (reader->SetToFirstChild("Joint")) do 
-				{
-					// create joint
-					ToolkitUtil::Joint joint;
-
-					// get name
-					joint.name = reader->GetString("name");
-
-					// get index of joint
-					joint.index = reader->GetInt("index");
-
-					// get index of parent
-					joint.parent = reader->GetInt("parent");
-
-					// get translation
-					joint.translation = reader->GetFloat4("position");
-
-					// get rotation
-					joint.rotation = reader->GetFloat4("rotation");
-
-					// get scale
-					joint.scale = reader->GetFloat4("scale");
-
-					// add joint to character
-					characterNode.joints.Append(joint);
-				} 
-				while (reader->SetToNextChild("Joint"));
 
 				// add character to constants
 				this->AddCharacterNode(characterNode.name, characterNode);

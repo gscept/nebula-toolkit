@@ -109,7 +109,6 @@ NFbxScene::Setup( FbxScene* scene, const ExportFlags& exportFlags, const ExportM
 	int nodeCount = scene->GetSrcObjectCount<FbxNode>();
 	this->nodes.Reserve(nodeCount);
 
-
 	FbxPose * bindpose = 0;
 	int poses = scene->GetPoseCount();
 	for (int i = 0; i < poses; i++)

@@ -41,8 +41,6 @@ private:
 	void CreateStaticModel(const Ptr<ToolkitUtil::N3Writer>& modelWriter, const Util::Array<Ptr<NFbxMeshNode> >& meshes, const Util::String& path);
 	/// model creation entry point for static meshes
 	void CreateSkeletalModel(const Ptr<ToolkitUtil::N3Writer>& modelWriter, const Util::Array<Ptr<NFbxMeshNode> >& meshes, const Util::String& path);
-	/// writes joint palette to model
-	void GetJoints(const Ptr<NFbxJointNode> joint, Util::Array<ToolkitUtil::Joint>& joints);
 
 	/// convenience function for writing constants-files
 	void UpdateConstants(const Util::String& file, const Ptr<ToolkitUtil::ModelConstants>& constants);

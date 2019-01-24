@@ -312,23 +312,13 @@ NFbxSceneWriter::CreateSkeletalModel( const Ptr<N3Writer>& modelWriter,  const U
 	// set global box for constants
 	constants->SetGlobalBoundingBox(globalBox);
 
-	// create joint array which will be extracted from the skeleton root
-	Array<Joint> joints;
-
-	const Array<Ptr<NFbxJointNode> >& skeletons = this->scene->GetSkeletonRoots();
-	SizeT numSkeletons = skeletons.Size();
-	IndexT skeletonIndex;
-	for (skeletonIndex = 0; skeletonIndex < numSkeletons; skeletonIndex++)
-	{
-		const Ptr<NFbxJointNode>& skeletonRoot = skeletons[skeletonIndex];
-
-		// extract joints from skeleton
-		this->GetJoints(skeletonRoot, joints);
-	}
-
 	// format animation resource
 	String animRes;
 	animRes.Format("ani:%s/%s.nax3", category.AsCharPtr(), file.AsCharPtr());
+
+	// format skeleton resource
+	String skeletonRes;
+	skeletonRes.Format("ske:%s/%s.nsk3", category.AsCharPtr(), file.AsCharPtr());
 
 	// create skin list
 	Skinlist skinList;
@@ -346,7 +336,7 @@ NFbxSceneWriter::CreateSkeletalModel( const Ptr<N3Writer>& modelWriter,  const U
 
 	// create character node
 	ModelConstants::CharacterNode characterNode;
-	characterNode.joints = joints;
+	characterNode.skeleton = skeletonRes;
 	characterNode.animation = animRes;
 	characterNode.skinLists = skinLists;
 	characterNode.name = this->scene->GetName() + "_ch";
@@ -527,37 +517,7 @@ NFbxSceneWriter::CreateSkeletalModel( const Ptr<N3Writer>& modelWriter,  const U
 #endif
 }
 
-//------------------------------------------------------------------------------
-/**
-*/
-void 
-NFbxSceneWriter::GetJoints( const Ptr<NFbxJointNode> joint, Util::Array<Joint>& joints )
-{
-	// extract joint info into writer-friendly joint struct
-	Joint currentJoint;
-	currentJoint.name = joint->GetName();
-	currentJoint.translation = joint->GetInitialPosition();
-	currentJoint.rotation = joint->GetInitialRotation();
-	currentJoint.scale = joint->GetInitialScale();
-	currentJoint.index = joint->GetJointIndex();
-	currentJoint.parent = joint->GetParentJoint();
-	joints.Append(currentJoint);
 
-	// iterate over children
-	SizeT childCount = joint->GetChildCount();
-	IndexT childIndex;
-	for (childIndex = 0; childIndex < childCount; childIndex++)
-	{
-		Ptr<NFbxNode> child = joint->GetChild(childIndex);
-
-		// only traverse further if child is joint
-		if (child->IsA(NFbxJointNode::RTTI))
-		{
-			Ptr<NFbxJointNode> jointChild = child.downcast<NFbxJointNode>();
-			this->GetJoints(jointChild, joints);
-		}
-	}
-}
 
 //------------------------------------------------------------------------------
 /**

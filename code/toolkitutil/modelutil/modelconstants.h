@@ -41,8 +41,8 @@ public:
 
 	struct CharacterNode
 	{
-		Util::Array<ToolkitUtil::Joint> joints;
 		Util::Array<ToolkitUtil::Skinlist> skinLists;
+		Util::String skeleton;
 		Util::String animation;
 		Util::String name;
 	};

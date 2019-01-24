@@ -8,6 +8,7 @@
 #include "util/array.h"
 #include "meshutil/meshbuildersaver.h"
 #include "animutil/animbuildersaver.h"
+#include "skeletonutil/skeletonbuildersaver.h"
 #include "modelutil/modeldatabase.h"
 #include "modelutil/modelattributes.h"
 
@@ -136,6 +137,38 @@ NFbxExporter::ExportList(const Util::Array<Util::String>& files)
 //------------------------------------------------------------------------------
 /**
 */
+void
+ConvertJoints(const Ptr<NFbxJointNode> joint, Util::Array<Joint>& joints)
+{
+	// extract joint info into writer-friendly joint struct
+	Joint currentJoint;
+	currentJoint.name = joint->GetName();
+	currentJoint.translation = joint->GetInitialPosition();
+	currentJoint.rotation = joint->GetInitialRotation();
+	currentJoint.scale = joint->GetInitialScale();
+	currentJoint.index = joint->GetJointIndex();
+	currentJoint.parent = joint->GetParentJoint();
+	joints.Append(currentJoint);
+
+	// iterate over children
+	SizeT childCount = joint->GetChildCount();
+	IndexT childIndex;
+	for (childIndex = 0; childIndex < childCount; childIndex++)
+	{
+		Ptr<NFbxNode> child = joint->GetChild(childIndex);
+
+		// only traverse further if child is joint
+		if (child->IsA(NFbxJointNode::RTTI))
+		{
+			Ptr<NFbxJointNode> jointChild = child.downcast<NFbxJointNode>();
+			ConvertJoints(jointChild, joints);
+		}
+	}
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
 bool
 NFbxExporter::StartExport(const IO::URI& file)
 {
@@ -238,11 +271,12 @@ NFbxExporter::StartExport(const IO::URI& file)
 		// print info
 		n_printf("[Generated physics mesh: %s]\n", destinationFile.AsCharPtr());
 	}
-	
 
 	// get animations from scene
 	Array<Ptr<NFbxJointNode> > skeletonRoots = this->scene->GetSkeletonRoots();
 
+	// not allowed to have more than 1 skeleton
+	n_assert(skeletonRoots.Size() < 2);
 	IndexT rootIndex;
 	for (rootIndex = 0; rootIndex < skeletonRoots.Size(); rootIndex++)
 	{
@@ -251,13 +285,9 @@ NFbxExporter::StartExport(const IO::URI& file)
 		// get animation
 		AnimBuilder anim = skeletonRoot->GetAnimation();
 
-		// now we must format the animation name
-		String animationName;
-		animationName.Format("%s", fileName.AsCharPtr());
-
 		// format destination
 		String destinationFile;
-		destinationFile.Format("ani:%s/%s.nax3", category.AsCharPtr(), animationName.AsCharPtr());
+		destinationFile.Format("ani:%s/%s.nax3", category.AsCharPtr(), fileName.AsCharPtr());
 
 		// now fix animation stuff	
 		anim.FixInvalidKeyValues();
@@ -268,9 +298,20 @@ NFbxExporter::StartExport(const IO::URI& file)
 		// now save actual animation
 		if (false == AnimBuilderSaver::SaveNax3(URI(destinationFile), anim, this->platform))
 		{
-			n_error("Failed to save animation file file: %s\n", destinationFile.AsCharPtr());
+			n_error("Failed to save animation file: %s\n", destinationFile.AsCharPtr());
 		}			
 		n_printf("[Generated animation: %s]\n", destinationFile.AsCharPtr());
+
+		// build skeleton
+		SkeletonBuilder skel;
+		ConvertJoints(skeletonRoot, skel.joints);
+		destinationFile.Format("ske:%s/%s.nsk3", category.AsCharPtr(), fileName.AsCharPtr());
+		
+		if (false == SkeletonBuilderSaver::SaveNsk3(URI(destinationFile), skel, this->platform))
+		{
+			n_error("Failed to save skeleton file: %s\n", destinationFile.AsCharPtr());
+		}
+		n_printf("[Generated skeleton: %s]\n", destinationFile.AsCharPtr());
 	}
 
 	n_printf("\n");

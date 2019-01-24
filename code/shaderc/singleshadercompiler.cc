@@ -101,7 +101,6 @@ SingleShaderCompiler::CompileFrameShader(const Util::String& srcf)
 	return true;
 }
 
-
 //------------------------------------------------------------------------------
 /**
 */
@@ -109,7 +108,6 @@ bool
 SingleShaderCompiler::CompileMaterial(const Util::String & srcf)
 {	
     const Ptr<IoServer>& ioServer = IoServer::Instance();
-
 
     // create converter
     BinaryXmlConverter converter;

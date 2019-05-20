@@ -31,6 +31,8 @@ public:
 	void AddIncludeDir(const Util::String& incDir);    
 	/// set destination directory
 	void SetDstDir(const Util::String& dstDir);
+	/// set output header directory
+	void SetHeaderDir(const Util::String& headerDir);
 			
 	/// set debugging flag
 	void SetDebugFlag(bool b);
@@ -57,6 +59,7 @@ private:
 	
 	Platform::Code platform;	
     Util::String dstDir;	
+	Util::String headerDir;
 	Util::String language;	
 	bool quiet;
 	bool debug;
@@ -89,6 +92,15 @@ inline void
 SingleShaderCompiler::SetDstDir(const Util::String& d)
 {
 	this->dstDir = d;
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline void 
+SingleShaderCompiler::SetHeaderDir(const Util::String& headerDir)
+{
+	this->headerDir = headerDir;
 }
 
 //------------------------------------------------------------------------------

@@ -156,9 +156,11 @@ NFbxJointNode::RecursiveConvertToLocal( const Ptr<NFbxJointNode>& parent )
 		FbxVector4 scale = thisMatrix.GetS();
 		FbxQuaternion rotation = thisMatrix.GetQ();
 
+		float scaleFactor = NFbxScene::Instance()->GetScale() * 1 / float(fbxScene->GetGlobalSettings().GetSystemUnit().GetScaleFactor());
+
 		// convert from fbx to nebula math
 		this->rotation = quaternion((scalar)rotation[0], (scalar)rotation[1], (scalar)rotation[2], (scalar)rotation[3]);
-		this->position = float4((scalar)translation[0], (scalar)translation[1], (scalar)translation[2], (scalar)translation[3]);
+		this->position = float4((scalar)translation[0] * scaleFactor, (scalar)translation[1] * scaleFactor, (scalar)translation[2] * scaleFactor, 0);
 		this->scale = float4((scalar)scale[0], (scalar)scale[1], (scalar)scale[2], (scalar)scale[3]);
 	}	
 

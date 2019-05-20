@@ -353,12 +353,12 @@ MeshBuilderSaver::WriteVertices(const Ptr<Stream>& stream, MeshBuilder& meshBuil
 		if (curVertex.HasComponent(MeshBuilderVertex::WeightsUB4NBit))
 		{
 			const float4& v = curVertex.GetComponent(MeshBuilderVertex::WeightsUB4NIndex);
-			float4 packedWeights = float4::normalize(v);
+			//float4 packedWeights = float4::normalize(v);
 			//packedWeights = packedWeights * float4::dot3(packedWeights, float4(1,1,1,1));
-			unsigned int xBits = (unsigned int)(packedWeights.x() * (255.0f));
-			unsigned int yBits = (unsigned int)(packedWeights.y() * (255.0f));
-			unsigned int zBits = (unsigned int)(packedWeights.z() * (255.0f));
-			unsigned int wBits = (unsigned int)(packedWeights.w() * (255.0f));
+			unsigned int xBits = (unsigned int)(v.x() * (255.0f));
+			unsigned int yBits = (unsigned int)(v.y() * (255.0f));
+			unsigned int zBits = (unsigned int)(v.z() * (255.0f));
+			unsigned int wBits = (unsigned int)(v.w() * (255.0f));
 
 			// special case for when a weight is 1 (vertex is affected by only 1 joint)
 			if (xBits == 256)

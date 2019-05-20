@@ -477,7 +477,7 @@ ShaderCompiler::CompileGLSL(const Util::String& srcPath)
 			Util::String escapedDst = dst.LocalPath();
 			//escapedDst.SubstituteString(" ", "\\ ");
 			
-			bool res = AnyFXCompile(escapedSrc.AsCharPtr(), escapedDst.AsCharPtr(), target.AsCharPtr(), "Khronos", defines, flags, &errors);
+			bool res = AnyFXCompile(escapedSrc.AsCharPtr(), escapedDst.AsCharPtr(), target.AsCharPtr(), nullptr, "Khronos", defines, flags, &errors);
 			if (!res)
 			{
 				if (errors)
@@ -601,11 +601,9 @@ ShaderCompiler::CompileSPIRV(const Util::String& srcPath)
 			Util::String target;
 			target.Format("spv%d%d", major, minor);
 			Util::String escapedSrc = src.LocalPath();
-			//escapedSrc.SubstituteString(" ", "\\ ");
 			Util::String escapedDst = dst.LocalPath();
-			//escapedDst.SubstituteString(" ", "\\ ");
 
-			bool res = AnyFXCompile(escapedSrc.AsCharPtr(), escapedDst.AsCharPtr(), target.AsCharPtr(), "Khronos", defines, flags, &errors);
+			bool res = AnyFXCompile(escapedSrc.AsCharPtr(), escapedDst.AsCharPtr(), target.AsCharPtr(), nullptr, "Khronos", defines, flags, &errors);
 			if (!res)
 			{
 				if (errors)

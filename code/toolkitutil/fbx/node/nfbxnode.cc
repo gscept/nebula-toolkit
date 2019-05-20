@@ -332,7 +332,6 @@ NFbxNode::ExtractTransform(const FbxMatrix& localTrans)
 
 	// decompose elements
 	localTrans.GetElements(translation, rotation, shear, scale, sign);
-	//translation *= NFbxScene::Instance()->GetScale();
 
 	// decompose matrix into rows
 	FbxVector4 xRow = localTrans.GetRow(0);
@@ -348,14 +347,14 @@ NFbxNode::ExtractTransform(const FbxMatrix& localTrans)
 	this->transform = matrix44(x, y, z, w);
 
 	// calculate inverse scale
-	float inverseScale = float(fbxScene->GetGlobalSettings().GetSystemUnit().GetScaleFactor());
-
-	this->rotation = quaternion((scalar)rotation[0], (scalar)rotation[1], (scalar)rotation[2], (scalar)rotation[3]);
-	this->position = float4((scalar)translation[0], (scalar)translation[1], (scalar)translation[2], 0);
-	this->scale = float4((scalar)scale[0] * inverseScale, (scalar)scale[1] * inverseScale, (scalar)scale[2] * inverseScale, 0);
+	float scaleFactor = NFbxScene::Instance()->GetScale() * 1 / float(fbxScene->GetGlobalSettings().GetSystemUnit().GetScaleFactor());	
+	
+	this->rotation = float4((scalar)rotation[0], (scalar)rotation[1], (scalar)rotation[2], (scalar)rotation[3]);
+	this->position = float4((scalar)translation[0] * scaleFactor, (scalar)translation[1] * scaleFactor, (scalar)translation[2] * scaleFactor, 1.0f);
+	this->scale = float4((scalar)scale[0], (scalar)scale[1], (scalar)scale[2], 1);
 }
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------
 /**
 */
 void 
@@ -385,7 +384,7 @@ NFbxNode::ExtractAnimationCurves( FbxAnimStack* stack, Util::Array<AnimBuilderCu
 	scaleCurve.SetCurveType(CurveType::Scale);
 
 	// get scale
-	float scaleFactor = NFbxScene::Instance()->GetScale();
+	float scaleFactor = NFbxScene::Instance()->GetScale() * 1 / float(fbxScene->GetGlobalSettings().GetSystemUnit().GetScaleFactor());
 
 	// translation
 	if (translationCurveX && translationCurveY && translationCurveZ)

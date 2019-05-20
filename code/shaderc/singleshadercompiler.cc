@@ -49,6 +49,12 @@ SingleShaderCompiler::CompileShader(const Util::String& src)
 		n_printf("shaderc error: No destination for shader compile");
 		return false;
 	}
+
+	if (!this->headerDir.IsValid())
+	{
+		n_printf("shaderc error: No header output folder for shader compile");
+		return false;
+	}
 	
 	const Ptr<IoServer>& ioServer = IoServer::Instance();
 	
@@ -61,6 +67,7 @@ SingleShaderCompiler::CompileShader(const Util::String& src)
 
 	// make sure the target directory exists
 	ioServer->CreateDirectory(this->dstDir + "/shaders");
+	ioServer->CreateDirectory(this->headerDir);
 
 	// attempt compile base shaders
 	bool retval = false;
@@ -129,9 +136,6 @@ SingleShaderCompiler::CompileMaterial(const Util::String & srcf)
 	return converter.ConvertFile(srcf, dest, dummy);
 }
 
-
-
-
 //------------------------------------------------------------------------------
 /**
 	Implemented using AnyFX
@@ -157,7 +161,6 @@ SingleShaderCompiler::CompileGLSL(const Util::String& srcf)
 
     URI src(srcf);
     URI dst(destFile);
-
 
     // compile
     n_printf("[shaderc] Compiling:\n   %s -> %s\n", src.LocalPath().AsCharPtr(), dst.LocalPath().AsCharPtr());
@@ -197,11 +200,9 @@ SingleShaderCompiler::CompileGLSL(const Util::String& srcf)
     Util::String target;
     target.Format("gl%d%d", major, minor);
     Util::String escapedSrc = src.LocalPath();
-    //escapedSrc.SubstituteString(" ", "\\ ");
     Util::String escapedDst = dst.LocalPath();
-    //escapedDst.SubstituteString(" ", "\\ ");
 
-    bool res = AnyFXCompile(escapedSrc.AsCharPtr(), escapedDst.AsCharPtr(), target.AsCharPtr(), "Khronos", defines, flags, &errors);
+    bool res = AnyFXCompile(escapedSrc.AsCharPtr(), escapedDst.AsCharPtr(), target.AsCharPtr(), nullptr, "Khronos", defines, flags, &errors);
     if (!res)
     {
         if (errors)
@@ -249,15 +250,19 @@ SingleShaderCompiler::CompileSPIRV(const Util::String& srcf)
     Util::String file = srcf.ExtractFileName();
     Util::String folder = srcf.ExtractDirName();
     file.StripFileExtension();
+
     // format destination
     String destFile = this->dstDir + "/shaders/" + file + ".fxb";
+	String destHeader = this->headerDir + "/" + file + ".h";
 
     URI src(srcf);
     URI dst(destFile);
-
+	URI dstH(destHeader);
 
     // compile
-    n_printf("[shaderc] Compiling:\n   %s -> %s\n", src.LocalPath().AsCharPtr(), dst.LocalPath().AsCharPtr());
+    n_printf("[shaderc] \n Compiling:\n   %s -> %s", src.LocalPath().AsCharPtr(), dst.LocalPath().AsCharPtr());
+	n_printf("          \n Generating:\n   %s -> %s\n", src.LocalPath().AsCharPtr(), dstH.LocalPath().AsCharPtr());
+
     
     std::vector<std::string> defines;
     std::vector<std::string> flags;
@@ -295,11 +300,10 @@ SingleShaderCompiler::CompileSPIRV(const Util::String& srcf)
     Util::String target;
     target.Format("spv%d%d", major, minor);
     Util::String escapedSrc = src.LocalPath();
-    //escapedSrc.SubstituteString(" ", "\\ ");
     Util::String escapedDst = dst.LocalPath();
-    //escapedDst.SubstituteString(" ", "\\ ");
+	Util::String escapedHeader = dstH.LocalPath();
 
-    bool res = AnyFXCompile(escapedSrc.AsCharPtr(), escapedDst.AsCharPtr(), target.AsCharPtr(), "Khronos", defines, flags, &errors);
+    bool res = AnyFXCompile(escapedSrc.AsCharPtr(), escapedDst.AsCharPtr(), escapedHeader.AsCharPtr(), target.AsCharPtr(), "Khronos", defines, flags, &errors);
     if (!res)
     {
         if (errors)

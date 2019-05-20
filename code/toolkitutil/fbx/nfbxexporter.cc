@@ -230,6 +230,7 @@ NFbxExporter::StartExport(const IO::URI& file)
 
 	// flatten scene
 	this->scene->Flatten();
+	
 
 	// clear list of exported meshes
 	this->exportedMeshes.Clear();

@@ -10,7 +10,7 @@ stages:
 build:
    stage: build
    script:
-    - call ./fips set config vulkan-win64-vstudio-debug
+    - call ./fips set config vulkan-win64-vs2017-debug
     - call ./fips gen
     - call ./fips make shaderc
     - call ./fips build

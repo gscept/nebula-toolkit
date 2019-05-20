@@ -1,7 +1,7 @@
 ---
 imports:
     nebula:
-        git: ssh://git@git.ikplus.de:4715/nebula/nebula.git
+        git: https://github.com/gscept/nebula.git
     fips-fbxsdk:
         git: ssh://git@git.ikplus.de:4715/nebula/fips-fbxsdk.git
         branch: vs2017_2019_2

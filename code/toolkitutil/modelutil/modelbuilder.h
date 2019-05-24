@@ -9,7 +9,9 @@
 */
 //------------------------------------------------------------------------------
 #include "core/refcounted.h"
+#if PHYSEXPORT
 #include "modelphysics.h"
+#endif
 #include "modelconstants.h"
 #include "modelattributes.h"
 #include "n3util/n3writer.h"

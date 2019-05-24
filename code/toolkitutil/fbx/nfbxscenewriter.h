@@ -11,7 +11,6 @@
 #include "node/nfbxscene.h"
 #include "n3util/n3writer.h"
 #include "toolkit-common/platform.h"
-#include "modelutil/modelphysics.h"
 
 //------------------------------------------------------------------------------
 namespace ToolkitUtil
@@ -46,9 +45,10 @@ private:
 	void UpdateConstants(const Util::String& file, const Ptr<ToolkitUtil::ModelConstants>& constants);
 	/// convenience function for writing attributes-files
 	void UpdateAttributes(const Util::String& file, const Ptr<ToolkitUtil::ModelAttributes>& attributes);
+#if PHYSEXPORT
 	/// convenience function for writing physics-files
 	void UpdatePhysics(const Util::String& file, const Ptr<ToolkitUtil::ModelPhysics>& physics);
-
+#endif
 	ToolkitUtil::Platform::Code platform;
 	Ptr<NFbxScene> scene;	
 }; 

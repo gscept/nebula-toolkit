@@ -87,6 +87,7 @@ NFbxSceneWriter::CreateStaticModel( const Ptr<ToolkitUtil::N3Writer>& modelWrite
 	// get model attributes
 	Ptr<ModelAttributes> attributes = ModelDatabase::Instance()->LookupAttributes(fileCat);
 
+#if PHYSEXPORT
 	// get physics
 	Ptr<ModelPhysics> physics = ModelDatabase::Instance()->LookupPhysics(fileCat);
 	
@@ -96,7 +97,7 @@ NFbxSceneWriter::CreateStaticModel( const Ptr<ToolkitUtil::N3Writer>& modelWrite
 		phname.Format("phymsh:%s_ph.nvx2", fileCat.AsCharPtr());
 		physics->SetPhysicsMesh(phname);
 	}
-
+#endif
 	// clear constants
 	constants->Clear();
 

@@ -13,7 +13,6 @@
 #include "toolkitutil/fbx/character/skinfragment.h"
 #include "particles/emitterattrs.h"
 #include "n3modeldata.h"
-#include "physics/model/templates.h"
 #include "modelutil/modelconstants.h"
 
 
@@ -65,6 +64,7 @@ public:
 	void BeginSkinnedModel(const Util::String& name, const Transform& transform, const Math::bbox& boundingBox, int fragmentIndex, int fragmentCount, const Util::Array<ModelConstants::SkinNode>& skinNodes, const Util::String& skinResource, const State& state, const Util::String& material);
 	/// wrapper function which takes a mesh, a list of shader variables and textures, to be written as a particle mesh
 	void BeginParticleModel(const Util::String& name, const Transform& transform, const Util::String& meshResource, const IndexT primGroup, const State& state, const Util::String& material, const Particles::EmitterAttrs& emitterAttrs);
+#if PHYSEXPORT
 	/// wrapper function for writing  a physics node
 	void BeginPhysicsNode(const Util::String& name);
 	/// begins colliders section
@@ -77,7 +77,7 @@ public:
 	void WritePhysicsObjects(const Util::Array<Physics::PhysicsObjectDescription> & objects);
 	/// ends physics node
 	void EndPhysicsNode();
-
+#endif
 	/// writes lod info
 	void WriteLODDistances(float maxDistance, float minDistance);
 

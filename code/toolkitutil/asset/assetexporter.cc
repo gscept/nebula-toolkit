@@ -132,7 +132,9 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
             modelName = category + "/" + modelName;
             Ptr<ModelConstants> constants = ModelDatabase::Instance()->LookupConstants(modelName, true);
             Ptr<ModelAttributes> attributes = ModelDatabase::Instance()->LookupAttributes(modelName, true);
+#if PHYSEXPORT
             Ptr<ModelPhysics> physics = ModelDatabase::Instance()->LookupPhysics(modelName, true);
+#endif
             this->modelBuilder->SetConstants(constants);
             this->modelBuilder->SetAttributes(attributes);
 #if PHYSEXPORT            

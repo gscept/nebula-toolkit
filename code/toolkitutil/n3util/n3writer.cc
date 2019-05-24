@@ -5,7 +5,6 @@
 #include "stdneb.h"
 #include "n3writer.h"
 #include "util/fourcc.h"
-#include "physics/model/templates.h"
 
 using namespace Util;
 using namespace Math;
@@ -666,6 +665,7 @@ N3Writer::BeginParticleModel(const Util::String& name, const Transform& transfor
 
 }
 
+#if PHYSEXPORT
 //------------------------------------------------------------------------------
 /**
 */
@@ -776,27 +776,28 @@ N3Writer::WritePhysicsObjects(const Util::Array<Physics::PhysicsObjectDescriptio
 /**
 */
 void 
-N3Writer::WriteLODDistances( float maxDistance, float minDistance )
-{
-	n_assert(this->isOpen);
-	n_assert(this->isBeginModel);
-	this->modelWriter->BeginTag("LODMinDistance", FourCC('SMID'));
-	this->modelWriter->WriteFloat(minDistance);
-	this->modelWriter->EndTag();
-
-	this->modelWriter->BeginTag("LODMaxDistance", FourCC('SMAD'));
-	this->modelWriter->WriteFloat(maxDistance);
-	this->modelWriter->EndTag();
-}
-
-//------------------------------------------------------------------------------
-/**
-*/
-void 
 N3Writer::EndPhysicsNode()
 {
 	this->modelWriter->EndPhysicsNode();
 
+}
+#endif
+
+//------------------------------------------------------------------------------
+/**
+*/
+void
+N3Writer::WriteLODDistances(float maxDistance, float minDistance)
+{
+    n_assert(this->isOpen);
+    n_assert(this->isBeginModel);
+    this->modelWriter->BeginTag("LODMinDistance", FourCC('SMID'));
+    this->modelWriter->WriteFloat(minDistance);
+    this->modelWriter->EndTag();
+
+    this->modelWriter->BeginTag("LODMaxDistance", FourCC('SMAD'));
+    this->modelWriter->WriteFloat(maxDistance);
+    this->modelWriter->EndTag();
 }
 
 //------------------------------------------------------------------------------

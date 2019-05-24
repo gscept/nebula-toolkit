@@ -61,12 +61,78 @@ ModelDatabase::Close()
         this->modelConstants.ValueAtIndex(i)->Clear();
     }
 	this->modelConstants.Clear();
+#if PHYSEXPORT
     for (i = 0; i < this->modelPhysics.Size(); i++)
     {
         this->modelPhysics.ValueAtIndex(i)->Clear();
     }
 	this->modelPhysics.Clear();
+#endif
 	this->isOpen = false;
+}
+
+
+//------------------------------------------------------------------------------
+/**
+*/
+
+void 
+ModelDatabase::LoadAttributes(const Util::String & folder)
+{
+    
+    Array<String> files = IoServer::Instance()->ListFiles(folder, "*.attributes");
+    for (IndexT fileIndex = 0; fileIndex < files.Size(); fileIndex++)
+    {
+
+        String modelName = files[fileIndex];
+
+        // create uri
+        String path;
+        path.Format("%s%s", folder.AsCharPtr(), modelName.AsCharPtr());
+
+
+        modelName.StripFileExtension();
+        Util::String category = path.ExtractLastDirName();
+
+        modelName = category + "/" + modelName;
+
+
+        Ptr<ModelAttributes> attrs = ModelAttributes::Create();
+
+        // set the name of the attribute
+        attrs->SetName(modelName);
+        // create stream
+        Ptr<Stream> file = IoServer::Instance()->CreateStream(path);
+        attrs->Load(file);
+
+        this->modelAttributes.Add(modelName, attrs);
+    }
+    Array<String> cfiles = IoServer::Instance()->ListFiles(folder, "*.constants");
+    for (IndexT fileIndex = 0; fileIndex < cfiles.Size(); fileIndex++)
+    {
+
+        String modelName = cfiles[fileIndex];
+
+        // create uri
+        String path;
+        path.Format("%s/%s", folder.AsCharPtr(), modelName.AsCharPtr());
+
+
+        modelName.StripFileExtension();
+        Util::String category = path.ExtractLastDirName();
+        modelName = category + "/" + modelName;
+
+
+        Ptr<ModelConstants> attrs = ModelConstants::Create();
+
+        // set the name of the attribute
+        attrs->SetName(modelName);
+        // create stream
+        Ptr<Stream> file = IoServer::Instance()->CreateStream(path);
+        attrs->Load(file);
+
+        this->modelConstants.Add(modelName, attrs);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -158,6 +224,7 @@ ModelDatabase::GetAttributesName(const Ptr<ModelAttributes>& attrs)
 	return this->modelAttributes.KeysAsArray()[index];
 }
 
+#if PHYSEXPORT
 //------------------------------------------------------------------------------
 /**
 */
@@ -246,7 +313,7 @@ ModelDatabase::GetPhysicsName(const Ptr<ModelPhysics>& attrs)
 	n_assert(index != InvalidIndex);
 	return this->modelPhysics.KeysAsArray()[index];
 }
-
+#endif
 
 //------------------------------------------------------------------------------
 /**

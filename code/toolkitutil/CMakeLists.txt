@@ -188,9 +188,9 @@ ENDIF()
 				modelconstants.cc
 				modelconstants.h
 				modeldatabase.cc
-				modeldatabase.h
-				modelphysics.cc
-				modelphysics.h
+			    modeldatabase.h
+				#modelphysics.cc
+				#modelphysics.h
 				take.cc
 				take.h
 			)					

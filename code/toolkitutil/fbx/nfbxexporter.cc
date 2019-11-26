@@ -27,7 +27,7 @@ Threading::CriticalSection NFbxExporter::cs;
 /**
 */
 NFbxExporter::NFbxExporter() : 	
-	scene(0),
+	scene(nullptr),
 	scaleFactor(1.0f),
 	progressFbxCallback(0),
 	exportMode(Static),

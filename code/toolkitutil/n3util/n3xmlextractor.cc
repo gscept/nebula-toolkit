@@ -16,8 +16,8 @@ __ImplementClass(ToolkitUtil::N3XmlExtractor, 'N3XE', Core::RefCounted);
 /**
 */
 N3XmlExtractor::N3XmlExtractor() : 
-	stream(0),
-	reader(0)
+	stream(nullptr),
+	reader(nullptr)
 {
 	// empty
 }

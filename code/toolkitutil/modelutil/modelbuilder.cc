@@ -26,10 +26,10 @@ __ImplementClass(ToolkitUtil::ModelBuilder, 'MDBU', Core::RefCounted);
 /**
 */
 ModelBuilder::ModelBuilder() : 
-	constants(0),
-	attributes(0)
+	constants(nullptr),
+	attributes(nullptr)
 #if PHYSEXPORT
-	,physics(0)
+	,physics(nullptr)
 #endif
 {
 	// empty
@@ -43,7 +43,7 @@ ModelBuilder::~ModelBuilder()
     this->constants = nullptr;
     this->attributes = nullptr;
 #if PHYSEXPORT
-    this->physics = 0;
+    this->physics = nullptr;
 #endif	
 }
 

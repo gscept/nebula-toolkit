@@ -21,7 +21,7 @@ __ImplementClass(ToolkitUtil::NFbxMeshNode, 'FBMN', ToolkitUtil::NFbxNode);
 /**
 */
 NFbxMeshNode::NFbxMeshNode() : 
-	skeletonLink(0),
+	skeletonLink(nullptr),
 	groupId(0),
 	lod(NULL),
 	lodIndex(-1),

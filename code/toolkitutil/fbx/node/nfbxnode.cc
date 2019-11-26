@@ -27,7 +27,7 @@ NFbxNode::NFbxNode() :
 	isAnimated(false),
 	isRoot(false),
 	isPhysics(false),
-	parent(0),
+	parent(nullptr),
 	type(UnknownType)
 {
 	// empty

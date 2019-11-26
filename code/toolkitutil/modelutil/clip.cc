@@ -13,7 +13,7 @@ __ImplementClass(ToolkitUtil::Clip, 'CLIP', Core::RefCounted);
 /**
 */
 Clip::Clip() :
-    take(0)
+    take(nullptr)
 {
 	// empty
 }

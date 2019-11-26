@@ -66,7 +66,7 @@ protected:
 */
 inline
 AppLauncherBase::AppLauncherBase() :    
-    stdoutCaptureStream(0),
+    stdoutCaptureStream(nullptr),
     isRunning(false),
 	noConsoleWindow(false)
 { 

@@ -17,8 +17,8 @@ __ImplementClass(ToolkitUtil::N3XMLModifier, 'N3XM', Core::RefCounted);
 /**
 */
 N3XMLModifier::N3XMLModifier()	:
-	readStream(0),
-	writeStream(0)
+	readStream(nullptr),
+	writeStream(nullptr)
 {
 	this->reader = XmlReader::Create();
 	this->writer = XmlWriter::Create();

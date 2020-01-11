@@ -11,8 +11,8 @@
 //------------------------------------------------------------------------------
 #include "core/singleton.h"
 #include "core/refcounted.h"
-#include "distributedtools/shareddircontrol.h"
-#include "projectinfo.h"
+#include "toolkit-common/distributedtools/shareddircontrol.h"
+#include "toolkit-common/projectinfo.h"
 #include "util/guid.h"
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //  fbxbatcher3app.cc
-//  (C) 2011-2016 Individual contributors, see AUTHORS file
+//  (C) 2011-2020 Individual contributors, see AUTHORS file
 //------------------------------------------------------------------------------
 #include "stdneb.h"
 #include "toolkitutil/fbx/nfbxexporter.h"
@@ -33,7 +33,7 @@ FBXBatcher3App::FBXBatcher3App()
 FBXBatcher3App::~FBXBatcher3App()
 {
 	this->modelDatabase->Close();
-	this->modelDatabase = 0;
+	this->modelDatabase = nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -144,8 +144,8 @@ FBXBatcher3App::SetupProjectInfo()
 void 
 FBXBatcher3App::ShowHelp()
 {
-	n_printf("NebulaT FBX batcher.\n"
-		"(C) 2012-2016 Individual contributors, see AUTHORS file.\n");
+	n_printf("Nebula FBX batcher.\n"
+		"(C) 2012-2020 Individual contributors, see AUTHORS file.\n");
 	n_printf("-help         --display this help\n"
 			 "-force        --ignores time stamps\n"
 			 "-dir          --category name\n"
@@ -182,8 +182,8 @@ FBXBatcher3App::CreateFileList()
 			// close stream and reader
 			reader->Close();
 		}
-		reader = 0;
-		readStream = 0;
+		reader = nullptr;
+		readStream = nullptr;
 	}
 	else
 	{				

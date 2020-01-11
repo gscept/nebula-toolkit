@@ -7,3 +7,5 @@ imports:
         branch: vs2017_2019_2
     fips-anyfx:
         git: ssh://git@github.com:Duttenheim/fips-anyfx.git
+    fips-nvtt:
+        git: https://github.com/fLindahl/fips-nvtt.git

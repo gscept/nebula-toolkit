@@ -127,9 +127,9 @@ DistributedToolkitApp::ParseCmdLineArgs()
         return false;
     }
     // if a file arg is given, a dir arg have to exist
-    if(!this->fileArg.IsValid() && !this->dirArg.IsValid())
+    if(this->fileArg.IsValid() && !this->dirArg.IsValid())
     {
-        n_printf("missing file argument\n\n");
+        n_printf("missing dir argument\n\n");
         this->ShowHelp();
         return false;
     }

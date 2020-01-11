@@ -12,6 +12,7 @@
 #include "timing/timer.h"
 
 #include <nvtt/nvtt.h>
+#include <nvtt/TaskDispatcher.h>
 
 #include <nvimage/Image.h> 
 #include <nvimage/ImageIO.h>
@@ -24,7 +25,6 @@
 #include <nvcore/StdStream.h>
 #include <nvcore/FileSystem.h>
 #include <nvcore/Timer.h>
-
 namespace ToolkitUtil
 {
 using namespace IO;
@@ -265,6 +265,8 @@ NVTTTextureConversionJob::Convert()
 		Timing::Time beforeCompress = timer.GetTime();
 		this->logger->Print("Compressing ...");
         nvtt::Context context;
+        nv::AutoPtr<nvtt::ParallelTaskDispatcher> taskDispatcher = new nvtt::ParallelTaskDispatcher();
+        context.setTaskDispatcher(taskDispatcher.ptr());
         if (!context.process(inputOptions, compressionOptions, outputOptions))
         {
 			this->logger->Print("Failed!\n");

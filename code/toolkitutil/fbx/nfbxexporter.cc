@@ -178,7 +178,7 @@ NFbxExporter::StartExport(const IO::URI& file)
 	String localPath = file.GetHostAndLocalPath();
 	this->file = localPath;
 	String exportType = this->exportMode == ToolkitUtil::Static ? "standard" : "character";
-	n_printf("Exporting FBX as %s:\n        %s\n", exportType.AsCharPtr(), localPath.AsCharPtr());
+	n_printf("Exporting FBX as %s: '%s'\n", exportType.AsCharPtr(), localPath.AsCharPtr());
 
 	// we want to see if the model file exists, because that's the only way to know if ALL the resources are old or new...
 	if (!this->NeedsConversion(localPath))

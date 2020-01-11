@@ -11,7 +11,8 @@ fips_include_directories(.)
 
 fips_add_subdirectory(code)
 
-option(N_MINIMAL_TOOLKIT "Only minimal toolkit" ON)
+option(N_MINIMAL_TOOLKIT "Only minimal toolkit" OFF)
+option(N_BUILD_NVTT "use NVTT" ON)
 
 fips_finish()
 

@@ -3,10 +3,10 @@
 /**
     @class ToolkitUtil::ModelWriter
     
-    Generic Nebula3 model file writer.
+    Generic Nebula model file writer.
     
     (C) 2008 Radon Labs GmbH
-    (C) 2013-2016 Individual contributors, see AUTHORS file
+    (C) 2013-2020 Individual contributors, see AUTHORS file
 */
 #include "io/streamwriter.h" 
 #include "toolkit-common/platform.h"

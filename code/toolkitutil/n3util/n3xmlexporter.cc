@@ -59,7 +59,7 @@ N3XmlExporter::RecursiveParse( Ptr<IO::XmlReader> reader, Ptr<BinaryModelWriter>
 {
 
 	Util::String nodeName = reader->GetCurrentNodeName();
-	if (nodeName == "Nebula3Model")
+	if (nodeName == "NebulaModel")
 	{
 		// skip to next node
 	}

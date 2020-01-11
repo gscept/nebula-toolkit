@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //  assetconverterapp.cc
-//  (C) 2019 Individual contributors, see AUTHORS file
+//  (C) 2019-2020 Individual contributors, see AUTHORS file
 //------------------------------------------------------------------------------
 #include "stdneb.h"
 #include "toolkitutil/fbx/nfbxexporter.h"
@@ -116,7 +116,7 @@ void
 AssetConverterApp::ShowHelp()
 {
 	n_printf("Nebula asset converter.\n"
-		"(C) 2019 Individual contributors, see AUTHORS file.\n");
+		"(C) 2020 Individual contributors, see AUTHORS file.\n");
 	n_printf("Usage assetc [args] -dir [path to assetsfolder]\n"
             "-help         --display this help\n"
 			 "-mode         --selects type to batch (fbx,model,texture,surface) defaults to all");

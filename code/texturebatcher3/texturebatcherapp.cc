@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
 //  texturebatcherapp.cc
 //  (C) 2008 Radon Labs GmbH
-//  (C) 2013-2016 Individual contributors, see AUTHORS file
+//  (C) 2013-2020 Individual contributors, see AUTHORS file
 //------------------------------------------------------------------------------
 #include "stdneb.h"
 #include "texturebatcherapp.h"
-#include "toolkitutil/platform.h"
+#include "toolkit-common/platform.h"
 #include "io/ioserver.h"
 #include "io/textreader.h"
 #include "io/console.h"
@@ -71,8 +71,8 @@ TextureBatcherApp::CreateFileList()
             // close stream and reader
             reader->Close();
         }
-        reader = 0;
-        readStream = 0;
+        reader = nullptr;
+        readStream = nullptr;
     }
     // read directory content
     else if (this->dirArg.IsValid())
@@ -145,8 +145,8 @@ TextureBatcherApp::SetupProjectInfo()
 void
 TextureBatcherApp::ShowHelp()
 {
-    n_printf("NebulaT texture batch exporter.\n"
-             "(C) Individual Authors, see AUTHORS file 2013.\n");
+    n_printf("Nebula texture batch exporter.\n"
+             "(C) 2013-2020 Individual Authors, see AUTHORS file.\n");
     n_printf(this->GetArgumentDescriptionString().AsCharPtr());
     n_printf("-force       -- force export (don't check time stamps)\n"
              "-platform    -- select platform (win32, linux)\n\n");

@@ -1,6 +1,7 @@
 //------------------------------------------------------------------------------
 //  modelconstants.cc
 //  (C) 2012 Gustav Sterbrant
+//  (C) 2012-2020 Individual contributors. See AUTHORS file.
 //------------------------------------------------------------------------------
 #include "stdneb.h"
 #include "modelconstants.h"
@@ -254,7 +255,7 @@ ModelConstants::Save(const Ptr<Stream>& stream)
 		writer->Open();
 
 		// start with nebula tag
-		writer->BeginNode("Nebula3");
+		writer->BeginNode("Nebula");
 
 		// set version
 		writer->SetInt("version", ModelConstants::Version);

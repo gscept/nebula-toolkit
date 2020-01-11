@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //  modelattributes.cc
-//  (C) 2012-2016 Individual contributors, see AUTHORS file
+//  (C) 2012-2020 Individual contributors, see AUTHORS file
 //------------------------------------------------------------------------------
 #include "stdneb.h"
 #include "modelattributes.h"
@@ -262,7 +262,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 		writer->Open();
 
 		// first write enclosing tag
-		writer->BeginNode("Nebula3");
+		writer->BeginNode("Nebula");
 
 		// set version
 		writer->SetInt("version", ModelAttributes::Version);

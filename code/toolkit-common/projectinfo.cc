@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //  projectinfo.cc
 //  (C) 2008 Radon Labs GmbH
-//  (C) 2013-2016 Individual contributors, see AUTHORS file
+//  (C) 2013-2020 Individual contributors, see AUTHORS file
 //------------------------------------------------------------------------------
 #include "stdneb.h"
 #include "projectinfo.h"
@@ -159,11 +159,11 @@ ProjectInfo::ParseProjectInfoFile(const IO::URI & path)
     if (xmlReader->Open())
     {
         // check if it's a valid project info file
-        if (!xmlReader->HasNode("/Nebula3/Project"))
+        if (!xmlReader->HasNode("/Nebula/Project"))
         {
             return ProjectFileContentInvalid;
         }
-        xmlReader->SetToNode("/Nebula3/Project");
+        xmlReader->SetToNode("/Nebula/Project");
         n_assert(xmlReader->HasAttr("defaultPlatform"));
         this->defPlatform = Platform::FromString(xmlReader->GetString("defaultPlatform"));
         

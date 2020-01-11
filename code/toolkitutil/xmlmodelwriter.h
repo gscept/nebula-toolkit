@@ -3,10 +3,10 @@
 /**
     @class ToolkitUtil::XmlModelWriter
     
-    Write XML Nebula3 model files.
+    Write XML Nebula model files.
     
     (C) 2008 Radon Labs GmbH
-    (C) 2013-2016 Individual contributors, see AUTHORS file
+    (C) 2013-2020 Individual contributors, see AUTHORS file
 */
 #include "toolkitutil/modelwriter.h"
 #include "io/xmlwriter.h"

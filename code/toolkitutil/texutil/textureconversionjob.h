@@ -7,11 +7,11 @@
     conversion process for different platforms in subclasses.
 
     (C) 2009 Radon Labs GmbH
-    (C) 2013-2016 Individual contributors, see AUTHORS file
+    (C) 2013-2020 Individual contributors, see AUTHORS file
 */
 #include "util/string.h"
 #include "toolkitutil/texutil/textureattrtable.h"
-#include "toolkitutil/logger.h"
+#include "toolkit-common/logger.h"
 
 //------------------------------------------------------------------------------
 namespace ToolkitUtil

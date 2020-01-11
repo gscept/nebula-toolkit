@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //  textureattrtable.cc
 //  (C) 2008 Radon Labs GmbH
-//  (C) 2013-2016 Individual contributors, see AUTHORS file
+//  (C) 2013-2020 Individual contributors, see AUTHORS file
 //------------------------------------------------------------------------------
 #include "stdneb.h"
 #include "textureattrtable.h"
@@ -118,7 +118,7 @@ TextureAttrTable::Setup(const String& path)
 			xmlReader->SetStream(stream);
 			if (xmlReader->Open())
 			{
-				xmlReader->SetToNode("/Nebula3");
+				xmlReader->SetToNode("/Nebula");
 				xmlReader->SetToNode("Texture");
 
 				// read current attributes
@@ -275,7 +275,7 @@ TextureAttrTable::Save( const Util::String& path )
 	if (xmlWriter->Open())
 	{
 		// write main nodes
-		xmlWriter->BeginNode("Nebula3");
+		xmlWriter->BeginNode("Nebula");
 		xmlWriter->BeginNode("Texture");
 
 		// write data

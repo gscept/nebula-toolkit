@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //  shaderbatcherapp.cc
 //  (C) 2008 Radon Labs GmbH
-//  (C) 2013-2016 Individual contributors, see AUTHORS file
+//  (C) 2013-2020 Individual contributors, see AUTHORS file
 //------------------------------------------------------------------------------
 #include "stdneb.h"
 #include "shaderbatcherapp.h"
@@ -72,8 +72,8 @@ ShaderBatcherApp::SetupProjectInfo()
 void
 ShaderBatcherApp::ShowHelp()
 {
-    n_printf("Nebula Trifid shader batch compiler.\n"
-             "(C) Individual contributors, see AUTHORS file\n"
+    n_printf("Nebula shader batch compiler.\n"
+             "(C) 2013-2020 Individual contributors, see AUTHORS file\n"
              "-help       -- display this help\n"
              "-platform   -- select platform (win32, linux)\n"
              "-waitforkey -- wait for key when complete\n"

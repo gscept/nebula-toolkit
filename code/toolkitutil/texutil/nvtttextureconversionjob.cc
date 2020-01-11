@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
-// win32textureconversionjob.cc
+//  nvtttextureconversionjob.cc
 //  (C) 2009 Radon Labs GmbH
-//  (C) 2013-2016 Individual contributors, see AUTHORS file
+//  (C) 2013-2020 Individual contributors, see AUTHORS file
 //------------------------------------------------------------------------------
 #include "stdneb.h"
 
@@ -24,8 +24,6 @@
 #include <nvcore/StdStream.h>
 #include <nvcore/FileSystem.h>
 #include <nvcore/Timer.h>
-#include <lua/lobject.h>
-
 
 namespace ToolkitUtil
 {
@@ -246,7 +244,7 @@ NVTTTextureConversionJob::Convert()
         }
         else
         {
-            outputImage = image->createImage();
+            outputImage = image->createImage(0, image->m_componentCount);
             delete image;
         }
                     

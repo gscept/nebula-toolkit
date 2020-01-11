@@ -3,10 +3,14 @@
 #-------------------------------------------------------------------------------
 
 fips_begin_module(toolkitutil)
-    fips_vs_warning_level(3)
+	fips_vs_warning_level(3)
     fips_include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CODE_ROOT}/foundation ${CODE_ROOT}/render ${CODE_ROOT}/)
     fips_deps(foundation render ${FBX_LIB})
-		fips_files(			
+    if (N_BUILD_NVTT)
+		fips_deps(nvtt)
+		ADD_DEFINITIONS(-DUSE_NVTT)
+    endif()
+    	fips_files(			
 			assetfile.cc
 			assetfile.h
 			assetregistry.cc
@@ -81,20 +85,19 @@ fips_begin_module(toolkitutil)
 				skeletonbuildersaver.h
 			)
 	IF(NOT N_MINIMAL_TOOLKIT)
-		fips_dir(posteffect)
-			fips_files(
-				posteffectexporter.cc
-				posteffectexporter.h
-				posteffectparser.cc
-				posteffectparser.h
-			)
+		#fips_dir(posteffect)
+		#	fips_files(
+		#		posteffectexporter.cc
+		#		posteffectexporter.h
+		#		posteffectparser.cc
+		#		posteffectparser.h
+		#	)
 	ENDIF()
 		IF(N_BUILD_NVTT)
 			SET(SRCSX_PL
 				nvtttextureconversionjob.cc
 				nvtttextureconversionjob.h
 				)
-			ADD_DEFINITIONS(-DUSE_NVTT)
 		ELSE()
 			SET(SRCSX_PL
 				win32textureconversionjob.cc
@@ -104,8 +107,8 @@ fips_begin_module(toolkitutil)
 	IF(NOT N_MINIMAL_TOOLKIT)
 		fips_dir(texutil)
 			fips_files(
-				cubefilterer.cc
-				cubefilterer.h
+				# cubefilterer.cc
+				# cubefilterer.h
 				imageconverter.cc
 				imageconverter.h
 				textureattrs.cc
@@ -159,21 +162,21 @@ fips_begin_module(toolkitutil)
 					skinpartitioner.h
 				)
 IF(NOT N_MINIMAL_TOOLKIT)
-		fips_dir(game)
-			fips_files(
-				gameexporter.cc
-				gameexporter.h
-				leveldbwriter.cc
-				leveldbwriter.h
-				levelparser.cc
-				levelparser.h
-			)
+		#fips_dir(game)
+		#	fips_files(
+		#		gameexporter.cc
+		#		gameexporter.h
+		#		leveldbwriter.cc
+		#		leveldbwriter.h
+		#		levelparser.cc
+		#		levelparser.h
+		#	)
 
-		fips_dir(gui)
-			fips_files(
-				guiexporter.cc
-				guiexporter.h
-			)
+		#fips_dir(gui)
+		#	fips_files(
+		#		guiexporter.cc
+		#		guiexporter.h
+		#	)
 ENDIF()			
 		fips_dir(modelutil)
 			fips_files(
@@ -200,6 +203,6 @@ ENDIF()
 				surfaceexporter.h
 			)
 fips_end_module()
-target_link_libraries(toolkitutil PUBLIC ${FBX_LIB})
-target_compile_definitions(toolkitutil PUBLIC FBXSDK_SHARED)
+# target_link_libraries(toolkitutil PUBLIC ${FBX_LIB})
+target_compile_definitions(toolkitutil PUBLIC $<$<BOOL:${N_BUILD_NVTT}>:NVTT_EXPORTS> FBXSDK_SHARED)
 target_include_directories(toolkitutil PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

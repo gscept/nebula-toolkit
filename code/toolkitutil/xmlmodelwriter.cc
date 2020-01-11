@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //  xmlmodelwriter.cc
 //  (C) 2008 Radon Labs GmbH
-//  (C) 2013-2016 Individual contributors, see AUTHORS file
+//  (C) 2013-2020 Individual contributors, see AUTHORS file
 //------------------------------------------------------------------------------
 #include "stdneb.h"
 #include "xmlmodelwriter.h"
@@ -52,7 +52,7 @@ XmlModelWriter::Open()
         if (this->writer->Open())
         {
             // write root element
-            this->writer->BeginNode("Nebula3Model");
+            this->writer->BeginNode("NebulaModel");
             this->writer->SetInt("version", this->version);
             return true;
         }

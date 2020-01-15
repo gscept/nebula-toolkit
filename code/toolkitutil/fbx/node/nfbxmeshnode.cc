@@ -55,7 +55,7 @@ NFbxMeshNode::Setup( FbxNode* node, const Ptr<NFbxScene>& scene )
 	// triangulate mesh if it isn't already...
 	if (!this->fbxMesh->IsTriangleMesh())
 	{
-		n_error("Should already be triangulated");
+		n_error("Node '%s' -> Mesh '%s' is not a triangle mesh. Make sure your exported meshes are triangulated!\n", node->GetName(), this->fbxMesh->GetName());
 	}
 
 	// create mask
@@ -858,18 +858,18 @@ NFbxMeshNode::CalculateTangentsAndBinormals()
 	for (int vertexIndex = 0; vertexIndex < numVertices; vertexIndex++)
 	{
 		MeshBuilderVertex& vertex = mesh->VertexAt(vertexIndex);
-		float4 n = float4::normalize(vertex.GetComponent(MeshBuilderVertex::NormalB4NIndex));
-		float4 t = tangents1[vertexIndex];
-		float4 b = tangents2[vertexIndex];
+		vector n = vector::normalize(vertex.GetComponent(MeshBuilderVertex::NormalB4NIndex));
+		vector t = tangents1[vertexIndex];
+		vector b = tangents2[vertexIndex];
 
-		float4 tangent = float4::normalize(t - n * float4::dot3(n, t));
-		float handedNess = (float4::dot3(float4::cross3(n, t), tangents2[vertexIndex]) < 0.0f ? 1.0f : -1.0f);
-		float4 bitangent = float4::normalize(float4::cross3(n, tangent) * handedNess);
+		vector tangent = vector::normalize(t - n * vector::dot3(n, t));
+		float handedNess = (vector::dot3(vector::cross3(n, t), tangents2[vertexIndex]) < 0.0f ? 1.0f : -1.0f);
+		vector bitangent = vector::normalize(vector::cross3(n, tangent) * handedNess);
 
 		if (vertex.HasComponent(MeshBuilderVertex::TangentB4NBit))
 		{
-			float4 oldTangent = vertex.GetComponent(MeshBuilderVertex::TangentB4NIndex);
-			float4 newTangent = oldTangent + tangent;
+			vector oldTangent = vertex.GetComponent(MeshBuilderVertex::TangentB4NIndex);
+			vector newTangent = oldTangent + tangent;
 			vertex.SetComponent(MeshBuilderVertex::TangentB4NIndex, newTangent);
 		}
 		else
@@ -879,8 +879,8 @@ NFbxMeshNode::CalculateTangentsAndBinormals()
 
 		if (vertex.HasComponent(MeshBuilderVertex::BinormalB4NBit))
 		{
-			float4 oldBinormal = vertex.GetComponent(MeshBuilderVertex::BinormalB4NIndex);
-			float4 newBinormal = oldBinormal + bitangent;
+			vector oldBinormal = vertex.GetComponent(MeshBuilderVertex::BinormalB4NIndex);
+			vector newBinormal = oldBinormal + bitangent;
 			vertex.SetComponent(MeshBuilderVertex::BinormalB4NIndex, newBinormal);
 		}
 		else
@@ -893,9 +893,9 @@ NFbxMeshNode::CalculateTangentsAndBinormals()
 	for (int vertexIndex = 0; vertexIndex < numVertices; vertexIndex++)
 	{
 		MeshBuilderVertex& vertex = mesh->VertexAt(vertexIndex);
-		vertex.SetComponent(MeshBuilderVertex::NormalB4NIndex, float4::normalize(vertex.GetComponent(MeshBuilderVertex::NormalB4NIndex)));
-		vertex.SetComponent(MeshBuilderVertex::TangentB4NIndex, float4::normalize(vertex.GetComponent(MeshBuilderVertex::TangentB4NIndex)));
-		vertex.SetComponent(MeshBuilderVertex::BinormalB4NIndex, float4::normalize(vertex.GetComponent(MeshBuilderVertex::BinormalB4NIndex)));
+		vertex.SetComponent(MeshBuilderVertex::NormalB4NIndex, vector::normalize(vertex.GetComponent(MeshBuilderVertex::NormalB4NIndex)));
+		vertex.SetComponent(MeshBuilderVertex::TangentB4NIndex, vector::normalize(vertex.GetComponent(MeshBuilderVertex::TangentB4NIndex)));
+		vertex.SetComponent(MeshBuilderVertex::BinormalB4NIndex, vector::normalize(vertex.GetComponent(MeshBuilderVertex::BinormalB4NIndex)));
 	}
 
 	delete [] tangents1;

@@ -12,7 +12,6 @@
 #include "util/guid.h"
 #include "toolkitutil/texutil/win32textureconversionjob.h"
 #include "toolkitutil/texutil/nvtttextureconversionjob.h"
-#include "toolkitutil/texutil/compressonatortextureconversionjob.h"
 #include "timing/timer.h"
 
 

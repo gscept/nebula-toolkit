@@ -31,6 +31,8 @@ public:
         U8888,
         U888,
         V8U8,
+        BC6,
+        BC7,
     };
 
     /// filter types

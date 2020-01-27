@@ -52,6 +52,10 @@ static nvtt::Format TextureAttrToNVTT(ToolkitUtil::TextureAttrs::PixelFormat for
 			return nvtt::Format_RGBA;
 		case TextureAttrs::U888:
 			return nvtt::Format_RGB;
+        case TextureAttrs::BC6:
+            return nvtt::Format_BC6;
+        case TextureAttrs::BC7:
+            return nvtt::Format_BC7;
         default:
             n_error("unsupported texture compression format");
             return nvtt::Format_RGB;
@@ -156,8 +160,20 @@ NVTTTextureConversionJob::Convert()
         }
 		else
 		{
-            if (image->componentCount() > 3)    targetformat = attrs.GetRGBAPixelFormat();
-            else                                targetformat = attrs.GetRGBPixelFormat();
+            if ((String::MatchPattern(this->srcPath, "*mat.*")) ||
+                (String::MatchPattern(this->srcPath, "*material.*")))
+            {
+                targetformat = TextureAttrs::DXT5;
+            }
+            else if (image->componentCount() > 3)
+            {
+                targetformat = attrs.GetRGBAPixelFormat();
+            }
+            else
+            {
+                targetformat = attrs.GetRGBPixelFormat();
+            }
+
 			
 			if (attrs.GetColorSpace() == TextureAttrs::Linear)
 			{
@@ -176,7 +192,7 @@ NVTTTextureConversionJob::Convert()
         compressionOptions.setFormat(TextureAttrToNVTT(targetformat));
         
         if (attrs.GetQuality() == TextureAttrs::Normal)  compressionOptions.setQuality(nvtt::Quality_Normal);
-        else if (attrs.GetQuality() == ToolkitUtil::TextureAttrs::High)     compressionOptions.setQuality(nvtt::Quality_Highest);
+        else if (attrs.GetQuality() == ToolkitUtil::TextureAttrs::High)     compressionOptions.setQuality(nvtt::Quality_Production);
         else if (attrs.GetQuality() == ToolkitUtil::TextureAttrs::Low)      compressionOptions.setQuality(nvtt::Quality_Fastest);
         
         if(targetformat == TextureAttrs::DXT3)

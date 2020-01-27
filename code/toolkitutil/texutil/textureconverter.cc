@@ -174,7 +174,7 @@ TextureConverter::ConvertTexture(const String& srcTexPath, const String& tmpDir)
     dstTexPath.Format("%s/%s/%s", this->dstDir.AsCharPtr(), texCategory.AsCharPtr(), texFilename.AsCharPtr());
     dstTexPath.StripFileExtension();
 
-	n_printf("converting texture: %s\n", srcTexPath.AsCharPtr());
+	n_printf("Converting texture: %s\n", URI(srcTexPath).LocalPath().AsCharPtr());
 
     // select conversion method based on target platform
 #ifndef USE_NVTT

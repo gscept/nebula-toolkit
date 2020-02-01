@@ -21,8 +21,9 @@ TextureAttrs::TextureAttrs() :
     rgbaPixelFormat(DXT3),
     mipMapFilter(Point),
     scaleFilter(Point),
-	quality(Low),
-	colorSpace(sRGB)
+    quality(Low),
+    colorSpace(sRGB),
+    flipNormalY(false)
 {
     // empty
 }

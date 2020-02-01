@@ -129,6 +129,11 @@ TextureAttrTable::Setup(const String& path)
 				SizeT maxWidth  = xmlReader->GetInt("maxWidth");
 				TextureAttrs::Filter mipFilter = TextureAttrs::StringToFilter(xmlReader->GetString("mipFilter"));
 				bool genMipMaps = xmlReader->GetString("mipMaps") == "Yes";
+                bool flipNormalY = false;
+                if (xmlReader->HasAttr("flipNormalY"))
+                {
+				    flipNormalY = xmlReader->GetString("flipNormalY") == "Yes";
+                }
 				TextureAttrs::PixelFormat rgbFormat = TextureAttrs::StringToPixelFormat(xmlReader->GetString("rgb"));
 				TextureAttrs::PixelFormat rgbaFormat = TextureAttrs::StringToPixelFormat(xmlReader->GetString("rgba"));
 				TextureAttrs::Filter scaleFilter = TextureAttrs::StringToFilter(xmlReader->GetString("scaleFilter"));
@@ -140,6 +145,7 @@ TextureAttrTable::Setup(const String& path)
 				attrs.SetMaxWidth(maxWidth);
 				attrs.SetMaxHeight(maxHeight);
 				attrs.SetGenMipMaps(genMipMaps);
+				attrs.SetFlipNormalY(flipNormalY);
 				attrs.SetRGBPixelFormat(rgbFormat);
 				attrs.SetRGBAPixelFormat(rgbaFormat);
 				attrs.SetMipMapFilter(mipFilter);

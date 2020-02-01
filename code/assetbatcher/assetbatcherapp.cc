@@ -202,7 +202,7 @@ AssetBatcherApp::ShowHelp()
 	n_printf("-help         --display this help\n"
 			 "-force        --ignores time stamps\n"
 			 "-dir          --category name\n"
-			 "-system       \n"
+			 "-system       --export essential system assets\n"
 			 "-platform     --export platform");
 }
 

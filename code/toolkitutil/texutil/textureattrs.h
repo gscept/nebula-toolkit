@@ -60,7 +60,7 @@ public:
 		Linear,
 		sRGB
 	};
-      
+  
     /// constructor
     TextureAttrs();
     /// set max width
@@ -101,8 +101,12 @@ public:
 	ColorSpace GetColorSpace() const;
     /// set file date of attributes file to check for changes
     void SetTime(const IO::FileTime & ft);
-    /// get attirbute file date
+    /// get attribute file date
     const IO::FileTime & GetTime() const;
+    /// check if the normal maps y axis should be flipped
+    const bool GetFlipNormalY() const;
+    /// set if the normal maps y axis should be flipped
+    void SetFlipNormalY(bool const val);
 
     /// convert pixel format to string
     static Util::String PixelFormatToString(PixelFormat p);
@@ -132,6 +136,7 @@ private:
     Quality quality;
 	ColorSpace colorSpace;
     IO::FileTime attrTime;
+    bool flipNormalY;
 };
 
 //------------------------------------------------------------------------------
@@ -303,6 +308,24 @@ inline const IO::FileTime &
 TextureAttrs::GetTime() const
 {
     return this->attrTime;
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline const bool
+TextureAttrs::GetFlipNormalY() const
+{
+    return this->flipNormalY;
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline void
+TextureAttrs::SetFlipNormalY(bool const val)
+{
+    this->flipNormalY = val;
 }
 
 //------------------------------------------------------------------------------

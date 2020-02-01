@@ -154,7 +154,12 @@ NVTTTextureConversionJob::Convert()
             inputOptions.setNormalMap(true);
             inputOptions.setConvertToNormalMap(false);
             inputOptions.setGamma(1.0f, 1.0f);
-            inputOptions.setNormalizeMipmaps(false);   
+            inputOptions.setNormalizeMipmaps(true);   
+            if (attrs.GetFlipNormalY())
+            {
+                image->scaleBias(1, 1, -1, 1);
+                //image->flipY();
+            }
             isDXT5NormalMap = true;
 			targetformat = TextureAttrs::DXT5NM;			
         }

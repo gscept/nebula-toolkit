@@ -13,9 +13,9 @@ namespace ToolkitUtil
 struct Joint
 {
 	Util::String name;
-	Math::float4 translation;
-	Math::quaternion rotation;
-	Math::float4 scale;
+	Math::vec4 translation;
+	Math::quat rotation;
+	Math::vec4 scale;
 	int parent;
 	int index;
 };
@@ -91,14 +91,14 @@ struct Transform
 	Transform()
 	{
 		this->position = Math::point(0,0,0);
-		this->rotation = Math::quaternion::identity();
+		this->rotation = Math::quat();
 		this->scale = Math::vector::nullvec();
 		this->scalePivot = Math::point(0,0,0);
 		this->rotatePivot = Math::point(0,0,0);
 	}
 
 	Math::point position;
-	Math::quaternion rotation;
+	Math::quat rotation;
 	Math::vector scale;
 	Math::point scalePivot;
 	Math::point rotatePivot;

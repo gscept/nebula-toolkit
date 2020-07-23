@@ -566,7 +566,7 @@ NFbxScene::Flatten()
 				if (physics)
 				{
 					const MeshBuilderVertex& vert = meshSource->VertexAt(vertIndex);
-					Math::float4 pos = vert.GetComponent(MeshBuilderVertex::CoordIndex);
+					Math::vec4 pos = vert.GetComponent(MeshBuilderVertex::CoordIndex);
 					MeshBuilderVertex newVert;
 					newVert.SetComponent(MeshBuilderVertex::CoordIndex, pos);
 					rootMeshSource->AddVertex(newVert);

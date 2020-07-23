@@ -31,7 +31,13 @@ public:
         U8888,
         U888,
         V8U8,
+        // single channel
+        BC4,
+        // dual channel
+        BC5,
+        // rgb/floating point/hdr
         BC6,
+        // rgb(a)
         BC7,
     };
 

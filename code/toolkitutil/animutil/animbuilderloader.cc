@@ -126,7 +126,7 @@ AnimBuilderLoader::LoadNax2(const URI& uri, AnimBuilder& animBuilder, const Arra
                     curve.SetFirstKeyIndex(naxCurve->firstKeyIndex);
                 }
                 curve.SetStatic(isStaticCurve);
-                curve.SetStaticKey(float4(naxCurve->keyX, naxCurve->keyY, naxCurve->keyZ, naxCurve->keyW));
+                curve.SetStaticKey(vec4(naxCurve->keyX, naxCurve->keyY, naxCurve->keyZ, naxCurve->keyW));
                 curve.SetActive(0 != naxCurve->isAnim);
 
                 // this is a hack, Nebula2 files usually always have translation,
@@ -158,8 +158,8 @@ AnimBuilderLoader::LoadNax2(const URI& uri, AnimBuilder& animBuilder, const Arra
         }
 
         // finally, setup keys
-        float4 curKey;
-        const float4* keyBasePtr = (const float4*) ptr;
+        vec4 curKey;
+        const vec4* keyBasePtr = (const vec4*) ptr;
         for (clipIndex = 0; clipIndex < naxHeader->numGroups; clipIndex++)
         {
             AnimBuilderClip& clip = animBuilder.GetClipAtIndex(clipIndex);
@@ -172,7 +172,7 @@ AnimBuilderLoader::LoadNax2(const URI& uri, AnimBuilder& animBuilder, const Arra
                     IndexT keyIndex;
                     for (keyIndex = 0; keyIndex < clip.GetNumKeys(); keyIndex++)
                     {
-                        const float4* keyPtr = keyBasePtr + curve.GetFirstKeyIndex() + keyIndex * clip.GetKeyStride();
+                        const vec4* keyPtr = keyBasePtr + curve.GetFirstKeyIndex() + keyIndex * clip.GetKeyStride();
 
                         // need to load un-aligned!
                         curKey.loadu((scalar*)keyPtr);

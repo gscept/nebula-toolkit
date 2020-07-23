@@ -211,18 +211,18 @@ BinaryModelWriter::WriteFloat(float f)
 /**
 */
 void 
-BinaryModelWriter::WriteFloat2( const Math::float2& f )
+BinaryModelWriter::WriteFloat2( const Math::vec2& f )
 {
-	this->writer->WriteFloat2(f);
+	this->writer->WriteVec2(f);
 }
 
 //------------------------------------------------------------------------------
 /**
 */
 void
-BinaryModelWriter::WriteFloat4(const float4& f4)
+BinaryModelWriter::Writevec4(const vec4& f4)
 {
-    this->writer->WriteFloat4(f4);
+    this->writer->WriteVec4(f4);
 }
 
 //------------------------------------------------------------------------------

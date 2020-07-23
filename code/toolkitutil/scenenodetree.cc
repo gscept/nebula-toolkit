@@ -211,12 +211,12 @@ SceneNodeTree::Dump(Logger& logger)
                     case Variant::Int:          attrValuesString.AppendInt(curValue.GetInt()); break;
                     case Variant::Float:        attrValuesString.AppendFloat(curValue.GetFloat()); break;
                     case Variant::Bool:         attrValuesString.AppendBool(curValue.GetBool()); break;
-                    case Variant::Float4:       attrValuesString.AppendFloat4(curValue.GetFloat4()); break;
-                    case Variant::Matrix44:     attrValuesString.AppendMatrix44(curValue.GetMatrix44()); break;
+                    case Variant::Vec4:       attrValuesString.AppendVec4(curValue.GetVec4()); break;
+                    case Variant::Mat4:     attrValuesString.AppendMat4(curValue.GetMat4()); break;
                     case Variant::String:       attrValuesString.Append(curValue.GetString()); break;
                     case Variant::IntArray:     attrValuesString.Append("{int array}"); break;
                     case Variant::FloatArray:   attrValuesString.Append("{float array}"); break;
-                    case Variant::Float4Array:  attrValuesString.Append("{float4 array}"); break;
+                    case Variant::Vec4Array:  attrValuesString.Append("{vec4 array}"); break;
                     case Variant::StringArray:  attrValuesString.Append("{string array}"); break;
                     default:                    attrValuesString.Append("???"); break;
                 }

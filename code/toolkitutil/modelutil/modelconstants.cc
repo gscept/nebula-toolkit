@@ -267,8 +267,8 @@ ModelConstants::Save(const Ptr<Stream>& stream)
 		writer->SetString("name", this->name);
 
 		// set bounding box
-		writer->SetFloat4("bboxcenter", this->globalBoundingBox.center());
-		writer->SetFloat4("bboxextents", this->globalBoundingBox.extents());
+		writer->SetVec4("bboxcenter", this->globalBoundingBox.center());
+		writer->SetVec4("bboxextents", this->globalBoundingBox.extents());
 
 		if (this->characterNodes.Size() > 0)
 		{
@@ -372,24 +372,24 @@ ModelConstants::Save(const Ptr<Stream>& stream)
 				writer->SetInt("primitive", node.primitiveGroupIndex);
 
 				// set position
-				writer->SetFloat4("position", node.transform.position);
+				writer->SetVec4("position", node.transform.position);
 
 				// set rotation
-				writer->SetFloat4("rotation", Math::float4(
-					node.transform.rotation.x(), 
-					node.transform.rotation.y(), 
-					node.transform.rotation.z(), 
-					node.transform.rotation.w()));
+				writer->SetVec4("rotation", Math::vec4(
+					node.transform.rotation.x, 
+					node.transform.rotation.y, 
+					node.transform.rotation.z, 
+					node.transform.rotation.w));
 
 				// set scale
-				writer->SetFloat4("scale", node.transform.scale);
+				writer->SetVec4("scale", node.transform.scale);
 
 				// set mesh
 				writer->SetString("mesh", node.mesh);
 
 				// set bounding box
-				writer->SetFloat4("bboxcenter", node.boundingBox.center());
-				writer->SetFloat4("bboxextents", node.boundingBox.extents());
+				writer->SetVec4("bboxcenter", node.boundingBox.center());
+				writer->SetVec4("bboxextents", node.boundingBox.extents());
 
 				// end shape node
 				writer->EndNode();
@@ -421,17 +421,17 @@ ModelConstants::Save(const Ptr<Stream>& stream)
 				writer->SetInt("primitive", node.primitiveGroupIndex);
 
 				// set position
-				writer->SetFloat4("position", node.transform.position);
+				writer->SetVec4("position", node.transform.position);
 
 				// set rotation
-				writer->SetFloat4("rotation", Math::float4(
-					node.transform.rotation.x(), 
-					node.transform.rotation.y(), 
-					node.transform.rotation.z(), 
-					node.transform.rotation.w()));
+				writer->SetVec4("rotation", Math::vec4(
+					node.transform.rotation.x, 
+					node.transform.rotation.y, 
+					node.transform.rotation.z, 
+					node.transform.rotation.w));
 
 				// set scale
-				writer->SetFloat4("scale", node.transform.scale);
+				writer->SetVec4("scale", node.transform.scale);
 
 				// end physics node
 				writer->EndNode();
@@ -469,21 +469,21 @@ ModelConstants::Save(const Ptr<Stream>& stream)
 				writer->SetInt("primitive", node.primitiveGroupIndex);
 
 				// set position
-				writer->SetFloat4("position", node.transform.position);
+				writer->SetVec4("position", node.transform.position);
 
 				// set rotation
-				writer->SetFloat4("rotation", Math::float4(
-					node.transform.rotation.x(), 
-					node.transform.rotation.y(), 
-					node.transform.rotation.z(), 
-					node.transform.rotation.w()));
+				writer->SetVec4("rotation", Math::vec4(
+					node.transform.rotation.x, 
+					node.transform.rotation.y, 
+					node.transform.rotation.z, 
+					node.transform.rotation.w));
 
 				// set scale
-				writer->SetFloat4("scale", node.transform.scale);
+				writer->SetVec4("scale", node.transform.scale);
 
 				// set bounding box
-				writer->SetFloat4("bboxcenter", node.boundingBox.center());
-				writer->SetFloat4("bboxextents", node.boundingBox.extents());
+				writer->SetVec4("bboxcenter", node.boundingBox.center());
+				writer->SetVec4("bboxextents", node.boundingBox.extents());
 
 				// end shape node
 				writer->EndNode();
@@ -518,21 +518,21 @@ ModelConstants::Save(const Ptr<Stream>& stream)
 				writer->SetString("path", skin.path);
 
 				// write bounding box of skin
-				writer->SetFloat4("bboxcenter", skin.boundingBox.center());
-				writer->SetFloat4("bboxextents", skin.boundingBox.extents());
+				writer->SetVec4("bboxcenter", skin.boundingBox.center());
+				writer->SetVec4("bboxextents", skin.boundingBox.extents());
 
 				// set position
-				writer->SetFloat4("position", skin.transform.position);
+				writer->SetVec4("position", skin.transform.position);
 
 				// set rotation
-				writer->SetFloat4("rotation", Math::float4(
-					skin.transform.rotation.x(), 
-					skin.transform.rotation.y(), 
-					skin.transform.rotation.z(),
-					skin.transform.rotation.w()));
+				writer->SetVec4("rotation", Math::vec4(
+					skin.transform.rotation.x, 
+					skin.transform.rotation.y, 
+					skin.transform.rotation.z,
+					skin.transform.rotation.w));
 
 				// set scale
-				writer->SetFloat4("scale", skin.transform.scale);
+				writer->SetVec4("scale", skin.transform.scale);
 
 				// write mesh
 				writer->SetString("mesh", skin.mesh);
@@ -632,7 +632,7 @@ ModelConstants::Load(const Ptr<Stream>& stream)
 		this->name = reader->GetString("name");
 
 		// get bounding box
-		this->globalBoundingBox = Math::bbox(reader->GetFloat4("bboxcenter"), reader->GetFloat4("bboxextents"));
+		this->globalBoundingBox = Math::bbox(reader->GetVec4("bboxcenter"), reader->GetVec4("bboxextents").vec);
 
 		// first check to see if we have a character node
 		if (reader->SetToFirstChild("CharacterNodes"))
@@ -712,19 +712,19 @@ ModelConstants::Load(const Ptr<Stream>& stream)
 				node.primitiveGroupIndex = reader->GetInt("primitive");
 
 				// get position
-				node.transform.position = reader->GetFloat4("position");
+				node.transform.position = reader->GetVec4("position");
 
 				// get rotation
-				node.transform.rotation = reader->GetFloat4("rotation");
+				node.transform.rotation = reader->GetVec4("rotation");
 
 				// get scale
-				node.transform.scale = reader->GetFloat4("scale");
+				node.transform.scale = reader->GetVec4("scale").vec;
 
 				// get mesh
 				node.mesh = reader->GetString("mesh");
 
 				// get bounding box
-				node.boundingBox = Math::bbox(reader->GetFloat4("bboxcenter"), reader->GetFloat4("bboxextents"));
+				node.boundingBox = Math::bbox(reader->GetVec4("bboxcenter"), reader->GetVec4("bboxextents").vec);
 
 				// add shape to constants
 				this->AddShapeNode(node.name, node);
@@ -752,13 +752,13 @@ ModelConstants::Load(const Ptr<Stream>& stream)
 				node.primitiveGroupIndex = reader->GetInt("primitive");
 
 				// get position
-				node.transform.position = reader->GetFloat4("position");
+				node.transform.position = reader->GetVec4("position");
 
 				// get rotation
-				node.transform.rotation = reader->GetFloat4("rotation");
+				node.transform.rotation = reader->GetVec4("rotation");
 
 				// get scale
-				node.transform.scale = reader->GetFloat4("scale");
+				node.transform.scale = reader->GetVec4("scale").vec;
 
 				// add node
 				this->AddPhysicsNode(node.name, node);
@@ -791,16 +791,16 @@ ModelConstants::Load(const Ptr<Stream>& stream)
 				node.primitiveGroupIndex = reader->GetInt("primitive");
 
 				// get position
-				node.transform.position = reader->GetFloat4("position");
+				node.transform.position = reader->GetVec4("position");
 
 				// get rotation
-				node.transform.rotation = reader->GetFloat4("rotation");
+				node.transform.rotation = reader->GetVec4("rotation");
 
 				// get scale
-				node.transform.scale = reader->GetFloat4("scale");
+				node.transform.scale = reader->GetVec4("scale").vec;
 
 				// get bounding box
-				node.boundingBox = Math::bbox(reader->GetFloat4("bboxcenter"), reader->GetFloat4("bboxextents"));
+				node.boundingBox = Math::bbox(reader->GetVec4("bboxcenter"), reader->GetVec4("bboxextents").vec);
 
 				// add shape to constants
 				this->AddParticleNode(node.name, node);
@@ -834,16 +834,16 @@ ModelConstants::Load(const Ptr<Stream>& stream)
 				skin.mesh = reader->GetString("mesh");
 
 				// get position of fragment
-				skin.transform.position = reader->GetFloat4("position");
+				skin.transform.position = reader->GetVec4("position");
 
 				// get rotation of fragment
-				skin.transform.rotation = reader->GetFloat4("rotation");
+				skin.transform.rotation = reader->GetVec4("rotation");
 
 				// get scale of fragment
-				skin.transform.scale = reader->GetFloat4("scale");
+				skin.transform.scale = reader->GetVec4("scale").vec;
 
 				// get bounding box
-				skin.boundingBox = Math::bbox(reader->GetFloat4("bboxcenter"), reader->GetFloat4("bboxextents"));
+				skin.boundingBox = Math::bbox(reader->GetVec4("bboxcenter"), reader->GetVec4("bboxextents").vec);
 
 				// iterate through fragments
 				if (reader->SetToFirstChild("Fragment")) do 

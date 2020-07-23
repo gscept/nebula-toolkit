@@ -5,7 +5,7 @@
 //------------------------------------------------------------------------------
 #include "stdneb.h"
 #include "xmlmodelwriter.h"
-#include "math/float4.h"
+#include "math/vec4.h"
 
 namespace ToolkitUtil
 {
@@ -206,10 +206,10 @@ XmlModelWriter::WriteFloat(float f)
 /**
 */
 void 
-XmlModelWriter::WriteFloat2( const Math::float2& f )
+XmlModelWriter::WriteFloat2( const Math::vec2& f )
 {
 	this->writer->BeginNode("f2");
-	this->writer->WriteContent(String::FromFloat2(f));
+	this->writer->WriteContent(String::FromVec2(f));
 	this->writer->EndNode();
 }
 
@@ -217,10 +217,10 @@ XmlModelWriter::WriteFloat2( const Math::float2& f )
 /**
 */
 void
-XmlModelWriter::WriteFloat4(const float4& f4)
+XmlModelWriter::Writevec4(const vec4& f4)
 {
     this->writer->BeginNode("f4");
-    this->writer->WriteContent(String::FromFloat4(f4));
+    this->writer->WriteContent(String::FromVec4(f4));
     this->writer->EndNode();
 }
 

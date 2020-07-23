@@ -9,8 +9,8 @@
     (C) 2013-2016 Individual contributors, see AUTHORS file
 */
 #include "core/types.h"
-#include "math/float4.h"
-#include "math/matrix44.h"
+#include "math/vec4.h"
+#include "math/mat4.h"
 
 //------------------------------------------------------------------------------
 namespace ToolkitUtil
@@ -95,9 +95,9 @@ public:
     bool operator>(const MeshBuilderVertex& rhs) const;
 
     /// set a vertex component
-    void SetComponent(ComponentIndex compIndex, const Math::float4& value);
+    void SetComponent(ComponentIndex compIndex, const Math::vec4& value);
     /// get a vertex component index
-    const Math::float4& GetComponent(ComponentIndex compIndex) const;
+    const Math::vec4& GetComponent(ComponentIndex compIndex) const;
     /// check if all components are valid
     bool HasComponents(ComponentMask compMask) const;
 	/// check if component exists.
@@ -121,12 +121,12 @@ public:
     /// compare vertex against other, return -1, 0 or +1
     int Compare(const MeshBuilderVertex& rhs) const;
     /// transform the vertex
-    void Transform(const Math::matrix44& m);
+    void Transform(const Math::mat4& m);
 
 private:
     ComponentMask compMask;
     FlagMask flagMask;
-    Math::float4 comps[NumComponents];
+    Math::vec4 comps[NumComponents];
 };
 
 //------------------------------------------------------------------------------

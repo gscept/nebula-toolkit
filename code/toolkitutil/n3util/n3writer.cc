@@ -208,35 +208,35 @@ N3Writer::WriteTransform( const Transform& transform )
 	if (transform.position != Math::point())
 	{
 		this->modelWriter->BeginTag("Transform Position", FourCC('POSI'));
-		this->modelWriter->WriteFloat4(transform.position);
+		this->modelWriter->Writevec4(transform.position);
 		this->modelWriter->EndTag();
 	}		
 
-	if (transform.rotation != Math::quaternion())
+	if (transform.rotation != Math::quat())
 	{
 		this->modelWriter->BeginTag("Transform Rotation", FourCC('ROTN'));
-		this->modelWriter->WriteFloat4(Math::float4(transform.rotation.x(), transform.rotation.y(), transform.rotation.z(), transform.rotation.w()));
+		this->modelWriter->Writevec4(Math::vec4(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w));
 		this->modelWriter->EndTag();
 	}		
 
 	if (transform.scale != Math::vector())
 	{
 		this->modelWriter->BeginTag("Transform Scale", FourCC('SCAL'));
-		this->modelWriter->WriteFloat4(transform.scale);
+		this->modelWriter->Writevec4(transform.scale);
 		this->modelWriter->EndTag();
 	}		
 
 	if (transform.rotatePivot != Math::point())
 	{
 		this->modelWriter->BeginTag("Transform Rotation Pivot", FourCC('RPIV'));
-		this->modelWriter->WriteFloat4(transform.rotatePivot);
+		this->modelWriter->Writevec4(transform.rotatePivot);
 		this->modelWriter->EndTag();
 	}		
 
 	if (transform.scalePivot != Math::point())
 	{
 		this->modelWriter->BeginTag("Transform Scale Pivot", FourCC('SPIV'));
-		this->modelWriter->WriteFloat4(transform.scalePivot);
+		this->modelWriter->Writevec4(transform.scalePivot);
 		this->modelWriter->EndTag();
 	}
 	
@@ -267,8 +267,8 @@ void N3Writer::WriteState(const Util::String& meshResource, const bbox& bounding
 
     // write bounding box
 	this->modelWriter->BeginTag("Bounding Box", FourCC('LBOX'));
-	this->modelWriter->WriteFloat4(boundingBox.center());
-	this->modelWriter->WriteFloat4(boundingBox.extents());
+	this->modelWriter->Writevec4(boundingBox.center());
+	this->modelWriter->Writevec4(boundingBox.extents());
 	this->modelWriter->EndTag();	
 }
 
@@ -655,7 +655,7 @@ N3Writer::BeginParticleModel(const Util::String& name, const Transform& transfor
 
 	// write wind direction
 	this->modelWriter->BeginTag("Wind direction", FourCC('WIDR'));
-	this->modelWriter->WriteFloat4(emitterAttrs.GetFloat4(Particles::EmitterAttrs::WindDirection));
+	this->modelWriter->Writevec4(emitterAttrs.GetVec4(Particles::EmitterAttrs::WindDirection));
 	this->modelWriter->EndTag();
 
 	// write View Angle Fade
@@ -706,10 +706,10 @@ N3Writer::WritePhysicsColliders(const Util::String& name, const Util::Array<Phys
 	{
 		this->modelWriter->BeginTag("Collider",FourCC('CLDR'));		
 
-		this->modelWriter->WriteFloat4(iter->transform.getrow0());
-		this->modelWriter->WriteFloat4(iter->transform.getrow1());
-		this->modelWriter->WriteFloat4(iter->transform.getrow2());
-		this->modelWriter->WriteFloat4(iter->transform.getrow3());
+		this->modelWriter->Writevec4(iter->transform.getrow0());
+		this->modelWriter->Writevec4(iter->transform.getrow1());
+		this->modelWriter->Writevec4(iter->transform.getrow2());
+		this->modelWriter->Writevec4(iter->transform.getrow3());
 		
 		this->modelWriter->WriteInt(iter->type);
 		switch(iter->type)
@@ -721,7 +721,7 @@ N3Writer::WritePhysicsColliders(const Util::String& name, const Util::Array<Phys
 				break;
 			case Physics::ColliderCube:
 				{
-					this->modelWriter->WriteFloat4(iter->box.halfWidth);
+					this->modelWriter->Writevec4(iter->box.halfWidth);
 				}
 				break;
 			case Physics::ColliderCapsule:
@@ -810,8 +810,8 @@ N3Writer::BeginRoot( const Math::bbox& sceneBox )
 	this->modelWriter->BeginModelNode("TransformNode", FourCC('TRFN'), "root");
 
 	this->modelWriter->BeginTag("Scene Bounding Box", 'LBOX');
-	this->modelWriter->WriteFloat4(sceneBox.center());
-	this->modelWriter->WriteFloat4(sceneBox.extents());
+	this->modelWriter->Writevec4(sceneBox.center());
+	this->modelWriter->Writevec4(sceneBox.extents());
 	this->modelWriter->EndTag();	
 
 	this->isBeginRoot = true;

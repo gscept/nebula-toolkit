@@ -45,9 +45,9 @@ public:
     /// write float value
     virtual void WriteFloat(float f);
 	/// write float2 value
-	virtual void WriteFloat2(const Math::float2& f);
-    /// write float4 value
-    virtual void WriteFloat4(const Math::float4& f);
+	virtual void WriteFloat2(const Math::vec2& f);
+    /// write vec4 value
+    virtual void Writevec4(const Math::vec4& f);
     /// write string value
     virtual void WriteString(const Util::String& s);
     /// write int array value

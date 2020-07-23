@@ -359,14 +359,14 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 							writer->SetFloat("max", upper.GetFloat());
 							break;
 						}
-						case Variant::Float2:
+						case Variant::Vec2:
 						{
-							writer->SetFloat2("value", var.GetFloat2());
+							writer->SetVec2("value", var.GetVec2());
 							break;
 						}
-						case Variant::Float4:
+						case Variant::Vec4:
 						{
-							writer->SetFloat4("value", var.GetFloat4());
+							writer->SetVec4("value", var.GetVec4());
 							break;
 						}
 						case Variant::Int:
@@ -550,7 +550,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				writer->BeginNode("EmissionFrequency");
 
 				// now set all attributes...
-				writer->SetFloat4("Values", Math::float4(emissionFrequency.GetValues()[0],
+				writer->SetVec4("Values", Math::vec4(emissionFrequency.GetValues()[0],
 					emissionFrequency.GetValues()[1],
 					emissionFrequency.GetValues()[2],
 					emissionFrequency.GetValues()[3]));
@@ -559,7 +559,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				writer->SetFloat("Frequency", emissionFrequency.GetFrequency());
 				writer->SetFloat("Amplitude", emissionFrequency.GetAmplitude());
 				writer->SetInt("Function", emissionFrequency.GetModFunc());
-				writer->SetFloat2("Limits", Math::float2(emissionFrequency.GetLimits()[0], emissionFrequency.GetLimits()[1]));
+				writer->SetVec2("Limits", Math::vec2(emissionFrequency.GetLimits()[0], emissionFrequency.GetLimits()[1]));
 
 				// end node
 				writer->EndNode();
@@ -567,7 +567,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				// begin node
 				writer->BeginNode("LifeTime");
 
-				writer->SetFloat4("Values", Math::float4(lifeTime.GetValues()[0],
+				writer->SetVec4("Values", Math::vec4(lifeTime.GetValues()[0],
 					lifeTime.GetValues()[1],
 					lifeTime.GetValues()[2],
 					lifeTime.GetValues()[3]));
@@ -576,7 +576,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				writer->SetFloat("Frequency", lifeTime.GetFrequency());
 				writer->SetFloat("Amplitude", lifeTime.GetAmplitude());
 				writer->SetInt("Function", lifeTime.GetModFunc());
-				writer->SetFloat2("Limits", Math::float2(lifeTime.GetLimits()[0], lifeTime.GetLimits()[1]));
+				writer->SetVec2("Limits", Math::vec2(lifeTime.GetLimits()[0], lifeTime.GetLimits()[1]));
 
 				// end values node
 				writer->EndNode();
@@ -584,7 +584,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				// begin node
 				writer->BeginNode("SpreadMin");
 
-				writer->SetFloat4("Values", Math::float4(spreadMin.GetValues()[0],
+				writer->SetVec4("Values", Math::vec4(spreadMin.GetValues()[0],
 					spreadMin.GetValues()[1],
 					spreadMin.GetValues()[2],
 					spreadMin.GetValues()[3]));
@@ -593,7 +593,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				writer->SetFloat("Frequency", spreadMin.GetFrequency());
 				writer->SetFloat("Amplitude", spreadMin.GetAmplitude());
 				writer->SetInt("Function", spreadMin.GetModFunc());
-				writer->SetFloat2("Limits", Math::float2(spreadMin.GetLimits()[0], spreadMin.GetLimits()[1]));
+				writer->SetVec2("Limits", Math::vec2(spreadMin.GetLimits()[0], spreadMin.GetLimits()[1]));
 
 				// end values node
 				writer->EndNode();
@@ -601,7 +601,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				// begin node
 				writer->BeginNode("SpreadMax");
 
-				writer->SetFloat4("Values", Math::float4(spreadMax.GetValues()[0],
+				writer->SetVec4("Values", Math::vec4(spreadMax.GetValues()[0],
 					spreadMax.GetValues()[1],
 					spreadMax.GetValues()[2],
 					spreadMax.GetValues()[3]));
@@ -610,7 +610,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				writer->SetFloat("Frequency", spreadMax.GetFrequency());
 				writer->SetFloat("Amplitude", spreadMax.GetAmplitude());
 				writer->SetInt("Function", spreadMax.GetModFunc());
-				writer->SetFloat2("Limits", Math::float2(spreadMax.GetLimits()[0], spreadMax.GetLimits()[1]));
+				writer->SetVec2("Limits", Math::vec2(spreadMax.GetLimits()[0], spreadMax.GetLimits()[1]));
 
 				// end values node
 				writer->EndNode();
@@ -618,7 +618,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				// begin node
 				writer->BeginNode("StartVelocity");
 
-				writer->SetFloat4("Values", Math::float4(startVel.GetValues()[0],
+				writer->SetVec4("Values", Math::vec4(startVel.GetValues()[0],
 					startVel.GetValues()[1],
 					startVel.GetValues()[2],
 					startVel.GetValues()[3]));
@@ -627,7 +627,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				writer->SetFloat("Frequency", startVel.GetFrequency());
 				writer->SetFloat("Amplitude", startVel.GetAmplitude());
 				writer->SetInt("Function", startVel.GetModFunc());
-				writer->SetFloat2("Limits", Math::float2(startVel.GetLimits()[0], startVel.GetLimits()[1]));
+				writer->SetVec2("Limits", Math::vec2(startVel.GetLimits()[0], startVel.GetLimits()[1]));
 
 				// end values node
 				writer->EndNode();
@@ -635,7 +635,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				// begin node
 				writer->BeginNode("RotationVelocity");
 
-				writer->SetFloat4("Values", Math::float4(rotationVel.GetValues()[0],
+				writer->SetVec4("Values", Math::vec4(rotationVel.GetValues()[0],
 					rotationVel.GetValues()[1],
 					rotationVel.GetValues()[2],
 					rotationVel.GetValues()[3]));
@@ -644,7 +644,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				writer->SetFloat("Frequency", rotationVel.GetFrequency());
 				writer->SetFloat("Amplitude", rotationVel.GetAmplitude());
 				writer->SetInt("Function", rotationVel.GetModFunc());
-				writer->SetFloat2("Limits", Math::float2(rotationVel.GetLimits()[0], rotationVel.GetLimits()[1]));
+				writer->SetVec2("Limits", Math::vec2(rotationVel.GetLimits()[0], rotationVel.GetLimits()[1]));
 
 				// end values node
 				writer->EndNode();
@@ -652,7 +652,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				// begin node
 				writer->BeginNode("Size");
 
-				writer->SetFloat4("Values", Math::float4(size.GetValues()[0],
+				writer->SetVec4("Values", Math::vec4(size.GetValues()[0],
 					size.GetValues()[1],
 					size.GetValues()[2],
 					size.GetValues()[3]));
@@ -661,7 +661,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				writer->SetFloat("Frequency", size.GetFrequency());
 				writer->SetFloat("Amplitude", size.GetAmplitude());
 				writer->SetInt("Function", size.GetModFunc());
-				writer->SetFloat2("Limits", Math::float2(size.GetLimits()[0], size.GetLimits()[1]));
+				writer->SetVec2("Limits", Math::vec2(size.GetLimits()[0], size.GetLimits()[1]));
 
 				// end values node
 				writer->EndNode();
@@ -669,7 +669,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				// begin node
 				writer->BeginNode("Mass");
 
-				writer->SetFloat4("Values", Math::float4(mass.GetValues()[0],
+				writer->SetVec4("Values", Math::vec4(mass.GetValues()[0],
 					mass.GetValues()[1],
 					mass.GetValues()[2],
 					mass.GetValues()[3]));
@@ -678,14 +678,14 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				writer->SetFloat("Frequency", mass.GetFrequency());
 				writer->SetFloat("Amplitude", mass.GetAmplitude());
 				writer->SetInt("Function", mass.GetModFunc());
-				writer->SetFloat2("Limits", Math::float2(mass.GetLimits()[0], mass.GetLimits()[1]));
+				writer->SetVec2("Limits", Math::vec2(mass.GetLimits()[0], mass.GetLimits()[1]));
 				// end values node
 				writer->EndNode();
 
 				// begin node
 				writer->BeginNode("TimeManipulator");
 
-				writer->SetFloat4("Values", Math::float4(timeMan.GetValues()[0],
+				writer->SetVec4("Values", Math::vec4(timeMan.GetValues()[0],
 					timeMan.GetValues()[1],
 					timeMan.GetValues()[2],
 					timeMan.GetValues()[3]));
@@ -694,7 +694,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				writer->SetFloat("Frequency", timeMan.GetFrequency());
 				writer->SetFloat("Amplitude", timeMan.GetAmplitude());
 				writer->SetInt("Function", timeMan.GetModFunc());
-				writer->SetFloat2("Limits", Math::float2(timeMan.GetLimits()[0], timeMan.GetLimits()[1]));
+				writer->SetVec2("Limits", Math::vec2(timeMan.GetLimits()[0], timeMan.GetLimits()[1]));
 
 				// end values node
 				writer->EndNode();
@@ -702,7 +702,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				// begin node
 				writer->BeginNode("VelocityFactor");
 
-				writer->SetFloat4("Values", Math::float4(velFac.GetValues()[0],
+				writer->SetVec4("Values", Math::vec4(velFac.GetValues()[0],
 					velFac.GetValues()[1],
 					velFac.GetValues()[2],
 					velFac.GetValues()[3]));
@@ -711,7 +711,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				writer->SetFloat("Frequency", velFac.GetFrequency());
 				writer->SetFloat("Amplitude", velFac.GetAmplitude());
 				writer->SetInt("Function", velFac.GetModFunc());
-				writer->SetFloat2("Limits", Math::float2(velFac.GetLimits()[0], velFac.GetLimits()[1]));
+				writer->SetVec2("Limits", Math::vec2(velFac.GetLimits()[0], velFac.GetLimits()[1]));
 
 				// end values node
 				writer->EndNode();
@@ -719,7 +719,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				// begin node
 				writer->BeginNode("AirResistance");
 
-				writer->SetFloat4("Values", Math::float4(air.GetValues()[0],
+				writer->SetVec4("Values", Math::vec4(air.GetValues()[0],
 					air.GetValues()[1],
 					air.GetValues()[2],
 					air.GetValues()[3]));
@@ -728,7 +728,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				writer->SetFloat("Frequency", air.GetFrequency());
 				writer->SetFloat("Amplitude", air.GetAmplitude());
 				writer->SetInt("Function", air.GetModFunc());
-				writer->SetFloat2("Limits", Math::float2(air.GetLimits()[0], air.GetLimits()[1]));
+				writer->SetVec2("Limits", Math::vec2(air.GetLimits()[0], air.GetLimits()[1]));
 
 				// end values node
 				writer->EndNode();
@@ -736,7 +736,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				// begin node
 				writer->BeginNode("Red");
 
-				writer->SetFloat4("Values", Math::float4(red.GetValues()[0],
+				writer->SetVec4("Values", Math::vec4(red.GetValues()[0],
 					red.GetValues()[1],
 					red.GetValues()[2],
 					red.GetValues()[3]));
@@ -745,7 +745,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				writer->SetFloat("Frequency", red.GetFrequency());
 				writer->SetFloat("Amplitude", red.GetAmplitude());
 				writer->SetInt("Function", red.GetModFunc());
-				writer->SetFloat2("Limits", Math::float2(red.GetLimits()[0], red.GetLimits()[1]));
+				writer->SetVec2("Limits", Math::vec2(red.GetLimits()[0], red.GetLimits()[1]));
 
 				// end values node
 				writer->EndNode();
@@ -753,7 +753,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				// begin node
 				writer->BeginNode("Green");
 
-				writer->SetFloat4("Values", Math::float4(green.GetValues()[0],
+				writer->SetVec4("Values", Math::vec4(green.GetValues()[0],
 					green.GetValues()[1],
 					green.GetValues()[2],
 					green.GetValues()[3]));
@@ -762,7 +762,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				writer->SetFloat("Frequency", green.GetFrequency());
 				writer->SetFloat("Amplitude", green.GetAmplitude());
 				writer->SetInt("Function", green.GetModFunc());
-				writer->SetFloat2("Limits", Math::float2(green.GetLimits()[0], green.GetLimits()[1]));
+				writer->SetVec2("Limits", Math::vec2(green.GetLimits()[0], green.GetLimits()[1]));
 
 				// end values node
 				writer->EndNode();
@@ -770,7 +770,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				// begin node
 				writer->BeginNode("Blue");
 
-				writer->SetFloat4("Values", Math::float4(blue.GetValues()[0],
+				writer->SetVec4("Values", Math::vec4(blue.GetValues()[0],
 					blue.GetValues()[1],
 					blue.GetValues()[2],
 					blue.GetValues()[3]));
@@ -779,7 +779,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				writer->SetFloat("Frequency", blue.GetFrequency());
 				writer->SetFloat("Amplitude", blue.GetAmplitude());
 				writer->SetInt("Function", blue.GetModFunc());
-				writer->SetFloat2("Limits", Math::float2(blue.GetLimits()[0], blue.GetLimits()[1]));
+				writer->SetVec2("Limits", Math::vec2(blue.GetLimits()[0], blue.GetLimits()[1]));
 
 				// end values node
 				writer->EndNode();
@@ -787,7 +787,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				// begin node
 				writer->BeginNode("Alpha");
 
-				writer->SetFloat4("Values", Math::float4(alpha.GetValues()[0],
+				writer->SetVec4("Values", Math::vec4(alpha.GetValues()[0],
 					alpha.GetValues()[1],
 					alpha.GetValues()[2],
 					alpha.GetValues()[3]));
@@ -796,7 +796,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				writer->SetFloat("Frequency", alpha.GetFrequency());
 				writer->SetFloat("Amplitude", alpha.GetAmplitude());
 				writer->SetInt("Function", alpha.GetModFunc());
-				writer->SetFloat2("Limits", Math::float2(alpha.GetLimits()[0], alpha.GetLimits()[1]));
+				writer->SetVec2("Limits", Math::vec2(alpha.GetLimits()[0], alpha.GetLimits()[1]));
 
 				// end values node
 				writer->EndNode();
@@ -826,7 +826,7 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				writer->SetFloat("StartDelay", attrs.GetFloat(EmitterAttrs::StartDelay));
 				writer->SetFloat("PhasesPerSecond", attrs.GetFloat(EmitterAttrs::PhasesPerSecond));
 				writer->SetInt("AnimPhases", attrs.GetInt(EmitterAttrs::AnimPhases));
-				writer->SetFloat4("WindDirection", attrs.GetFloat4(EmitterAttrs::WindDirection));
+				writer->SetVec4("WindDirection", attrs.GetVec4(EmitterAttrs::WindDirection));
 
 				// end values node
 				writer->EndNode();
@@ -854,13 +854,13 @@ ModelAttributes::Save(const Ptr<IO::Stream>& stream)
 				writer->SetInt("type", node.type);
 
 				// set transform
-				writer->SetFloat4("position", node.transform.position);
-				writer->SetFloat4("rotation", Math::float4(
-					node.transform.rotation.x(),
-					node.transform.rotation.y(),
-					node.transform.rotation.z(),
-					node.transform.rotation.w()));
-				writer->SetFloat4("scale", node.transform.scale);
+				writer->SetVec4("position", node.transform.position);
+				writer->SetVec4("rotation", Math::vec4(
+					node.transform.rotation.x,
+					node.transform.rotation.y,
+					node.transform.rotation.z,
+					node.transform.rotation.w));
+				writer->SetVec4("scale", node.transform.scale);
 
 				switch (node.type)
 				{
@@ -984,14 +984,14 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
                                 var.limits = Util::KeyValuePair<Util::Variant, Util::Variant>(reader->GetOptFloat("min", 0.0f), reader->GetOptFloat("max", 1.0f));
 								break;
 							}
-						case Variant::Float2:
+						case Variant::Vec2:
 							{
-								var.variableValue = reader->GetFloat2("value");
+								var.variableValue = reader->GetVec2("value");
 								break;
 							}
-						case Variant::Float4:
+						case Variant::Vec4:
 							{
-								var.variableValue = reader->GetFloat4("value");
+								var.variableValue = reader->GetVec4("value");
 								break;
 							}
 						case Variant::Int:
@@ -1148,8 +1148,8 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
 				EnvelopeCurve blue = attrs.GetEnvelope(EmitterAttrs::Blue);
 				EnvelopeCurve alpha = attrs.GetEnvelope(EmitterAttrs::Alpha);
 
-				Math::float4 values;
-				Math::float2 limits;
+				Math::vec4 values;
+				Math::vec2 limits;
 				float keypos0, keypos1, freq, amp;
 				int func;
 
@@ -1157,17 +1157,17 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
 				reader->SetToFirstChild("EmissionFrequency");
 
 				// now get all attributes...
-				values = reader->GetFloat4("Values");
+				values = reader->GetVec4("Values");
 				keypos0 = reader->GetFloat("Pos0");
 				keypos1 = reader->GetFloat("Pos1");
 				freq = reader->GetFloat("Frequency");
 				amp = reader->GetFloat("Amplitude");
 				func = reader->GetInt("Function");
-				limits = reader->GetFloat2("Limits");
+				limits = reader->GetVec2("Limits");
 
 				// setup curve
-				emissionFrequency.Setup(values.x(), values.y(), values.z(), values.w(), keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
-				emissionFrequency.SetLimits(limits.x(), limits.y());
+				emissionFrequency.Setup(values.x, values.y, values.z, values.w, keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
+				emissionFrequency.SetLimits(limits.x, limits.y);
 				attrs.SetEnvelope(EmitterAttrs::EmissionFrequency, emissionFrequency);
 
 				// jump back to parent
@@ -1177,17 +1177,17 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
 				reader->SetToFirstChild("LifeTime");
 
 				// now Get all attributes...
-				values = reader->GetFloat4("Values");
+				values = reader->GetVec4("Values");
 				keypos0 = reader->GetFloat("Pos0");
 				keypos1 = reader->GetFloat("Pos1");
 				freq = reader->GetFloat("Frequency");
 				amp = reader->GetFloat("Amplitude");
 				func = reader->GetInt("Function");
-				limits = reader->GetFloat2("Limits");
+				limits = reader->GetVec2("Limits");
 
 				// setup curve
-				lifeTime.Setup(values.x(), values.y(), values.z(), values.w(), keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
-				lifeTime.SetLimits(limits.x(), limits.y());
+				lifeTime.Setup(values.x, values.y, values.z, values.w, keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
+				lifeTime.SetLimits(limits.x, limits.y);
 				attrs.SetEnvelope(EmitterAttrs::LifeTime, lifeTime);
 
 				// jump back to parent
@@ -1197,17 +1197,17 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
 				reader->SetToFirstChild("SpreadMin");
 
 				// now Get all attributes...
-				values = reader->GetFloat4("Values");
+				values = reader->GetVec4("Values");
 				keypos0 = reader->GetFloat("Pos0");
 				keypos1 = reader->GetFloat("Pos1");
 				freq = reader->GetFloat("Frequency");
 				amp = reader->GetFloat("Amplitude");
 				func = reader->GetInt("Function");
-				limits = reader->GetFloat2("Limits");
+				limits = reader->GetVec2("Limits");
 
 				// setup curve
-				spreadMin.Setup(values.x(), values.y(), values.z(), values.w(), keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
-				spreadMin.SetLimits(limits.x(), limits.y());
+				spreadMin.Setup(values.x, values.y, values.z, values.w, keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
+				spreadMin.SetLimits(limits.x, limits.y);
 				attrs.SetEnvelope(EmitterAttrs::SpreadMin, spreadMin);
 
 				// jump back to parent
@@ -1217,17 +1217,17 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
 				reader->SetToFirstChild("SpreadMax");
 
 				// now Get all attributes...
-				values = reader->GetFloat4("Values");
+				values = reader->GetVec4("Values");
 				keypos0 = reader->GetFloat("Pos0");
 				keypos1 = reader->GetFloat("Pos1");
 				freq = reader->GetFloat("Frequency");
 				amp = reader->GetFloat("Amplitude");
 				func = reader->GetInt("Function");
-				limits = reader->GetFloat2("Limits");
+				limits = reader->GetVec2("Limits");
 
 				// setup curve
-				spreadMax.Setup(values.x(), values.y(), values.z(), values.w(), keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
-				spreadMax.SetLimits(limits.x(), limits.y());
+				spreadMax.Setup(values.x, values.y, values.z, values.w, keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
+				spreadMax.SetLimits(limits.x, limits.y);
 				attrs.SetEnvelope(EmitterAttrs::SpreadMax, spreadMax);
 
 				// jump back to parent
@@ -1237,17 +1237,17 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
 				reader->SetToFirstChild("StartVelocity");
 
 				// now Get all attributes...
-				values = reader->GetFloat4("Values");
+				values = reader->GetVec4("Values");
 				keypos0 = reader->GetFloat("Pos0");
 				keypos1 = reader->GetFloat("Pos1");
 				freq = reader->GetFloat("Frequency");
 				amp = reader->GetFloat("Amplitude");
 				func = reader->GetInt("Function");
-				limits = reader->GetFloat2("Limits");
+				limits = reader->GetVec2("Limits");
 
 				// setup curve
-				startVel.Setup(values.x(), values.y(), values.z(), values.w(), keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
-				startVel.SetLimits(limits.x(), limits.y());
+				startVel.Setup(values.x, values.y, values.z, values.w, keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
+				startVel.SetLimits(limits.x, limits.y);
 				attrs.SetEnvelope(EmitterAttrs::StartVelocity, startVel);
 
 				// jump back to parent
@@ -1257,17 +1257,17 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
 				reader->SetToFirstChild("RotationVelocity");
 
 				// now Get all attributes...
-				values = reader->GetFloat4("Values");
+				values = reader->GetVec4("Values");
 				keypos0 = reader->GetFloat("Pos0");
 				keypos1 = reader->GetFloat("Pos1");
 				freq = reader->GetFloat("Frequency");
 				amp = reader->GetFloat("Amplitude");
 				func = reader->GetInt("Function");
-				limits = reader->GetFloat2("Limits");
+				limits = reader->GetVec2("Limits");
 
 				// setup curve
-				rotationVel.Setup(values.x(), values.y(), values.z(), values.w(), keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
-				rotationVel.SetLimits(limits.x(), limits.y());
+				rotationVel.Setup(values.x, values.y, values.z, values.w, keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
+				rotationVel.SetLimits(limits.x, limits.y);
 				attrs.SetEnvelope(EmitterAttrs::RotationVelocity, rotationVel);
 
 				// jump back to parent
@@ -1277,17 +1277,17 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
 				reader->SetToFirstChild("Size");
 
 				// now Get all attributes...
-				values = reader->GetFloat4("Values");
+				values = reader->GetVec4("Values");
 				keypos0 = reader->GetFloat("Pos0");
 				keypos1 = reader->GetFloat("Pos1");
 				freq = reader->GetFloat("Frequency");
 				amp = reader->GetFloat("Amplitude");
 				func = reader->GetInt("Function");
-				limits = reader->GetFloat2("Limits");
+				limits = reader->GetVec2("Limits");
 
 				// setup curve
-				size.Setup(values.x(), values.y(), values.z(), values.w(), keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
-				size.SetLimits(limits.x(), limits.y());
+				size.Setup(values.x, values.y, values.z, values.w, keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
+				size.SetLimits(limits.x, limits.y);
 				attrs.SetEnvelope(EmitterAttrs::Size, size);
 
 				// jump back to parent
@@ -1297,17 +1297,17 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
 				reader->SetToFirstChild("Mass");
 
 				// now Get all attributes...
-				values = reader->GetFloat4("Values");
+				values = reader->GetVec4("Values");
 				keypos0 = reader->GetFloat("Pos0");
 				keypos1 = reader->GetFloat("Pos1");
 				freq = reader->GetFloat("Frequency");
 				amp = reader->GetFloat("Amplitude");
 				func = reader->GetInt("Function");
-				limits = reader->GetFloat2("Limits");
+				limits = reader->GetVec2("Limits");
 
 				// setup curve
-				mass.Setup(values.x(), values.y(), values.z(), values.w(), keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
-				mass.SetLimits(limits.x(), limits.y());
+				mass.Setup(values.x, values.y, values.z, values.w, keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
+				mass.SetLimits(limits.x, limits.y);
 				attrs.SetEnvelope(EmitterAttrs::Mass, mass);
 
 				// jump back to parent
@@ -1317,17 +1317,17 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
 				reader->SetToFirstChild("TimeManipulator");
 
 				// now Get all attributes...
-				values = reader->GetFloat4("Values");
+				values = reader->GetVec4("Values");
 				keypos0 = reader->GetFloat("Pos0");
 				keypos1 = reader->GetFloat("Pos1");
 				freq = reader->GetFloat("Frequency");
 				amp = reader->GetFloat("Amplitude");
 				func = reader->GetInt("Function");
-				limits = reader->GetFloat2("Limits");
+				limits = reader->GetVec2("Limits");
 
 				// setup curve
-				timeMan.Setup(values.x(), values.y(), values.z(), values.w(), keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
-				timeMan.SetLimits(limits.x(), limits.y());
+				timeMan.Setup(values.x, values.y, values.z, values.w, keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
+				timeMan.SetLimits(limits.x, limits.y);
 				attrs.SetEnvelope(EmitterAttrs::Mass, mass);
 
 				// jump back to parent
@@ -1337,17 +1337,17 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
 				reader->SetToFirstChild("VelocityFactor");
 
 				// now Get all attributes...
-				values = reader->GetFloat4("Values");
+				values = reader->GetVec4("Values");
 				keypos0 = reader->GetFloat("Pos0");
 				keypos1 = reader->GetFloat("Pos1");
 				freq = reader->GetFloat("Frequency");
 				amp = reader->GetFloat("Amplitude");
 				func = reader->GetInt("Function");
-				limits = reader->GetFloat2("Limits");
+				limits = reader->GetVec2("Limits");
 
 				// setup curve
-				velFac.Setup(values.x(), values.y(), values.z(), values.w(), keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
-				velFac.SetLimits(limits.x(), limits.y());
+				velFac.Setup(values.x, values.y, values.z, values.w, keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
+				velFac.SetLimits(limits.x, limits.y);
 				attrs.SetEnvelope(EmitterAttrs::VelocityFactor, velFac);
 
 				// jump back to parent
@@ -1357,17 +1357,17 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
 				reader->SetToFirstChild("AirResistance");
 
 				// now Get all attributes...
-				values = reader->GetFloat4("Values");
+				values = reader->GetVec4("Values");
 				keypos0 = reader->GetFloat("Pos0");
 				keypos1 = reader->GetFloat("Pos1");
 				freq = reader->GetFloat("Frequency");
 				amp = reader->GetFloat("Amplitude");
 				func = reader->GetInt("Function");
-				limits = reader->GetFloat2("Limits");
+				limits = reader->GetVec2("Limits");
 
 				// setup curve
-				air.Setup(values.x(), values.y(), values.z(), values.w(), keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
-				air.SetLimits(limits.x(), limits.y());
+				air.Setup(values.x, values.y, values.z, values.w, keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
+				air.SetLimits(limits.x, limits.y);
 				attrs.SetEnvelope(EmitterAttrs::AirResistance, air);
 
 				// jump back to parent
@@ -1377,17 +1377,17 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
 				reader->SetToFirstChild("Red");
 
 				// now Get all attributes...
-				values = reader->GetFloat4("Values");
+				values = reader->GetVec4("Values");
 				keypos0 = reader->GetFloat("Pos0");
 				keypos1 = reader->GetFloat("Pos1");
 				freq = reader->GetFloat("Frequency");
 				amp = reader->GetFloat("Amplitude");
 				func = reader->GetInt("Function");
-				limits = reader->GetFloat2("Limits");
+				limits = reader->GetVec2("Limits");
 
 				// setup curve
-				red.Setup(values.x(), values.y(), values.z(), values.w(), keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
-				red.SetLimits(limits.x(), limits.y());
+				red.Setup(values.x, values.y, values.z, values.w, keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
+				red.SetLimits(limits.x, limits.y);
 				attrs.SetEnvelope(EmitterAttrs::Red, red);
 
 				// jump back to parent
@@ -1397,17 +1397,17 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
 				reader->SetToFirstChild("Green");
 
 				// now Get all attributes...
-				values = reader->GetFloat4("Values");
+				values = reader->GetVec4("Values");
 				keypos0 = reader->GetFloat("Pos0");
 				keypos1 = reader->GetFloat("Pos1");
 				freq = reader->GetFloat("Frequency");
 				amp = reader->GetFloat("Amplitude");
 				func = reader->GetInt("Function");
-				limits = reader->GetFloat2("Limits");
+				limits = reader->GetVec2("Limits");
 
 				// setup curve
-				green.Setup(values.x(), values.y(), values.z(), values.w(), keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
-				green.SetLimits(limits.x(), limits.y());
+				green.Setup(values.x, values.y, values.z, values.w, keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
+				green.SetLimits(limits.x, limits.y);
 				attrs.SetEnvelope(EmitterAttrs::Green, green);
 
 				// jump back to parent
@@ -1417,17 +1417,17 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
 				reader->SetToFirstChild("Blue");
 
 				// now Get all attributes...
-				values = reader->GetFloat4("Values");
+				values = reader->GetVec4("Values");
 				keypos0 = reader->GetFloat("Pos0");
 				keypos1 = reader->GetFloat("Pos1");
 				freq = reader->GetFloat("Frequency");
 				amp = reader->GetFloat("Amplitude");
 				func = reader->GetInt("Function");
-				limits = reader->GetFloat2("Limits");
+				limits = reader->GetVec2("Limits");
 
 				// setup curve
-				blue.Setup(values.x(), values.y(), values.z(), values.w(), keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
-				blue.SetLimits(limits.x(), limits.y());
+				blue.Setup(values.x, values.y, values.z, values.w, keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
+				blue.SetLimits(limits.x, limits.y);
 				attrs.SetEnvelope(EmitterAttrs::Blue, blue);
 
 				// jump back to parent
@@ -1437,17 +1437,17 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
 				reader->SetToFirstChild("Alpha");
 
 				// now Get all attributes...
-				values = reader->GetFloat4("Values");
+				values = reader->GetVec4("Values");
 				keypos0 = reader->GetFloat("Pos0");
 				keypos1 = reader->GetFloat("Pos1");
 				freq = reader->GetFloat("Frequency");
 				amp = reader->GetFloat("Amplitude");
 				func = reader->GetInt("Function");
-				limits = reader->GetFloat2("Limits");
+				limits = reader->GetVec2("Limits");
 
 				// setup curve
-				alpha.Setup(values.x(), values.y(), values.z(), values.w(), keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
-				alpha.SetLimits(limits.x(), limits.y());
+				alpha.Setup(values.x, values.y, values.z, values.w, keypos0, keypos1, freq, amp, (EnvelopeCurve::ModFunc)func);
+				alpha.SetLimits(limits.x, limits.y);
 				attrs.SetEnvelope(EmitterAttrs::Alpha, alpha);
 
 				// jump back to parent
@@ -1478,7 +1478,7 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
 				float startDelay = reader->GetFloat("StartDelay");
 				float phasesPerSecond = reader->GetFloat("PhasesPerSecond");
 				int animPhases = reader->GetInt("AnimPhases");
-				Math::float4 windDirection = reader->GetFloat4("WindDirection");
+				Math::vec4 windDirection = reader->GetVec4("WindDirection");
 
 				// now set attributes...
 				attrs.SetFloat(EmitterAttrs::EmissionDuration, duration);
@@ -1502,7 +1502,7 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
 				attrs.SetFloat(EmitterAttrs::StartDelay, startDelay);
 				attrs.SetFloat(EmitterAttrs::PhasesPerSecond, phasesPerSecond);
 				attrs.SetInt(EmitterAttrs::AnimPhases, animPhases);
-				attrs.SetFloat4(EmitterAttrs::WindDirection, windDirection);
+				attrs.SetVec4(EmitterAttrs::WindDirection, windDirection);
 
 				// add node to nodes
 				this->particleAttrMap.Add(nodeName, attrs);
@@ -1530,9 +1530,9 @@ ModelAttributes::Load(const Ptr<IO::Stream>& stream)
 				node.type = (AppendixNodeType)reader->GetInt("type");
 
 				// get transform
-				node.transform.position = reader->GetFloat4("position");
-				node.transform.rotation = reader->GetFloat4("rotation");
-				node.transform.scale = reader->GetFloat4("scale");
+				node.transform.position = reader->GetVec4("position");
+				node.transform.rotation = reader->GetVec4("rotation");
+				node.transform.scale = reader->GetVec4("scale").vec;
 
 				switch (node.type)
 				{

@@ -2,14 +2,18 @@
 # Toolkit
 #-------------------------------------------------------------------------------
 
+find_package(Fbx REQUIRED)
+
 fips_begin_module(toolkitutil)
 	fips_vs_warning_level(3)
     fips_include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CODE_ROOT}/foundation ${CODE_ROOT}/render ${CODE_ROOT}/)
-    fips_deps(foundation render ${FBX_LIB})
-    if (N_BUILD_NVTT)
-		fips_deps(nvtt)
-		ADD_DEFINITIONS(-DUSE_NVTT)
-    endif()
+    fips_deps(foundation render)
+	fips_libs_debug(${FBX_LIBRARY_DEBUG})
+	fips_libs_release(${FBX_LIBRARY})
+	if(FIPS_WINDOWS)
+		fips_libs_debug(CMP_Core_MTd CMP_Framework_MTd)
+		fips_libs_release(CMP_Core_MT CMP_Framework_MT)
+	endif()
     	fips_files(			
 			assetfile.cc
 			assetfile.h
@@ -93,17 +97,10 @@ fips_begin_module(toolkitutil)
 		#		posteffectparser.h
 		#	)
 	ENDIF()
-		IF(N_BUILD_NVTT)
-			SET(SRCSX_PL
-				nvtttextureconversionjob.cc
-				nvtttextureconversionjob.h
+		SET(SRCSX_PL
+			compressonatorconversionjob.cc
+			compressonatorconversionjob.h
 				)
-		ELSE()
-			SET(SRCSX_PL
-				win32textureconversionjob.cc
-				win32textureconversionjob.h
-				)
-		ENDIF()                 
 	IF(NOT N_MINIMAL_TOOLKIT)
 		fips_dir(texutil)
 			fips_files(
@@ -203,6 +200,9 @@ ENDIF()
 				surfaceexporter.h
 			)
 fips_end_module()
-# target_link_libraries(toolkitutil PUBLIC ${FBX_LIB})
-target_compile_definitions(toolkitutil PUBLIC $<$<BOOL:${N_BUILD_NVTT}>:NVTT_EXPORTS> FBXSDK_SHARED)
-target_include_directories(toolkitutil PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_compile_definitions(toolkitutil PUBLIC FBXSDK_SHARED)
+target_include_directories(toolkitutil PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${FBX_INCLUDE_DIRS})
+IF(FIPS_WINDOWS)
+	FILE(COPY ${FBX_DLL} DESTINATION ${FIPS_DEPLOY_DIR}/${CMAKE_PROJECT_NAME}/${FIPS_CONFIG}/)
+ENDIF()

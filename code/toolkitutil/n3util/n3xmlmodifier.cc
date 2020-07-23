@@ -219,7 +219,7 @@ N3XMLModifier::RecursiveParse( ToolkitUtil::Node* node )
 		}
 		else if (node->nodeName == "f4")
 		{
-			node->content = this->reader->GetContent().AsFloat4();
+			node->content = this->reader->GetContent().AsVec4();
 		}
 		else if (node->nodeName == "i")
 		{
@@ -314,7 +314,7 @@ N3XMLModifier::RecursiveParse( ToolkitUtil::Node* node )
 				case Variant::Float:
 					valueNode->nodeName = "f";					
 					break;
-				case Variant::Float4:
+				case Variant::Vec4:
 					valueNode->nodeName = "f4";
 					break;
 				case Variant::Int:
@@ -364,8 +364,8 @@ N3XMLModifier::RecursiveWrite( const ToolkitUtil::Node* node )
 		case Variant::Float:
 			this->writer->WriteContent(String::FromFloat(node->content.GetFloat()));
 			break;
-		case Variant::Float4:
-			this->writer->WriteContent(String::FromFloat4(node->content.GetFloat4()));
+		case Variant::Vec4:
+			this->writer->WriteContent(String::FromVec4(node->content.GetVec4()));
 			break;
 		case Variant::Int:
 			this->writer->WriteContent(String::FromInt(node->content.GetInt()));

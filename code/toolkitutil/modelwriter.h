@@ -50,9 +50,9 @@ public:
     /// write float value
     virtual void WriteFloat(float f) = 0;
 	/// write float2 value
-	virtual void WriteFloat2(const Math::float2& f) = 0;
-    /// write float4 value
-    virtual void WriteFloat4(const Math::float4& f) = 0;
+	virtual void WriteFloat2(const Math::vec2& f) = 0;
+    /// write vec4 value
+    virtual void Writevec4(const Math::vec4& f) = 0;
     /// write string value
     virtual void WriteString(const Util::String& s) = 0;
     /// write int array value

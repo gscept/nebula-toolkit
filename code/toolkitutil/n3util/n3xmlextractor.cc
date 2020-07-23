@@ -142,7 +142,7 @@ N3XmlExtractor::RecursiveParseState( Util::String targetNodeWithPath, Texture& t
 			this->reader->SetToFirstChild("s");
 			String varName = this->reader->GetContent();
 			this->reader->SetToNextChild("f4");
-			Math::float4 varVal = this->reader->GetContent().AsFloat4();
+			Math::vec4 varVal = this->reader->GetContent().AsVec4();
 			var.variableName = varName;
 			var.variableValue = varVal;
 
@@ -412,12 +412,13 @@ N3XmlExtractor::ExtractSceneBoundingBox( Math::bbox& box )
 		this->reader->SetToNode("ModelNode");
 		if (this->reader->SetToFirstChild("LBOX"))
 		{
-			Math::point center, extents;
+			Math::point center;
+			Math::vector extents;
 
 			this->reader->SetToFirstChild();
-			center = this->reader->GetContent().AsFloat4();
+			center = this->reader->GetContent().AsVec4();
 			this->reader->SetToNextChild();
-			extents = this->reader->GetContent().AsFloat4();
+			extents = this->reader->GetContent().AsVec4().vec;
 
 			box = Math::bbox(center, extents);
 		}	

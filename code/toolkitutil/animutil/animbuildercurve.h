@@ -11,7 +11,7 @@
 #include "core/types.h"
 #include "coreanimation/curvetype.h"
 #include "util/fixedarray.h"
-#include "math/float4.h"
+#include "math/vec4.h"
 
 //------------------------------------------------------------------------------
 namespace ToolkitUtil
@@ -26,9 +26,9 @@ public:
     void ResizeKeyArray(SizeT numKeys);
 
     /// set a key in the keys array
-    void SetKey(IndexT i, const Math::float4& k);
+    void SetKey(IndexT i, const Math::vec4& k);
     /// get a key at index
-    const Math::float4& GetKey(IndexT i) const;
+    const Math::vec4& GetKey(IndexT i) const;
     /// get number of keys
     SizeT GetNumKeys() const;
 
@@ -44,9 +44,9 @@ public:
     /// return true if the curve is static
     bool IsStatic() const;
     /// set the static key of the curve
-    void SetStaticKey(const Math::float4& staticKey);
+    void SetStaticKey(const Math::vec4& staticKey);
     /// get the static key of the curve
-    const Math::float4& GetStaticKey() const;
+    const Math::vec4& GetStaticKey() const;
     /// set index of the first key in the AnimKeyBuffer
     void SetFirstKeyIndex(IndexT index);
     /// get index of the first key in the AnimKeyBuffer
@@ -57,8 +57,8 @@ public:
     CoreAnimation::CurveType::Code GetCurveType() const;
 
 private:
-    Util::FixedArray<Math::float4> keyArray;
-    Math::float4 staticKey;
+    Util::FixedArray<Math::vec4> keyArray;
+    Math::vec4 staticKey;
     IndexT firstKeyIndex;
     CoreAnimation::CurveType::Code curveType;
     bool isActive;
@@ -69,7 +69,7 @@ private:
 /**
 */
 inline void
-AnimBuilderCurve::SetKey(IndexT i, const Math::float4& k)
+AnimBuilderCurve::SetKey(IndexT i, const Math::vec4& k)
 {
     this->keyArray[i] = k;
 }
@@ -77,7 +77,7 @@ AnimBuilderCurve::SetKey(IndexT i, const Math::float4& k)
 //------------------------------------------------------------------------------
 /**
 */
-inline const Math::float4&
+inline const Math::vec4&
 AnimBuilderCurve::GetKey(IndexT i) const
 {
     return this->keyArray[i];
@@ -132,7 +132,7 @@ AnimBuilderCurve::IsStatic() const
 /**
 */
 inline void
-AnimBuilderCurve::SetStaticKey(const Math::float4& k)
+AnimBuilderCurve::SetStaticKey(const Math::vec4& k)
 {
     this->staticKey = k;
 }
@@ -140,7 +140,7 @@ AnimBuilderCurve::SetStaticKey(const Math::float4& k)
 //------------------------------------------------------------------------------
 /**
 */
-inline const Math::float4&
+inline const Math::vec4&
 AnimBuilderCurve::GetStaticKey() const
 {
     return this->staticKey;
@@ -196,9 +196,9 @@ AnimBuilderCurve::FixInvalidKeys() const
 		{
 			for (int keyIndex = 0; keyIndex < this->keyArray.Size(); keyIndex++)
 			{
-				if (this->keyArray[keyIndex].w() != 0)
+				if (this->keyArray[keyIndex].w != 0)
 				{
-					this->keyArray[keyIndex].w() = 0;
+					this->keyArray[keyIndex].w = 0;
 				}
 			}
 		}

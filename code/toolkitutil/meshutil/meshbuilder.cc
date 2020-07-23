@@ -150,7 +150,7 @@ MeshBuilder::ComputeGroupBoundingBox(IndexT groupId) const
             IndexT i;
             for (i = 0; i < 3; i++)
             {
-                box.extend(this->VertexAt(index[i]).GetComponent(MeshBuilderVertex::CoordIndex));
+                box.extend(this->VertexAt(index[i]).GetComponent(MeshBuilderVertex::CoordIndex).vec);
             }
         }
     }
@@ -170,7 +170,7 @@ MeshBuilder::ComputeBoundingBox() const
     IndexT vertexIndex;
     for (vertexIndex = 0; vertexIndex < numVertices; vertexIndex++)
     {
-        box.extend(this->VertexAt(vertexIndex).GetComponent(MeshBuilderVertex::CoordIndex));
+        box.extend(this->VertexAt(vertexIndex).GetComponent(MeshBuilderVertex::CoordIndex).vec);
     }
     box.end_extend();
     return box;
@@ -298,7 +298,7 @@ MeshBuilder::ExtendVertexComponents()
 /**
 */
 void
-MeshBuilder::Transform(const matrix44& m)
+MeshBuilder::Transform(const mat4& m)
 {
     IndexT i;
     SizeT num = this->GetNumVertices();
@@ -483,8 +483,8 @@ MeshBuilder::FlipUvs()
             IndexT compIndex = MeshBuilderVertex::Uv0Index + uvLayer;
             if (v.HasComponents(1<<compIndex))
             {
-                float4 uv = v.GetComponent(MeshBuilderVertex::ComponentIndex(compIndex));
-                uv.y() = 1.0f - uv.y();
+                vec4 uv = v.GetComponent(MeshBuilderVertex::ComponentIndex(compIndex));
+                uv.y = 1.0f - uv.y;
                 v.SetComponent(MeshBuilderVertex::ComponentIndex(compIndex), uv);
             }
         }
@@ -522,9 +522,9 @@ MeshBuilder::MoveTriangleUvsIntoRange(IndexT triIndex, float minUv, float maxUv)
         for (i = 0; i < 3; i++)
         {
             const MeshBuilderVertex& vertex = this->VertexAt(vIndices[i]);
-            const float4& uv = vertex.GetComponent(uvCompIndex);
-            int xQuadrant = int(uv.x());
-            int yQuadrant = int(uv.y());
+            const vec4& uv = vertex.GetComponent(uvCompIndex);
+            int xQuadrant = int(uv.x);
+            int yQuadrant = int(uv.y);
             maxQuadrantX = Math::n_max(xQuadrant, maxQuadrantX);
             minQuadrantX = Math::n_min(xQuadrant, minQuadrantX);
             maxQuadrantY = Math::n_max(yQuadrant, maxQuadrantY);
@@ -542,11 +542,11 @@ MeshBuilder::MoveTriangleUvsIntoRange(IndexT triIndex, float minUv, float maxUv)
             if (maxQuadrantX > maxQuadrant)
             {
                 // shift x left
-                float4 shift(float(maxQuadrantX - maxQuadrant), 0.0f, 0.0f, 0.0f);
+                vec4 shift(float(maxQuadrantX - maxQuadrant), 0.0f, 0.0f, 0.0f);
                 for (i = 0; i < 3; i++)
                 {
                     MeshBuilderVertex& vertex = this->VertexAt(vIndices[i]);
-                    float4 uv = vertex.GetComponent(uvCompIndex);
+                    vec4 uv = vertex.GetComponent(uvCompIndex);
                     uv -= shift;
                     vertex.SetComponent(uvCompIndex, uv);
                 }
@@ -554,11 +554,11 @@ MeshBuilder::MoveTriangleUvsIntoRange(IndexT triIndex, float minUv, float maxUv)
             else if (minQuadrantX < minQuadrant)
             {
                 // shift x right
-                float4 shift(float(minQuadrant - minQuadrantX), 0.0f, 0.0f, 0.0f);
+                vec4 shift(float(minQuadrant - minQuadrantX), 0.0f, 0.0f, 0.0f);
                 for (i = 0; i < 3; i++)
                 {
                     MeshBuilderVertex& vertex = this->VertexAt(vIndices[i]);
-                    float4 uv = vertex.GetComponent(uvCompIndex);
+                    vec4 uv = vertex.GetComponent(uvCompIndex);
                     uv += shift;
                     vertex.SetComponent(uvCompIndex, uv);
                 }
@@ -568,11 +568,11 @@ MeshBuilder::MoveTriangleUvsIntoRange(IndexT triIndex, float minUv, float maxUv)
             if (maxQuadrantY > maxQuadrant)
             {
                 // shift y down
-                float4 shift(0.0f, float(maxQuadrantY - maxQuadrant), 0.0f, 0.0f);
+                vec4 shift(0.0f, float(maxQuadrantY - maxQuadrant), 0.0f, 0.0f);
                 for (i = 0; i < 3; i++)
                 {
                     MeshBuilderVertex& vertex = this->VertexAt(vIndices[i]);
-                    float4 uv = vertex.GetComponent(uvCompIndex);
+                    vec4 uv = vertex.GetComponent(uvCompIndex);
                     uv -= shift;
                     vertex.SetComponent(uvCompIndex, uv);
                 }
@@ -580,11 +580,11 @@ MeshBuilder::MoveTriangleUvsIntoRange(IndexT triIndex, float minUv, float maxUv)
             else if (minQuadrantY < minQuadrant)
             {
                 // shift y up
-                float4 shift(0.0f, float(minQuadrant - minQuadrantY), 0.0f, 0.0f);
+                vec4 shift(0.0f, float(minQuadrant - minQuadrantY), 0.0f, 0.0f);
                 for (i = 0; i < 3; i++)
                 {
                     MeshBuilderVertex& vertex = this->VertexAt(vIndices[i]);
-                    float4 uv = vertex.GetComponent(uvCompIndex);
+                    vec4 uv = vertex.GetComponent(uvCompIndex);
                     uv += shift;
                     vertex.SetComponent(uvCompIndex, uv);
                 }

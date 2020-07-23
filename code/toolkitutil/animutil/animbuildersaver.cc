@@ -163,10 +163,10 @@ AnimBuilderSaver::WriteClipCurves(const Ptr<Stream>& stream, AnimBuilderClip& cl
         nax3Curve.isStatic = curve.IsStatic();
         nax3Curve.curveType = curve.GetCurveType();
         nax3Curve._padding = 0;
-        nax3Curve.staticKeyX = curve.GetStaticKey().x();
-        nax3Curve.staticKeyY = curve.GetStaticKey().y();
-        nax3Curve.staticKeyZ = curve.GetStaticKey().z();
-        nax3Curve.staticKeyW = curve.GetStaticKey().w();
+        nax3Curve.staticKeyX = curve.GetStaticKey().x;
+        nax3Curve.staticKeyY = curve.GetStaticKey().y;
+        nax3Curve.staticKeyZ = curve.GetStaticKey().z;
+        nax3Curve.staticKeyW = curve.GetStaticKey().w;
         
         byteOrder.ConvertInPlace<uint>(nax3Curve.firstKeyIndex);
         byteOrder.ConvertInPlace<float>(nax3Curve.staticKeyX);
@@ -201,12 +201,12 @@ AnimBuilderSaver::WriteKeys(const Ptr<Stream>& stream, const AnimBuilder& animBu
                 const AnimBuilderCurve& curve = clip.GetCurveAtIndex(curveIndex);
                 if (!curve.IsStatic())
                 {
-                    const float4& key = clip.GetCurveAtIndex(curveIndex).GetKey(keyIndex);
+                    const vec4& key = clip.GetCurveAtIndex(curveIndex).GetKey(keyIndex);
                     float keyValues[4];
-                    keyValues[0] = key.x();
-                    keyValues[1] = key.y();
-                    keyValues[2] = key.z();
-                    keyValues[3] = key.w();
+                    keyValues[0] = key.x;
+                    keyValues[1] = key.y;
+                    keyValues[2] = key.z;
+                    keyValues[3] = key.w;
                     byteOrder.ConvertInPlace<float>(keyValues[0]);
                     byteOrder.ConvertInPlace<float>(keyValues[1]);
                     byteOrder.ConvertInPlace<float>(keyValues[2]);

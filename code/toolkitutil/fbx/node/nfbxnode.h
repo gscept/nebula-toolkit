@@ -8,8 +8,8 @@
     (C) 2012-2016 Individual contributors, see AUTHORS file
 */
 #include "core/refcounted.h"
-#include "math/quaternion.h"
-#include "math/float4.h"
+#include "math/quat.h"
+#include "math/vec4.h"
 #include "fbx/helpers/animsplitterhelper.h"
 #include <fbxsdk.h>
 #include "animutil/animbuilderclip.h"
@@ -62,19 +62,19 @@ public:
 	virtual void ExtractTransform(const FbxMatrix& transform);
 
 	/// sets the initial rotation (overrides extracted data)
-	void SetInitialRotation(const Math::quaternion& rot);
+	void SetInitialRotation(const Math::quat& rot);
 	/// returns the initial rotation
-	const Math::quaternion& GetInitialRotation() const;
+	const Math::quat& GetInitialRotation() const;
 	/// sets the initial position (overrides extracted data)
-	void SetInitialPosition(const Math::float4& pos);
+	void SetInitialPosition(const Math::vec4& pos);
 	/// returns the initial position
-	const Math::float4& GetInitialPosition() const;
+	const Math::vec4& GetInitialPosition() const;
 	/// sets the initial scale (overrides extracted data)
-	void SetInitialScale(const Math::float4& scale);
+	void SetInitialScale(const Math::vec4& scale);
 	/// returns the initial scale
-	const Math::float4& GetInitialScale() const;
+	const Math::vec4& GetInitialScale() const;
 	/// returns transform
-	const Math::matrix44& GetTransform() const;
+	const Math::mat4& GetTransform() const;
 
 	/// adds a child to this node
 	void AddChild(const Ptr<NFbxNode>& child);
@@ -134,10 +134,10 @@ protected:
 
 	Util::String					name;
 
-	Math::quaternion				rotation;
-	Math::float4					position;
-	Math::float4					scale;
-	Math::matrix44					transform;
+	Math::quat						rotation;
+	Math::vec4						position;
+	Math::vec4						scale;
+	Math::mat4						transform;
 
 	ToolkitUtil::AnimBuilder		anim;
 	NodeType						type;
@@ -151,7 +151,7 @@ protected:
 /**
 */
 inline void 
-NFbxNode::SetInitialRotation( const Math::quaternion& rot )
+NFbxNode::SetInitialRotation( const Math::quat& rot )
 {
 	this->rotation = rot;
 }
@@ -159,7 +159,7 @@ NFbxNode::SetInitialRotation( const Math::quaternion& rot )
 //------------------------------------------------------------------------------
 /**
 */
-inline const Math::quaternion& 
+inline const Math::quat& 
 NFbxNode::GetInitialRotation() const
 {
 	return this->rotation;
@@ -169,7 +169,7 @@ NFbxNode::GetInitialRotation() const
 /**
 */
 inline void 
-NFbxNode::SetInitialPosition( const Math::float4& pos )
+NFbxNode::SetInitialPosition( const Math::vec4& pos )
 {
 	this->position = pos;
 }
@@ -177,7 +177,7 @@ NFbxNode::SetInitialPosition( const Math::float4& pos )
 //------------------------------------------------------------------------------
 /**
 */
-inline const Math::float4& 
+inline const Math::vec4& 
 NFbxNode::GetInitialPosition() const
 {
 	return this->position;
@@ -187,7 +187,7 @@ NFbxNode::GetInitialPosition() const
 /**
 */
 inline void 
-NFbxNode::SetInitialScale( const Math::float4& scale )
+NFbxNode::SetInitialScale( const Math::vec4& scale )
 {
 	this->scale = scale;
 }
@@ -195,7 +195,7 @@ NFbxNode::SetInitialScale( const Math::float4& scale )
 //------------------------------------------------------------------------------
 /**
 */
-inline const Math::float4& 
+inline const Math::vec4& 
 NFbxNode::GetInitialScale() const
 {
 	return this->scale;
@@ -204,7 +204,7 @@ NFbxNode::GetInitialScale() const
 //------------------------------------------------------------------------------
 /**
 */
-inline const Math::matrix44& 
+inline const Math::mat4& 
 NFbxNode::GetTransform() const
 {
 	return this->transform;

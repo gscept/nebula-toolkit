@@ -142,7 +142,7 @@ NFbxSceneWriter::CreateStaticModel( const Ptr<ToolkitUtil::N3Writer>& modelWrite
 		}
 		shapeNode.transform.position = mesh->GetInitialPosition();
 		shapeNode.transform.rotation = mesh->GetInitialRotation();
-		shapeNode.transform.scale = mesh->GetInitialScale();
+		shapeNode.transform.scale = Math::xyz(mesh->GetInitialScale());
 		shapeNode.boundingBox = mesh->GetBoundingBox();
 		shapeNode.name = mesh->GetName();
 		shapeNode.type = scene->GetSceneFeatureString();
@@ -211,7 +211,7 @@ NFbxSceneWriter::CreateStaticModel( const Ptr<ToolkitUtil::N3Writer>& modelWrite
 		node.path = nodePath;
 		node.transform.position = mesh->GetInitialPosition();
 		node.transform.rotation = mesh->GetInitialRotation();
-		node.transform.scale = mesh->GetInitialScale();
+		node.transform.scale = Math::xyz(mesh->GetInitialScale());
 		node.primitiveGroupIndex = mesh->GetGroupId();
 		node.name = mesh->GetName();
 
@@ -379,7 +379,7 @@ NFbxSceneWriter::CreateSkeletalModel( const Ptr<N3Writer>& modelWriter,  const U
 		skin.mesh = meshPath;
 		skin.transform.position = mesh->GetInitialPosition();
 		skin.transform.rotation = mesh->GetInitialRotation();
-		skin.transform.scale = mesh->GetInitialScale();
+		skin.transform.scale = Math::xyz(mesh->GetInitialScale());
 
 		// get state from attributes
 		State state;

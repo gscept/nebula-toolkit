@@ -132,7 +132,7 @@ AnimBuilder::BuildVelocityCurves()
                 {
                     // if translation is static, velocity is 0
                     dstCurve.SetStatic(true);
-                    dstCurve.SetStaticKey(float4(0.0f, 0.0f, 0.0f, 0.0f));
+                    dstCurve.SetStaticKey(vec4(0.0f, 0.0f, 0.0f, 0.0f));
                 }
                 else
                 {
@@ -141,12 +141,12 @@ AnimBuilder::BuildVelocityCurves()
 
                     // compute velocity keys and add to curve
                     // (velocity is in meter/sec)
-                    float4 velocity(0.0f, 0.0f, 0.0f, 0.0f);
+                    vec4 velocity(0.0f, 0.0f, 0.0f, 0.0f);
                     IndexT keyIndex;
                     for (keyIndex = 0; keyIndex < srcCurve.GetNumKeys() - 1; keyIndex++)
                     {
-                        float4 key0 = srcCurve.GetKey(keyIndex);
-                        float4 key1 = srcCurve.GetKey(keyIndex + 1);
+                        vec4 key0 = srcCurve.GetKey(keyIndex);
+                        vec4 key1 = srcCurve.GetKey(keyIndex + 1);
                         velocity = (key1 - key0) * scale;
                         dstCurve.SetKey(keyIndex, velocity);
                     }
@@ -226,11 +226,11 @@ AnimBuilder::FixInactiveCurveStaticKeyValues()
             {
                 switch (curve.GetCurveType())
                 {
-                    case CurveType::Translation:    curve.SetStaticKey(float4(0.0f, 0.0f, 0.0f, 0.0f)); break;
-                    case CurveType::Rotation:       curve.SetStaticKey(float4(0.0f, 0.0f, 0.0f, 1.0f)); break;
-                    case CurveType::Scale:          curve.SetStaticKey(float4(1.0f, 1.0f, 1.0f, 0.0f)); break;
-                    case CurveType::Velocity:       curve.SetStaticKey(float4(0.0f, 0.0f, 0.0f, 0.0f)); break;
-                    default:                        curve.SetStaticKey(float4(0.0f, 0.0f, 0.0f, 0.0f)); break;
+                    case CurveType::Translation:    curve.SetStaticKey(vec4(0.0f, 0.0f, 0.0f, 0.0f)); break;
+                    case CurveType::Rotation:       curve.SetStaticKey(vec4(0.0f, 0.0f, 0.0f, 1.0f)); break;
+                    case CurveType::Scale:          curve.SetStaticKey(vec4(1.0f, 1.0f, 1.0f, 0.0f)); break;
+                    case CurveType::Velocity:       curve.SetStaticKey(vec4(0.0f, 0.0f, 0.0f, 0.0f)); break;
+                    default:                        curve.SetStaticKey(vec4(0.0f, 0.0f, 0.0f, 0.0f)); break;
                 }
             }
         }

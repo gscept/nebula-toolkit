@@ -116,8 +116,8 @@ N3XmlExporter::RecursiveParse( Ptr<IO::XmlReader> reader, Ptr<BinaryModelWriter>
 		}
 		else if (varType == "f4")
 		{
-			Math::float4 vector = reader->GetContent().AsFloat4();
-			writer->WriteFloat4(vector);
+			Math::vec4 vector = reader->GetContent().AsVec4();
+			writer->Writevec4(vector);
 		}
 		else if (varType == "i")
 		{

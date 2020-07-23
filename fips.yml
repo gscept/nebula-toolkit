@@ -2,10 +2,7 @@
 imports:
     nebula:
         git: https://github.com/gscept/nebula.git
-    fips-fbxsdk:
-        git: ssh://git@git.ikplus.de:4715/nebula/fips-fbxsdk.git
-        branch: vs2017_2019_2
     fips-anyfx:
         git: ssh://git@github.com:Duttenheim/fips-anyfx.git
-    fips-nvtt:
-        git: https://github.com/fLindahl/fips-nvtt.git
+    fips-compressonator:
+        git: https://github.com/gscept/fips-compressonator.git

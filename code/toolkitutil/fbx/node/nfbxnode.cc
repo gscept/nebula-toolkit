@@ -335,23 +335,23 @@ NFbxNode::ExtractTransform(const FbxMatrix& localTrans)
 
 	// decompose matrix into rows
 	FbxVector4 xRow = localTrans.GetRow(0);
-	float4 x = float4((scalar)xRow[0], (scalar)xRow[1], (scalar)xRow[2], (scalar)xRow[3]);
+	vec4 x = vec4((scalar)xRow[0], (scalar)xRow[1], (scalar)xRow[2], (scalar)xRow[3]);
 	FbxVector4 yRow = localTrans.GetRow(1);
-	float4 y = float4((scalar)yRow[0], (scalar)yRow[1], (scalar)yRow[2], (scalar)yRow[3]);
+	vec4 y = vec4((scalar)yRow[0], (scalar)yRow[1], (scalar)yRow[2], (scalar)yRow[3]);
 	FbxVector4 zRow = localTrans.GetRow(2);
-	float4 z = float4((scalar)zRow[0], (scalar)zRow[1], (scalar)zRow[2], (scalar)zRow[3]);
+	vec4 z = vec4((scalar)zRow[0], (scalar)zRow[1], (scalar)zRow[2], (scalar)zRow[3]);
 	FbxVector4 wRow = localTrans.GetRow(3);
-	float4 w = float4((scalar)wRow[0], (scalar)wRow[1], (scalar)wRow[2], (scalar)wRow[3]);
+	vec4 w = vec4((scalar)wRow[0], (scalar)wRow[1], (scalar)wRow[2], (scalar)wRow[3]);
 
 	// construct nebula matrix from rows	
-	this->transform = matrix44(x, y, z, w);
+	this->transform = mat4(x, y, z, w);
 
 	// calculate inverse scale
 	float scaleFactor = NFbxScene::Instance()->GetScale() * 1 / float(fbxScene->GetGlobalSettings().GetSystemUnit().GetScaleFactor());	
 	
-	this->rotation = float4((scalar)rotation[0], (scalar)rotation[1], (scalar)rotation[2], (scalar)rotation[3]);
-	this->position = float4((scalar)translation[0] * scaleFactor, (scalar)translation[1] * scaleFactor, (scalar)translation[2] * scaleFactor, 1.0f);
-	this->scale = float4((scalar)scale[0], (scalar)scale[1], (scalar)scale[2], 1);
+	this->rotation = vec4((scalar)rotation[0], (scalar)rotation[1], (scalar)rotation[2], (scalar)rotation[3]);
+	this->position = vec4((scalar)translation[0] * scaleFactor, (scalar)translation[1] * scaleFactor, (scalar)translation[2] * scaleFactor, 1.0f);
+	this->scale = vec4((scalar)scale[0], (scalar)scale[1], (scalar)scale[2], 1);
 }
 
 //-------------------------------------------------------------------
@@ -403,7 +403,7 @@ NFbxNode::ExtractAnimationCurves( FbxAnimStack* stack, Util::Array<AnimBuilderCu
 		for (keyIndex = 0; keyIndex < span; keyIndex++)
 		{
 
-			float4 key = float4(translationCurveX->EvaluateIndex(xIndex) * scaleFactor, translationCurveY->EvaluateIndex(yIndex) * scaleFactor, translationCurveZ->EvaluateIndex(zIndex) * scaleFactor, 0.0f);
+			vec4 key = vec4(translationCurveX->EvaluateIndex(xIndex) * scaleFactor, translationCurveY->EvaluateIndex(yIndex) * scaleFactor, translationCurveZ->EvaluateIndex(zIndex) * scaleFactor, 0.0f);
 			translationCurve.SetKey(keyIndex, key);
 			if (keyIndex+1 < xKeys)
 			{
@@ -426,7 +426,7 @@ NFbxNode::ExtractAnimationCurves( FbxAnimStack* stack, Util::Array<AnimBuilderCu
 		translationCurve.SetFirstKeyIndex(0);
 		translationCurve.SetStatic(true);
 		translationCurve.SetActive(true);
-		float4 key = float4((float)fbxNode->LclTranslation.Get()[0] * scaleFactor, (float)fbxNode->LclTranslation.Get()[1] * scaleFactor, (float)fbxNode->LclTranslation.Get()[2] * scaleFactor, 0.0f);
+		vec4 key = vec4((float)fbxNode->LclTranslation.Get()[0] * scaleFactor, (float)fbxNode->LclTranslation.Get()[1] * scaleFactor, (float)fbxNode->LclTranslation.Get()[2] * scaleFactor, 0.0f);
 		translationCurve.SetStaticKey(key);
 	}
 
@@ -449,7 +449,7 @@ NFbxNode::ExtractAnimationCurves( FbxAnimStack* stack, Util::Array<AnimBuilderCu
 			FbxAMatrix matrix; 
 			matrix.SetR(FbxVector4(rotationCurveX->EvaluateIndex(xIndex), rotationCurveY->EvaluateIndex(yIndex), rotationCurveZ->EvaluateIndex(zIndex)));
 			FbxQuaternion quat = matrix.GetQ();
-			float4 key = float4((scalar)quat[0], (scalar)quat[1], (scalar)quat[2], (scalar)quat[3]);
+			vec4 key = vec4((scalar)quat[0], (scalar)quat[1], (scalar)quat[2], (scalar)quat[3]);
 			rotationCurve.SetKey(keyIndex, key);
 
 			if (keyIndex+1 < xKeys)
@@ -477,7 +477,7 @@ NFbxNode::ExtractAnimationCurves( FbxAnimStack* stack, Util::Array<AnimBuilderCu
 		FbxAMatrix matrix;
 		matrix.SetR(FbxVector4(fbxNode->LclRotation.Get()[0], fbxNode->LclRotation.Get()[1], fbxNode->LclRotation.Get()[2]));
 		FbxQuaternion quat = matrix.GetQ();
-		float4 key = float4((scalar)quat[0], (scalar)quat[1], (scalar)quat[2], (scalar)quat[3]);
+		vec4 key = vec4((scalar)quat[0], (scalar)quat[1], (scalar)quat[2], (scalar)quat[3]);
 		rotationCurve.SetStaticKey(key);
 	}
 
@@ -497,7 +497,7 @@ NFbxNode::ExtractAnimationCurves( FbxAnimStack* stack, Util::Array<AnimBuilderCu
 		int zIndex = 0;
 		for (keyIndex = 0; keyIndex < span; keyIndex++)
 		{
-			float4 key = float4(scaleCurveX->EvaluateIndex(xIndex), scaleCurveY->EvaluateIndex(yIndex), scaleCurveZ->EvaluateIndex(zIndex), 0.0f);
+			vec4 key = vec4(scaleCurveX->EvaluateIndex(xIndex), scaleCurveY->EvaluateIndex(yIndex), scaleCurveZ->EvaluateIndex(zIndex), 0.0f);
 			scaleCurve.SetKey(keyIndex, key);
 
 			if (keyIndex+1 < xKeys)
@@ -521,7 +521,7 @@ NFbxNode::ExtractAnimationCurves( FbxAnimStack* stack, Util::Array<AnimBuilderCu
 		scaleCurve.SetFirstKeyIndex(0);
 		scaleCurve.SetStatic(true);
 		scaleCurve.SetActive(true);
-		float4 key = float4((float)fbxNode->LclScaling.Get()[0], (float)fbxNode->LclScaling.Get()[1], (float)fbxNode->LclScaling.Get()[2], 0.0f);
+		vec4 key = vec4((float)fbxNode->LclScaling.Get()[0], (float)fbxNode->LclScaling.Get()[1], (float)fbxNode->LclScaling.Get()[2], 0.0f);
 		scaleCurve.SetStaticKey(key);
 	}
 

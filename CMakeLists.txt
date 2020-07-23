@@ -5,9 +5,9 @@ cmake_minimum_required(VERSION 3.7.2)
 
 get_filename_component(FIPS_ROOT_DIR "../fips" ABSOLUTE)
 include(${FIPS_ROOT_DIR}/cmake/fips.cmake)
+set (CMAKE_MODULE_PATH ${CURRENT_SOURCE_DIR}/extlibs/cmake)
 
 option(N_MINIMAL_TOOLKIT "Only minimal toolkit" OFF)
-option(N_BUILD_NVTT "use NVTT" ON)
 
 fips_setup(PROJECT nebula-toolkit)
 fips_include_directories(.)

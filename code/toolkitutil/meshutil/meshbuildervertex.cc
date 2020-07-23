@@ -28,7 +28,7 @@ MeshBuilderVertex::MeshBuilderVertex() :
 /**
 */
 void
-MeshBuilderVertex::SetComponent(ComponentIndex compIndex, const float4& value)
+MeshBuilderVertex::SetComponent(ComponentIndex compIndex, const vec4& value)
 {
     n_assert((compIndex >= 0) && (compIndex < NumComponents));
     this->comps[compIndex] = value;
@@ -38,7 +38,7 @@ MeshBuilderVertex::SetComponent(ComponentIndex compIndex, const float4& value)
 //------------------------------------------------------------------------------
 /**
 */
-const float4&
+const vec4&
 MeshBuilderVertex::GetComponent(ComponentIndex compIndex) const
 {
     n_assert((compIndex >= 0) && (compIndex < NumComponents));
@@ -60,13 +60,13 @@ MeshBuilderVertex::Compare(const MeshBuilderVertex& rhs) const
         ComponentMask mask = (1<<i);
         if ((this->compMask & mask) && (rhs.compMask & mask))
         {
-            const float4& f0 = this->comps[i];
-            const float4& f1 = rhs.comps[i];
-            if (float4::greater4_any(f0, f1))
+            const vec4& f0 = this->comps[i];
+            const vec4& f1 = rhs.comps[i];
+            if (greater_any(f0, f1))
             {
                 return 1;
             }
-            else if (float4::less4_any(f0, f1))
+            else if (less_any(f0, f1))
             {
                 return -1;
             }
@@ -116,35 +116,35 @@ MeshBuilderVertex::operator>(const MeshBuilderVertex& rhs) const
 /**
 */
 void
-MeshBuilderVertex::Transform(const matrix44& m)
+MeshBuilderVertex::Transform(const mat4& m)
 {
     if (this->compMask & CoordBit)
     {
-        this->comps[CoordIndex] = float4::transform(this->comps[CoordIndex], m);
+        this->comps[CoordIndex] = m * this->comps[CoordIndex];
     }
     if (this->compMask & NormalBit)
     {
-        this->comps[NormalIndex] = float4::transform(this->comps[NormalIndex], m);
+        this->comps[NormalIndex] = m * this->comps[NormalIndex];
     }
     if (this->compMask & TangentBit)
     {
-        this->comps[TangentIndex] = float4::transform(this->comps[TangentIndex], m);
+        this->comps[TangentIndex] = m * this->comps[TangentIndex];
     }
     if (this->compMask & BinormalBit)
     {
-        this->comps[BinormalIndex] = float4::transform(this->comps[BinormalIndex], m);
+        this->comps[BinormalIndex] = m * this->comps[BinormalIndex];
     }
 	if (this->compMask & NormalB4NBit)
 	{
-		this->comps[NormalB4NIndex] = float4::transform(this->comps[NormalB4NIndex], m);
+		this->comps[NormalB4NIndex] = m * this->comps[NormalB4NIndex];
 	}
 	if (this->compMask & TangentB4NBit)
 	{
-		this->comps[TangentB4NIndex] = float4::transform(this->comps[TangentB4NIndex], m);
+		this->comps[TangentB4NIndex] = m * this->comps[TangentB4NIndex];
 	}
 	if (this->compMask & BinormalB4NBit)
 	{
-		this->comps[BinormalB4NIndex] = float4::transform(this->comps[BinormalB4NIndex], m);
+		this->comps[BinormalB4NIndex] = m * this->comps[BinormalB4NIndex];
 	}
 }
 

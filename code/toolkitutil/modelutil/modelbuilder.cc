@@ -181,10 +181,10 @@ ModelBuilder::WritePhysics( const Ptr<N3Writer>& writer )
 					t.setrotatepivot(iter->transform.rotatePivot);
 					t.setscalepivot(iter->transform.scalePivot);
 					
-					Math::matrix44 nodetrans = t.getmatrix();					
+					Math::mat4 nodetrans = t.getmatrix();					
 
 					Math::bbox colBox = iter->boundingBox;
-					Math::matrix44 newtrans;
+					Math::mat4 newtrans;
 					
 					colBox.transform(nodetrans);
 
@@ -203,15 +203,15 @@ ModelBuilder::WritePhysics( const Ptr<N3Writer>& writer )
 					{
 						col.type = Physics::ColliderSphere;
 						Math::vector v = colBox.size();
-						col.sphere.radius = 0.5f * Math::n_min(v.x(), Math::n_min(v.y(), v.z()));
+						col.sphere.radius = 0.5f * Math::n_min(v.x, Math::n_min(v.y, v.z));
 					}
 					break;
 					case UseBoundingCapsule:
 					{
 						col.type = Physics::ColliderCapsule;
 						Math::vector v = colBox.size();
-						col.capsule.height = v.y();
-						col.capsule.radius = Math::n_min(v.z(), v.x());						
+						col.capsule.height = v.y;
+						col.capsule.radius = Math::n_min(v.z, v.x);						
 					}
 					break;
 					default:
@@ -238,10 +238,10 @@ ModelBuilder::WritePhysics( const Ptr<N3Writer>& writer )
 					t.setrotatepivot(iter->transform.rotatePivot);
 					t.setscalepivot(iter->transform.scalePivot);
 
-					Math::matrix44 nodetrans = t.getmatrix();					
+					Math::mat4 nodetrans = t.getmatrix();					
 
 					Math::bbox colBox = iter->boundingBox;
-					Math::matrix44 newtrans;
+					Math::mat4 newtrans;
 
 					colBox.transform(nodetrans);
 
@@ -266,10 +266,10 @@ ModelBuilder::WritePhysics( const Ptr<N3Writer>& writer )
 					t.setscalepivot(iter->transform.scalePivot);		
 
 
-					Math::matrix44 nodetrans = t.getmatrix();					
+					Math::mat4 nodetrans = t.getmatrix();					
 
 					Math::bbox colBox = iter->boundingBox;
-					Math::matrix44 newtrans;
+					Math::mat4 newtrans;
 
 					colBox.transform(nodetrans);
 

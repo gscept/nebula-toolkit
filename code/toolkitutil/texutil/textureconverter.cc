@@ -10,8 +10,7 @@
 #include "io/xmlwriter.h"
 #include "toolkitutil/texutil/imageconverter.h"
 #include "util/guid.h"
-#include "toolkitutil/texutil/win32textureconversionjob.h"
-#include "toolkitutil/texutil/nvtttextureconversionjob.h"
+#include "toolkitutil/texutil/compressonatorconversionjob.h"
 #include "timing/timer.h"
 
 
@@ -176,8 +175,8 @@ TextureConverter::ConvertTexture(const String& srcTexPath, const String& tmpDir)
 	n_printf("Converting texture: %s\n", URI(srcTexPath).LocalPath().AsCharPtr());
 
     // select conversion method based on target platform
-#ifndef USE_NVTT
-	Win32TextureConversionJob job;
+
+	CompressonatorConversionJob job;
 	job.SetLogger(this->logger);
 	job.SetSrcPath(srcTexPath);
 	job.SetDstPath(dstTexPath);
@@ -187,18 +186,6 @@ TextureConverter::ConvertTexture(const String& srcTexPath, const String& tmpDir)
 	job.SetForceFlag(this->force);
 	job.SetQuietFlag(this->quiet);
 	job.Convert();
-#else
-	NVTTTextureConversionJob job;
-	job.SetLogger(this->logger);
-	job.SetSrcPath(srcTexPath);
-	job.SetDstPath(dstTexPath);
-	job.SetTmpDir(tmpDir);
-	job.SetTexAttrTable(this->textureAttrTable);
-	job.SetToolPath(this->toolPath);
-	job.SetForceFlag(this->force);
-	job.SetQuietFlag(this->quiet);
-	job.Convert();
-#endif
 	
 	if (this->platform != Platform::Win32 && this->platform != Platform::Linux) return false;
     else return true;

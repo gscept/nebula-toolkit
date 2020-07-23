@@ -225,26 +225,26 @@ MeshBuilderSaver::WriteVertices(const Ptr<Stream>& stream, MeshBuilder& meshBuil
 		const MeshBuilderVertex& curVertex = meshBuilder.VertexAt(curVertexIndex);
 		if (curVertex.HasComponent(MeshBuilderVertex::CoordBit))
 		{
-			const float4& v = curVertex.GetComponent(MeshBuilderVertex::CoordIndex);
-			*floatPtr++ = v.x();
-			*floatPtr++ = v.y();
-			*floatPtr++ = v.z();
+			const vec4& v = curVertex.GetComponent(MeshBuilderVertex::CoordIndex);
+			*floatPtr++ = v.x;
+			*floatPtr++ = v.y;
+			*floatPtr++ = v.z;
 		}
 		if (curVertex.HasComponent(MeshBuilderVertex::NormalBit))
 		{
-			const float4& v =  curVertex.GetComponent(MeshBuilderVertex::NormalIndex);
-			*floatPtr++ = v.x();
-			*floatPtr++ = v.y();
-			*floatPtr++ = v.z();
+			const vec4& v =  curVertex.GetComponent(MeshBuilderVertex::NormalIndex);
+			*floatPtr++ = v.x;
+			*floatPtr++ = v.y;
+			*floatPtr++ = v.z;
 		}
 		//check for UB4NBits
 		if (curVertex.HasComponent(MeshBuilderVertex::NormalB4NBit))
 		{
-			const float4& v =  curVertex.GetComponent(MeshBuilderVertex::NormalB4NIndex);
-			float x = v.x() * 0.5f * 255.0f;// / 2 + 0.5f;
-			float y = v.y() * 0.5f * 255.0f;// / 2 + 0.5f;
-			float z = v.z() * 0.5f * 255.0f;// / 2 + 0.5f;
-			float w = v.w() * 0.5f * 255.0f; // we don't need to pack w...
+			const vec4& v =  curVertex.GetComponent(MeshBuilderVertex::NormalB4NIndex);
+			float x = v.x * 0.5f * 255.0f;// / 2 + 0.5f;
+			float y = v.y * 0.5f * 255.0f;// / 2 + 0.5f;
+			float z = v.z * 0.5f * 255.0f;// / 2 + 0.5f;
+			float w = v.w * 0.5f * 255.0f; // we don't need to pack w...
 			int xBits = (int)x;
 			int yBits = (int)y;
 			int zBits = (int)z;
@@ -258,14 +258,14 @@ MeshBuilderSaver::WriteVertices(const Ptr<Stream>& stream, MeshBuilder& meshBuil
 		{
 			if (curVertex.HasComponent((MeshBuilderVertex::ComponentBit) (MeshBuilderVertex::Uv0Bit << curUvSet)))
 			{
-				const float4& v = curVertex.GetComponent((MeshBuilderVertex::ComponentIndex)(MeshBuilderVertex::Uv0Index+curUvSet));
+				const vec4& v = curVertex.GetComponent((MeshBuilderVertex::ComponentIndex)(MeshBuilderVertex::Uv0Index+curUvSet));
 				if (curUvSet%2)
 				{
-					float x = v.x();
-					float y = v.y();
+					float x = v.x;
+					float y = v.y;
 
-					int xBits = (int)(v.x() * (1 << 13));
-					int yBits = (int)(v.y() * (1 << 13));
+					int xBits = (int)(v.x * (1 << 13));
+					int yBits = (int)(v.y * (1 << 13));
 
 					int xyBits = ((yBits << 16) | xBits);
 					*(int*)floatPtr = xyBits;
@@ -273,45 +273,45 @@ MeshBuilderSaver::WriteVertices(const Ptr<Stream>& stream, MeshBuilder& meshBuil
 				}
 				else
 				{
-					*floatPtr++ = v.x();
-					*floatPtr++ = v.y();
+					*floatPtr++ = v.x;
+					*floatPtr++ = v.y;
 				}
 			}
 		}
 		if (curVertex.HasComponent(MeshBuilderVertex::ColorBit))
 		{
-			const float4& v = curVertex.GetComponent(MeshBuilderVertex::ColorIndex);
-			*floatPtr++ = v.x();
-			*floatPtr++ = v.y();
-			*floatPtr++ = v.z();
-			*floatPtr++ = v.w();
+			const vec4& v = curVertex.GetComponent(MeshBuilderVertex::ColorIndex);
+			*floatPtr++ = v.x;
+			*floatPtr++ = v.y;
+			*floatPtr++ = v.z;
+			*floatPtr++ = v.w;
 		}
 		//check for UB4NBits
 		if (curVertex.HasComponent(MeshBuilderVertex::ColorUB4NBit))
 		{
-			const float4& v = curVertex.GetComponent(MeshBuilderVertex::ColorUB4NIndex);
-			unsigned int xBits = (unsigned int)(v.x() * (255.0f));
-			unsigned int yBits = (unsigned int)(v.y() * (255.0f));
-			unsigned int zBits = (unsigned int)(v.z() * (255.0f));
-			unsigned int wBits = (unsigned int)(v.w() * (255.0f));
+			const vec4& v = curVertex.GetComponent(MeshBuilderVertex::ColorUB4NIndex);
+			unsigned int xBits = (unsigned int)(v.x * (255.0f));
+			unsigned int yBits = (unsigned int)(v.y * (255.0f));
+			unsigned int zBits = (unsigned int)(v.z * (255.0f));
+			unsigned int wBits = (unsigned int)(v.w * (255.0f));
 			int xyzwBits = ((wBits << 24) & 0xFF000000) | ((zBits << 16) & 0x00FF0000) | ((yBits << 8) & 0x0000FF00) | (xBits & 0x000000FF);
 			*(int*)floatPtr++ = xyzwBits;	
 		}
 		if (curVertex.HasComponent(MeshBuilderVertex::TangentBit))
 		{
-			const float4& v = curVertex.GetComponent(MeshBuilderVertex::TangentIndex);
-			*floatPtr++ = v.x();
-			*floatPtr++ = v.y();
-			*floatPtr++ = v.z();
+			const vec4& v = curVertex.GetComponent(MeshBuilderVertex::TangentIndex);
+			*floatPtr++ = v.x;
+			*floatPtr++ = v.y;
+			*floatPtr++ = v.z;
 		}
 		//check for UB4NBits
 		if (curVertex.HasComponent(MeshBuilderVertex::TangentB4NBit))
 		{
-			const float4& v = curVertex.GetComponent(MeshBuilderVertex::TangentB4NIndex);
-			float x = v.x() * 0.5f * 255.0f;
-			float y = v.y() * 0.5f * 255.0f;
-			float z = v.z() * 0.5f * 255.0f;
-			float w = v.w() * 0.5f * 255.0f; // we don't need to pack w...
+			const vec4& v = curVertex.GetComponent(MeshBuilderVertex::TangentB4NIndex);
+			float x = v.x * 0.5f * 255.0f;
+			float y = v.y * 0.5f * 255.0f;
+			float z = v.z * 0.5f * 255.0f;
+			float w = v.w * 0.5f * 255.0f; // we don't need to pack w...
 			int xBits = (int)x;
 			int yBits = (int)y;
 			int zBits = (int)z;
@@ -321,19 +321,19 @@ MeshBuilderSaver::WriteVertices(const Ptr<Stream>& stream, MeshBuilder& meshBuil
 		}
 		if (curVertex.HasComponent(MeshBuilderVertex::BinormalBit))
 		{
-			const float4& v = curVertex.GetComponent(MeshBuilderVertex::BinormalIndex);
-			*floatPtr++ = v.x();
-			*floatPtr++ = v.y();
-			*floatPtr++ = v.z();
+			const vec4& v = curVertex.GetComponent(MeshBuilderVertex::BinormalIndex);
+			*floatPtr++ = v.x;
+			*floatPtr++ = v.y;
+			*floatPtr++ = v.z;
 		}
 		//check for UB4NBits
 		if (curVertex.HasComponent(MeshBuilderVertex::BinormalB4NBit))
 		{
-			const float4& v = curVertex.GetComponent(MeshBuilderVertex::BinormalB4NIndex);
-			float x = v.x() * 0.5f * 255.0f;
-			float y = v.y() * 0.5f * 255.0f;
-			float z = v.z() * 0.5f * 255.0f;
-			float w = v.w() * 0.5f * 255.0f; // we don't need to pack w...
+			const vec4& v = curVertex.GetComponent(MeshBuilderVertex::BinormalB4NIndex);
+			float x = v.x * 0.5f * 255.0f;
+			float y = v.y * 0.5f * 255.0f;
+			float z = v.z * 0.5f * 255.0f;
+			float w = v.w * 0.5f * 255.0f; // we don't need to pack w...
 			int xBits = (int)x;
 			int yBits = (int)y;
 			int zBits = (int)z;
@@ -343,22 +343,22 @@ MeshBuilderSaver::WriteVertices(const Ptr<Stream>& stream, MeshBuilder& meshBuil
 		}
 		if (curVertex.HasComponent(MeshBuilderVertex::WeightsBit))
 		{
-			const float4& v = curVertex.GetComponent(MeshBuilderVertex::WeightsIndex);
-			*floatPtr++ = v.x();
-			*floatPtr++ = v.y();
-			*floatPtr++ = v.z();
-			*floatPtr++ = v.w();
+			const vec4& v = curVertex.GetComponent(MeshBuilderVertex::WeightsIndex);
+			*floatPtr++ = v.x;
+			*floatPtr++ = v.y;
+			*floatPtr++ = v.z;
+			*floatPtr++ = v.w;
 		}
 		//check for UB4NBits
 		if (curVertex.HasComponent(MeshBuilderVertex::WeightsUB4NBit))
 		{
-			const float4& v = curVertex.GetComponent(MeshBuilderVertex::WeightsUB4NIndex);
-			//float4 packedWeights = float4::normalize(v);
-			//packedWeights = packedWeights * float4::dot3(packedWeights, float4(1,1,1,1));
-			unsigned int xBits = (unsigned int)(v.x() * (255.0f));
-			unsigned int yBits = (unsigned int)(v.y() * (255.0f));
-			unsigned int zBits = (unsigned int)(v.z() * (255.0f));
-			unsigned int wBits = (unsigned int)(v.w() * (255.0f));
+			const vec4& v = curVertex.GetComponent(MeshBuilderVertex::WeightsUB4NIndex);
+			//vec4 packedWeights = Math::normalize(v);
+			//packedWeights = packedWeights * vec4::dot3(packedWeights, vec4(1,1,1,1));
+			unsigned int xBits = (unsigned int)(v.x * (255.0f));
+			unsigned int yBits = (unsigned int)(v.y * (255.0f));
+			unsigned int zBits = (unsigned int)(v.z * (255.0f));
+			unsigned int wBits = (unsigned int)(v.w * (255.0f));
 
 			// special case for when a weight is 1 (vertex is affected by only 1 joint)
 			if (xBits == 256)
@@ -383,20 +383,20 @@ MeshBuilderSaver::WriteVertices(const Ptr<Stream>& stream, MeshBuilder& meshBuil
 		}
 		if (curVertex.HasComponent(MeshBuilderVertex::JIndicesBit))
 		{
-			const float4& v = curVertex.GetComponent(MeshBuilderVertex::JIndicesIndex);
-			*floatPtr++ = v.x();
-			*floatPtr++ = v.y();
-			*floatPtr++ = v.z();
-			*floatPtr++ = v.w();
+			const vec4& v = curVertex.GetComponent(MeshBuilderVertex::JIndicesIndex);
+			*floatPtr++ = v.x;
+			*floatPtr++ = v.y;
+			*floatPtr++ = v.z;
+			*floatPtr++ = v.w;
 		}
 		//check for UB4NBits
 		if (curVertex.HasComponent(MeshBuilderVertex::JIndicesUB4Bit))
 		{
-			const float4& v = curVertex.GetComponent(MeshBuilderVertex::JIndicesUB4Index);
-			int xBits = (int)(v.x()); 
-			int yBits = (int)(v.y());
-			int zBits = (int)(v.z());
-			int wBits = (int)(v.w());
+			const vec4& v = curVertex.GetComponent(MeshBuilderVertex::JIndicesUB4Index);
+			int xBits = (int)(v.x); 
+			int yBits = (int)(v.y);
+			int zBits = (int)(v.z);
+			int wBits = (int)(v.w);
 
 			int xyzwBits = ((wBits << 24) & 0xFF000000) | ((zBits << 16) & 0x00FF0000) | ((yBits << 8) & 0x0000FF00) | (xBits & 0x000000FF);
 			*(int*)floatPtr++ = xyzwBits;		

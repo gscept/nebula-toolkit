@@ -72,9 +72,7 @@ public:
 
 private:
     Ptr<ToolkitUtil::NFbxExporter> fbxExporter;
-#ifdef USE_NVTT
     ToolkitUtil::TextureConverter textureExporter;
-#endif
 	Ptr<ToolkitUtil::SurfaceExporter> surfaceExporter;
     Ptr<ToolkitUtil::ModelBuilder> modelBuilder;	
     Logger logger;

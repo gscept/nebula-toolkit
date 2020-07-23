@@ -40,29 +40,29 @@ SkinFragment::ExtractJointPalette( const MeshBuilder& sourceMesh, const MeshBuil
 	for (int vertexIndex = 0; vertexIndex < 3; vertexIndex++)
 	{
 		const MeshBuilderVertex& vertex = sourceMesh.VertexAt(vertexIndices[vertexIndex]);
-		const float4& weights = vertex.GetComponent(MeshBuilderVertex::WeightsUB4NIndex);
+		const vec4& weights = vertex.GetComponent(MeshBuilderVertex::WeightsUB4NIndex);
 
 		// figure out what type of indices we are using
 		MeshBuilderVertex::ComponentIndex index;
 		if (vertex.HasComponent(MeshBuilderVertex::JIndicesBit)) index = MeshBuilderVertex::JIndicesIndex;
 		if (vertex.HasComponent(MeshBuilderVertex::JIndicesUB4Bit)) index = MeshBuilderVertex::JIndicesUB4Index;
-		const float4& indices = vertex.GetComponent(index);
+		const vec4& indices = vertex.GetComponent(index);
 
-		if (jointIndices.FindIndex((int)indices.x()) == InvalidIndex)
+		if (jointIndices.FindIndex((int)indices.x) == InvalidIndex)
 		{
-			jointIndices.Append((int)indices.x());
+			jointIndices.Append((int)indices.x);
 		}
-		if (jointIndices.FindIndex((int)indices.y()) == InvalidIndex)
+		if (jointIndices.FindIndex((int)indices.y) == InvalidIndex)
 		{
-			jointIndices.Append((int)indices.y());
+			jointIndices.Append((int)indices.y);
 		}
-		if (jointIndices.FindIndex((int)indices.z()) == InvalidIndex)
+		if (jointIndices.FindIndex((int)indices.z) == InvalidIndex)
 		{
-			jointIndices.Append((int)indices.z());
+			jointIndices.Append((int)indices.z);
 		}
-		if (jointIndices.FindIndex((int)indices.w()) == InvalidIndex)
+		if (jointIndices.FindIndex((int)indices.w) == InvalidIndex)
 		{
-			jointIndices.Append((int)indices.w());
+			jointIndices.Append((int)indices.w);
 		}
 	}
 }

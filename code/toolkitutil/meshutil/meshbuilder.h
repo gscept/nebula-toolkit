@@ -69,7 +69,7 @@ public:
     /// make sure all vertices have the same vertex components
     void ExtendVertexComponents();
     /// transform vertices
-    void Transform(const Math::matrix44& m);
+    void Transform(const Math::mat4& m);
     /// remove redundant vertices
     void Deflate(Util::FixedArray<Util::Array<IndexT> >* collapseMap);
     /// inflate mesh to 3 unique vertices per triangles, created redundant vertices

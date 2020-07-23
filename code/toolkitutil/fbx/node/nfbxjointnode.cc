@@ -5,8 +5,8 @@
 #include "stdneb.h"
 #include "fbx/node/nfbxjointnode.h"
 #include "nfbxscene.h"
-#include "math/matrix44.h"
-#include "math/float4.h"
+#include "math/mat4.h"
+#include "math/vec4.h"
 
 using namespace Math;
 namespace ToolkitUtil
@@ -111,14 +111,14 @@ NFbxJointNode::SetupFromCluster(FbxCluster* cluster)
 	FbxQuaternion rotation = matrix.GetQ();
 
 	// convert from fbx to nebula math
-	this->rotation = quaternion((scalar)rotation[0], (scalar)rotation[1], (scalar)rotation[2], (scalar)rotation[3]);
-	this->position = float4((scalar)translation[0], (scalar)translation[1], (scalar)translation[2], (scalar)translation[3]);
-	this->scale = float4((scalar)scale[0], (scalar)scale[1], (scalar)scale[2], (scalar)scale[3]);
+	this->rotation = quat((scalar)rotation[0], (scalar)rotation[1], (scalar)rotation[2], (scalar)rotation[3]);
+	this->position = vec4((scalar)translation[0], (scalar)translation[1], (scalar)translation[2], (scalar)translation[3]);
+	this->scale = vec4((scalar)scale[0], (scalar)scale[1], (scalar)scale[2], (scalar)scale[3]);
 
-	// get transform from quaternion
-	this->transform = matrix44::rotationquaternion(this->rotation);
-	this->transform.set_position(this->position);
-	this->transform.scale(this->scale);
+	// get transform from quat
+	this->transform = Math::rotationquat(this->rotation);
+	this->transform.translate(this->position.vec);
+	this->transform.scale(this->scale.vec);
 }
 
 //------------------------------------------------------------------------------
@@ -159,9 +159,9 @@ NFbxJointNode::RecursiveConvertToLocal( const Ptr<NFbxJointNode>& parent )
 		float scaleFactor = NFbxScene::Instance()->GetScale() * 1 / float(fbxScene->GetGlobalSettings().GetSystemUnit().GetScaleFactor());
 
 		// convert from fbx to nebula math
-		this->rotation = quaternion((scalar)rotation[0], (scalar)rotation[1], (scalar)rotation[2], (scalar)rotation[3]);
-		this->position = float4((scalar)translation[0] * scaleFactor, (scalar)translation[1] * scaleFactor, (scalar)translation[2] * scaleFactor, 0);
-		this->scale = float4((scalar)scale[0], (scalar)scale[1], (scalar)scale[2], (scalar)scale[3]);
+		this->rotation = quat((scalar)rotation[0], (scalar)rotation[1], (scalar)rotation[2], (scalar)rotation[3]);
+		this->position = vec4((scalar)translation[0] * scaleFactor, (scalar)translation[1] * scaleFactor, (scalar)translation[2] * scaleFactor, 0);
+		this->scale = vec4((scalar)scale[0], (scalar)scale[1], (scalar)scale[2], (scalar)scale[3]);
 	}	
 
 	// we have a global matrix retrieved from the bindpose, apply inverse parent

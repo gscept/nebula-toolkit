@@ -84,29 +84,39 @@ ToolkitApp::SetupProjectInfo()
 {
     // read the projectinfo.xml file
     ProjectInfo::Result res = this->projectInfo.Setup();
-    if (res != ProjectInfo::Success)
+
+    switch (res)
     {
+    case ProjectInfo::NoProjectInfoFile:
+        n_printf("No Projectinfo found in projectfolder, assuming defaults\n");
+        AssignRegistry::Instance()->SetAssign(Assign("src", "proj:work"));
+        AssignRegistry::Instance()->SetAssign(Assign("dst", "proj:export_win32"));
+        AssignRegistry::Instance()->SetAssign(Assign("int", "proj:intermediate"));
+        this->projectInfo.SetCurrentPlatform(this->platform);
+        return true;
+
+    case ProjectInfo::Success:
+        // gather the relevant paths from the project info object
+        if (!this->projectInfo.HasPlatform(this->platform))
+        {
+            n_printf("ERROR: platform '%s' not defined in projectinfo.xml file!\n",
+                Platform::ToString(this->platform).AsCharPtr());
+            this->SetReturnCode(10);
+            return false;
+        }
+
+        // prepare generic info about project
+        this->projectInfo.SetCurrentPlatform(this->platform);
+        AssignRegistry::Instance()->SetAssign(Assign("src", this->projectInfo.GetAttr("SrcDir")));
+        AssignRegistry::Instance()->SetAssign(Assign("dst", this->projectInfo.GetAttr("DstDir")));
+        AssignRegistry::Instance()->SetAssign(Assign("int", this->projectInfo.GetAttr("IntDir")));
+
+        return true;
+    default:
         n_printf("%s\n", this->projectInfo.GetErrorString(res).AsCharPtr());
         this->SetReturnCode(10);
-        return false;
     }
-
-    // gather the relevant paths from the project info object
-    if (!this->projectInfo.HasPlatform(this->platform))
-    {
-        n_printf("ERROR: platform '%s' not defined in projectinfo.xml file!\n",
-            Platform::ToString(this->platform).AsCharPtr());
-        this->SetReturnCode(10);
-        return false;
-    }
-
-    // prepare generic info about project
-    this->projectInfo.SetCurrentPlatform(this->platform);
-    AssignRegistry::Instance()->SetAssign(Assign("src", this->projectInfo.GetAttr("SrcDir")));
-    AssignRegistry::Instance()->SetAssign(Assign("dst", this->projectInfo.GetAttr("DstDir")));
-    AssignRegistry::Instance()->SetAssign(Assign("int", this->projectInfo.GetAttr("IntDir")));
-
-    return true;
+    return false;
 }
 
 //------------------------------------------------------------------------------

@@ -30,15 +30,19 @@ public:
         U565,
         U8888,
         U888,
-        V8U8,
         // single channel
         BC4,
         // dual channel
         BC5,
         // rgb/floating point/hdr
-        BC6,
+        BC6H,
         // rgb(a)
         BC7,
+        R8,
+        R16,
+        R16G16,
+        // raw dxgi string
+        DXGI,
     };
 
     /// filter types
@@ -82,13 +86,9 @@ public:
     /// get mipmap generation flag
     bool GetGenMipMaps() const;
     /// set RGB pixel format
-    void SetRGBPixelFormat(PixelFormat p);
+    void SetPixelFormat(PixelFormat p);
     /// get RGB pixel form
-    PixelFormat GetRGBPixelFormat() const;
-    /// set RGBA pixel format
-    void SetRGBAPixelFormat(PixelFormat p);
-    /// get RGBA pixel format
-    PixelFormat GetRGBAPixelFormat() const;
+    PixelFormat GetPixelFormat() const;
     /// set mipmap filter
     void SetMipMapFilter(Filter f);
     /// get mipmap filter
@@ -113,6 +113,10 @@ public:
     const bool GetFlipNormalY() const;
     /// set if the normal maps y axis should be flipped
     void SetFlipNormalY(bool const val);
+    /// set raw dxgi string for describing output format
+    void SetDxgi(const Util::String& str);
+    /// get raw dxgi string
+    Util::String GetDxgi() const;
 
     /// convert pixel format to string
     static Util::String PixelFormatToString(PixelFormat p);
@@ -135,14 +139,15 @@ private:
     SizeT maxWidth;
     SizeT maxHeight;
     bool genMipMaps;
-    PixelFormat rgbPixelFormat;
-    PixelFormat rgbaPixelFormat;
+    PixelFormat pixelFormat;
     Filter mipMapFilter;
     Filter scaleFilter;
     Quality quality;
 	ColorSpace colorSpace;
     IO::FileTime attrTime;
     bool flipNormalY;
+
+    Util::String dxgiRaw;
 };
 
 //------------------------------------------------------------------------------
@@ -203,36 +208,18 @@ TextureAttrs::GetGenMipMaps() const
 /**
 */
 inline void
-TextureAttrs::SetRGBPixelFormat(PixelFormat p)
+TextureAttrs::SetPixelFormat(PixelFormat p)
 {
-    this->rgbPixelFormat = p;
+    this->pixelFormat = p;
 }
 
 //------------------------------------------------------------------------------
 /**
 */
 inline TextureAttrs::PixelFormat
-TextureAttrs::GetRGBPixelFormat() const
+TextureAttrs::GetPixelFormat() const
 {
-    return this->rgbPixelFormat;
-}
-
-//------------------------------------------------------------------------------
-/**
-*/
-inline void
-TextureAttrs::SetRGBAPixelFormat(PixelFormat p)
-{
-    this->rgbaPixelFormat = p;
-}
-
-//------------------------------------------------------------------------------
-/**
-*/
-inline TextureAttrs::PixelFormat
-TextureAttrs::GetRGBAPixelFormat() const
-{
-    return this->rgbaPixelFormat;
+    return this->pixelFormat;
 }
 
 //------------------------------------------------------------------------------
@@ -341,6 +328,24 @@ inline void
 TextureAttrs::SetTime(const IO::FileTime & t)
 {
     this->attrTime = t;
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline void
+TextureAttrs::SetDxgi(const Util::String& str)
+{
+    this->dxgiRaw = str;
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline Util::String
+TextureAttrs::GetDxgi() const
+{
+    return this->dxgiRaw;
 }
 } // namespace ToolkitUtil
 //------------------------------------------------------------------------------

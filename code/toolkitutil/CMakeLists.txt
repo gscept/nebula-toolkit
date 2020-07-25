@@ -97,10 +97,17 @@ fips_begin_module(toolkitutil)
 		#		posteffectparser.h
 		#	)
 	ENDIF()
-		SET(SRCSX_PL
-			compressonatorconversionjob.cc
-			compressonatorconversionjob.h
-				)
+	IF(FIPS_WINDOWS)
+		SET(SRCSX_PL		
+		directxtexconversionjob.cc
+		directxtexconversionjob.h
+		)
+	ELSE()
+	SET(SRCSX_PL		
+		compressonatorconversionjob.cc
+		compressonatorconversionjob.h
+		)
+	ENDIF()
 	IF(NOT N_MINIMAL_TOOLKIT)
 		fips_dir(texutil)
 			fips_files(

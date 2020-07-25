@@ -10,7 +10,8 @@
 #include "io/xmlwriter.h"
 #include "toolkitutil/texutil/imageconverter.h"
 #include "util/guid.h"
-#include "toolkitutil/texutil/compressonatorconversionjob.h"
+//#include "toolkitutil/texutil/compressonatorconversionjob.h"
+#include "toolkitutil/texutil/directxtexconversionjob.h"
 #include "timing/timer.h"
 
 
@@ -130,6 +131,7 @@ TextureConverter::ConvertFiles(const Util::Array<Util::String>& files)
             files[index].CheckFileExtension("dds") ||
             files[index].CheckFileExtension("psd") ||
 			files[index].CheckFileExtension("png") ||
+            files[index].CheckFileExtension("exr") ||
 			files[index].CheckFileExtension("jpg"))
         {
             success = this->ConvertTexture(files[index], tmpDir);
@@ -176,13 +178,13 @@ TextureConverter::ConvertTexture(const String& srcTexPath, const String& tmpDir)
 
     // select conversion method based on target platform
 
-	CompressonatorConversionJob job;
+	DirectXTexConversionJob job;
 	job.SetLogger(this->logger);
 	job.SetSrcPath(srcTexPath);
 	job.SetDstPath(dstTexPath);
 	job.SetTmpDir(tmpDir);
 	job.SetTexAttrTable(this->textureAttrTable);
-	job.SetToolPath(this->toolPath);
+	//job.SetToolPath(this->toolPath);
 	job.SetForceFlag(this->force);
 	job.SetQuietFlag(this->quiet);
 	job.Convert();

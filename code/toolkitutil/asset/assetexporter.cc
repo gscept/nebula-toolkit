@@ -156,6 +156,8 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
         files.AppendArray(IoServer::Instance()->ListFiles(assetPath, "*.psd"));
         files.AppendArray(IoServer::Instance()->ListFiles(assetPath, "*.png"));
         files.AppendArray(IoServer::Instance()->ListFiles(assetPath, "*.jpg"));
+        files.AppendArray(IoServer::Instance()->ListFiles(assetPath, "*.exr"));
+        files.AppendArray(IoServer::Instance()->ListFiles(assetPath, "*.tif"));
 		this->textureExporter.SetForceFlag(this->force || (this->mode & ExportModes::ForceTextures) != 0);
         for (fileIndex = 0; fileIndex < files.Size(); fileIndex++)
         {

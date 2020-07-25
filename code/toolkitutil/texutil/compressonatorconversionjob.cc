@@ -57,6 +57,25 @@ CompressonatorConversionJob::Convert()
             goto processing_failed;
         }
 
+
+        if (MipSetIn.m_format != CMP_FORMAT_RGBA_8888)
+        {
+            this->logger->Print("Non-rgb(a) texture, saving raw\n");
+
+            cmp_status = CMP_SaveTexture(dstPathUri.LocalPath().AsCharPtr(), &MipSetIn);
+            if (cmp_status != CMP_OK)
+            {
+                goto processing_failed;
+            }
+
+            CMP_FreeMipSet(&MipSetIn);
+
+            Timing::Time after = timer.GetTime();
+            this->logger->Print("Done after: %f\n", after);
+            return true;
+        }
+
+
         if (MipSetIn.m_nMipLevels <= 1)
         {
             CMP_INT requestLevel = 10; // Request 10 miplevels for the source image
@@ -121,6 +140,9 @@ CompressonatorConversionJob::Convert()
         // Save the result into a DDS file
         //----------------------------------------------------------------
         cmp_status = CMP_SaveTexture(dstPathUri.LocalPath().AsCharPtr(), &MipSetCmp);
+
+
+        
 
         if (cmp_status != CMP_OK)
         {

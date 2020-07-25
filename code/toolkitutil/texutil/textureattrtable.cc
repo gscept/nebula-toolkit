@@ -136,6 +136,12 @@ TextureAttrTable::Setup(const String& path)
                 }
 				TextureAttrs::PixelFormat rgbFormat = TextureAttrs::StringToPixelFormat(xmlReader->GetString("rgb"));
 				TextureAttrs::PixelFormat rgbaFormat = TextureAttrs::StringToPixelFormat(xmlReader->GetString("rgba"));
+				Util::String pixelFormatString = xmlReader->GetOptString("format", "");
+				Util::String dxgiFormat = xmlReader->GetOptString("dxgiFormat", "");
+				if (!pixelFormatString.IsEmpty())
+				{
+					rgbaFormat = TextureAttrs::StringToPixelFormat(pixelFormatString);
+				}
 				TextureAttrs::Filter scaleFilter = TextureAttrs::StringToFilter(xmlReader->GetString("scaleFilter"));
 				TextureAttrs::Quality quality = TextureAttrs::StringToQuality(xmlReader->GetString("quality"));
 				TextureAttrs::ColorSpace colorSpace = TextureAttrs::StringToColorSpace(xmlReader->GetOptString("colorSpace", "sRGB"));
@@ -146,8 +152,8 @@ TextureAttrTable::Setup(const String& path)
 				attrs.SetMaxHeight(maxHeight);
 				attrs.SetGenMipMaps(genMipMaps);
 				attrs.SetFlipNormalY(flipNormalY);
-				attrs.SetRGBPixelFormat(rgbFormat);
-				attrs.SetRGBAPixelFormat(rgbaFormat);
+				attrs.SetPixelFormat(rgbaFormat);
+				attrs.SetDxgi(dxgiFormat);
 				attrs.SetMipMapFilter(mipFilter);
 				attrs.SetScaleFilter(scaleFilter);
 				attrs.SetQuality(quality);
@@ -163,8 +169,7 @@ TextureAttrTable::Setup(const String& path)
 	this->defaultAttrs.SetMaxHeight(2048);
 	this->defaultAttrs.SetMaxWidth(2048);
 	this->defaultAttrs.SetGenMipMaps(true);
-	this->defaultAttrs.SetRGBPixelFormat(TextureAttrs::DXT1C);
-	this->defaultAttrs.SetRGBAPixelFormat(TextureAttrs::DXT3);
+	this->defaultAttrs.SetPixelFormat(TextureAttrs::BC7);	
 	this->defaultAttrs.SetMipMapFilter(TextureAttrs::Kaiser);
 	this->defaultAttrs.SetScaleFilter(TextureAttrs::Kaiser);
 	this->defaultAttrs.SetQuality(TextureAttrs::Low);
@@ -292,8 +297,11 @@ TextureAttrTable::Save( const Util::String& path )
 		xmlWriter->SetString("mipMaps", attrs.GetGenMipMaps() ? "Yes" : "No");
 		xmlWriter->SetString("mipSharpen", "None");
 		xmlWriter->SetString("quality", TextureAttrs::QualityToString(attrs.GetQuality()));
-		xmlWriter->SetString("rgb", TextureAttrs::PixelFormatToString(attrs.GetRGBPixelFormat()));
-		xmlWriter->SetString("rgba", TextureAttrs::PixelFormatToString(attrs.GetRGBAPixelFormat()));
+		xmlWriter->SetString("format", TextureAttrs::PixelFormatToString(attrs.GetPixelFormat()));
+		if (!attrs.GetDxgi().IsEmpty())
+		{
+			xmlWriter->SetString("dxgiFormat", attrs.GetDxgi());
+		}
 		xmlWriter->SetString("scaleFilter", TextureAttrs::FilterToString(attrs.GetScaleFilter()));			
 		xmlWriter->SetString("colorSpace", TextureAttrs::ColorSpaceToString(attrs.GetColorSpace()));
 		xmlWriter->SetFloat("scaleX", 1.0f);

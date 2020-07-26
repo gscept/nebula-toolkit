@@ -21,9 +21,12 @@ public:
     DirectXTexConversionJob();
     /// perform conversion
     virtual bool Convert();
+    /// perform conversion
+    virtual bool ConvertCube();
 
 private:
     ToolkitUtil::AppLauncher appLauncher;
+    Util::String cubeToolPath;
 };
 
 } // namespace ToolkitUtil

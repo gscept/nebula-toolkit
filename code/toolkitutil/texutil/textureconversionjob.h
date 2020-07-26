@@ -64,6 +64,8 @@ protected:
     Util::String tmpPath;
     bool force;
     bool quiet;
+    bool neverCopy;
+
 
 };
 

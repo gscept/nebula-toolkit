@@ -20,7 +20,8 @@ TextureConversionJob::TextureConversionJob() :
     textureAttrTable(0),
     logger(0),
     force(false),
-    quiet(false)
+    quiet(false),
+    neverCopy(false)
 {
     // empty
 }
@@ -77,7 +78,7 @@ TextureConversionJob::PrepareConversion(const String& srcPath, const String& dst
     }
 
     // setup the path of the temporary destination file
-    this->tmpPath.Append(this->tmpDir);
+    this->tmpPath = this->tmpDir;
     this->tmpPath.Append("/");
     this->tmpPath.Append(this->dstPath.ExtractFileName());
 
@@ -91,7 +92,7 @@ TextureConversionJob::PrepareConversion(const String& srcPath, const String& dst
     this->textureAttrs = this->textureAttrTable->GetEntry(texEntry);
     
     // if destination file is already in native format, do a plain copy
-    if (srcPath.GetFileExtension() == dstPath.GetFileExtension())
+    if (!neverCopy && srcPath.GetFileExtension() == dstPath.GetFileExtension())
     {
         ioServer->CopyFile(srcPath, dstPath);
         return true;

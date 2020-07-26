@@ -46,8 +46,6 @@ public:
     void SetForceFlag(bool b);
     /// set quiet flag
     void SetQuietFlag(bool b);
-    /// set extra path to Nvdxt tool for PS3
-    void SetPS3NvdxtPath(const Util::String& nvdxtPath);
     /// set optional external texture attribute table (so it doesn't need to be loaded during setup)
     void SetExternalTextureAttrTable(const TextureAttrTable* extTexAttrTable);
 
@@ -66,15 +64,16 @@ public:
     bool ConvertFiles(const Util::Array<Util::String>& files);
     /// convert a texture from a given path
     bool ConvertTexture(const Util::String& texture, const Util::String& tmpDir);
+    /// convert a cubemap folder from a given path
+    bool ConvertCubemap(const Util::String& cubemap, const Util::String& tmpDir);
 
-private:    
+private:
     Logger* logger;
     Platform::Code platform;
     Util::String texAttrTablePath;
     Util::String srcDir;
     Util::String dstDir;
     Util::String toolPath;
-    Util::String ps3NvdxtPath;
     bool force;
     bool quiet;
     bool valid;
@@ -190,15 +189,6 @@ inline void
 TextureConverter::SetQuietFlag(bool b)
 {
     this->quiet = b;
-}
-
-//------------------------------------------------------------------------------
-/**
-*/
-inline void
-TextureConverter::SetPS3NvdxtPath(const Util::String& p)
-{
-    this->ps3NvdxtPath = p;
 }
 
 //------------------------------------------------------------------------------

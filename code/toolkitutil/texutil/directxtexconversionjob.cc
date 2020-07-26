@@ -22,6 +22,7 @@ DirectXTexConversionJob::DirectXTexConversionJob()
 {
     System::SystemInfo systemInfo;
     this->toolPath.Format("toolkit:bin/%s/texconv", System::SystemInfo::PlatformAsString(systemInfo.GetPlatform()).AsCharPtr());
+    this->cubeToolPath.Format("toolkit:bin/%s/texassemble", System::SystemInfo::PlatformAsString(systemInfo.GetPlatform()).AsCharPtr());
     this->SetDstFileExtension("dds");
 }
 
@@ -42,7 +43,7 @@ GetTexConvFormat(TextureAttrs const& attrs)
     case TextureAttrs::U888: return "BC7_UNORM";
     case TextureAttrs::BC4: return "BC4_UNORM";
     case TextureAttrs::BC5: "BC5_UNORM";
-    case TextureAttrs::BC6H: return "BC6H_UNORM";
+    case TextureAttrs::BC6H: return "BC6H_UF16";
     case TextureAttrs::BC7: return "BC7_UNORM";
     case TextureAttrs::R8: return "R8_UINT";
     case TextureAttrs::R16: return "R16_UINT";
@@ -63,6 +64,7 @@ DirectXTexConversionJob::Convert()
     n_assert(0 != this->logger);
     if (TextureConversionJob::Convert())
     {  
+
         URI srcPathUri(this->srcPath);
         URI dstPathUri(this->dstPath);
         URI tmpDirUri(this->tmpDir);
@@ -98,24 +100,23 @@ DirectXTexConversionJob::Convert()
         {
             args.Append(" -m 1 ");
         }
-
-        if (attrs.GetColorSpace() == TextureAttrs::sRGB)
+        if (!isNormalMap)
         {
-            args.Append(" -srgb ");
-        }
-        else
-        {
-            args.Append(" -srgbo ");
-        }
-
-        args.Append(" -f ");
-        if (isNormalMap)
-        {
-            args.Append("BC5_UNORM");
-        }
-        else
-        {
+            if (attrs.GetColorSpace() == TextureAttrs::sRGB)
+            {
+                args.Append(" -srgb ");
+            }
+            else
+            {
+                args.Append(" -srgbo ");
+            }
+            args.Append(" -f ");
             args.Append(GetTexConvFormat(attrs));
+        }
+        else
+        {
+            // force normalmaps to bc5 and dont perform any gamma handling
+            args.Append(" -f BC5_UNORM ");
         }
         
         
@@ -129,7 +130,7 @@ DirectXTexConversionJob::Convert()
         args.Append(tmpPath);
         args.Append("\"");
 
-        // launch nvdxt to perform the conversion        
+        // launch texconv to perform the conversion        
         this->appLauncher.SetExecutable(this->toolPath);
         this->appLauncher.SetWorkingDirectory(this->srcPath.ExtractDirName());
         this->appLauncher.SetArguments(args);
@@ -151,4 +152,63 @@ DirectXTexConversionJob::Convert()
     return true;
 }
 
+bool
+DirectXTexConversionJob::ConvertCube()
+{
+    n_assert(this->toolPath.IsValid());
+    n_assert(0 != this->logger);
+
+    //FIXME this is some hacky shit
+    this->tmpDir.Append("/");
+    this->tmpDir.Append(this->srcPath.ExtractLastDirName().AsCharPtr());
+    this->neverCopy = true;
+    if (TextureConversionJob::Convert())
+    {
+
+        URI srcPathUri(this->srcPath);
+        URI dstPathUri(this->dstPath);
+        URI tmpDirUri(this->tmpDir);
+
+        String args = "";
+        Array<String> files = IoServer::Instance()->ListFiles(this->srcPath, "*.*");
+        if (files.Size() != 6)
+        {
+            this->logger->Warning("Exactly 6 images are required for a cubemap!\n");
+            return false;
+        }
+
+        files.Sort();
+
+        args.Append("cube -nologo -o \"");
+
+        Util::String tmpPath = tmpDirUri.LocalPath();
+        tmpPath.ReplaceChars("/", '\\');
+        tmpPath.Append("\\");
+        tmpPath.Append(this->dstPath.ExtractFileName());
+        args.Append(tmpPath);
+        args.Append("\"");
+
+        for (int i = 0, n = files.Size(); i < n;  i++)
+        {
+            args.Append(" ");
+            args.Append(files[i].AsCharPtr());
+        }
+
+        this->appLauncher.SetExecutable(this->cubeToolPath);
+        this->appLauncher.SetWorkingDirectory(this->srcPath);
+        this->appLauncher.SetArguments(args);
+#if __WIN32__
+        //this->appLauncher.SetNoConsoleWindow(this->quiet);
+#endif        
+        if (!this->appLauncher.LaunchWait())
+        {
+            this->logger->Warning("Failed to launch converter tool '%s'!\n", this->cubeToolPath.AsCharPtr());
+            return false;
+        }
+
+        this->srcPath = tmpPath;
+        return this->Convert();
+    }
+    return false;
+}
 }// namespace ToolkitUtil

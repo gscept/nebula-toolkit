@@ -134,8 +134,8 @@ TextureAttrTable::Setup(const String& path)
                 {
 				    flipNormalY = xmlReader->GetString("flipNormalY") == "Yes";
                 }
-				TextureAttrs::PixelFormat rgbFormat = TextureAttrs::StringToPixelFormat(xmlReader->GetString("rgb"));
-				TextureAttrs::PixelFormat rgbaFormat = TextureAttrs::StringToPixelFormat(xmlReader->GetString("rgba"));
+				TextureAttrs::PixelFormat rgbFormat = TextureAttrs::StringToPixelFormat(xmlReader->GetOptString("rgb","bc7"));
+				TextureAttrs::PixelFormat rgbaFormat = TextureAttrs::StringToPixelFormat(xmlReader->GetOptString("rgba", "bc7"));
 				Util::String pixelFormatString = xmlReader->GetOptString("format", "");
 				Util::String dxgiFormat = xmlReader->GetOptString("dxgiFormat", "");
 				if (!pixelFormatString.IsEmpty())

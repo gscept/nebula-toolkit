@@ -184,12 +184,56 @@ TextureConverter::ConvertTexture(const String& srcTexPath, const String& tmpDir)
 	job.SetDstPath(dstTexPath);
 	job.SetTmpDir(tmpDir);
 	job.SetTexAttrTable(this->textureAttrTable);
-	//job.SetToolPath(this->toolPath);
 	job.SetForceFlag(this->force);
 	job.SetQuietFlag(this->quiet);
 	job.Convert();
 	
 	if (this->platform != Platform::Win32 && this->platform != Platform::Linux) return false;
+    else return true;
+}
+
+
+//------------------------------------------------------------------------------
+/**
+    
+*/
+bool
+TextureConverter::ConvertCubemap(const String& srcTexPath, const String& tmpDir)
+{
+    n_assert(this->IsValid());
+    n_assert(srcTexPath.IsValid());
+    n_assert(tmpDir.IsValid());
+    n_assert(this->dstDir.IsValid());
+    n_assert(0 != this->logger);
+
+    // extract texture category and filename from path (last 2 components)
+    // NOTE: the dstTexPath will contain the source file extension, which 
+    // is bad design and very confusing - the TextureConversionJob will
+    // replace with the platform-specific correct file extension in its
+    // Start method!
+    Array<String> tokens = srcTexPath.Tokenize(":/");
+    n_assert(tokens.Size() >= 3);
+    String texCategory = tokens[tokens.Size() - 2];
+    String texFilename = tokens[tokens.Size() - 1];
+    String dstTexPath;
+    dstTexPath.Format("%s/%s/%s", this->dstDir.AsCharPtr(), texCategory.AsCharPtr(), texFilename.AsCharPtr());
+    dstTexPath.StripFileExtension();
+
+    n_printf("Converting texture: %s\n", URI(srcTexPath).LocalPath().AsCharPtr());
+
+    // select conversion method based on target platform
+
+    DirectXTexConversionJob job;
+    job.SetLogger(this->logger);
+    job.SetSrcPath(srcTexPath);
+    job.SetDstPath(dstTexPath);
+    job.SetTmpDir(tmpDir);
+    job.SetTexAttrTable(this->textureAttrTable);
+    job.SetForceFlag(this->force);
+    job.SetQuietFlag(this->quiet);
+    job.ConvertCube();
+
+    if (this->platform != Platform::Win32 && this->platform != Platform::Linux) return false;
     else return true;
 }
 

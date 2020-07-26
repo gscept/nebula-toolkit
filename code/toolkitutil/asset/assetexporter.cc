@@ -166,6 +166,15 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
             this->textureExporter.ConvertTexture(assetPath + files[fileIndex], "temp:textureconverter");
 			log.AddEntry(console, "Texture", files[fileIndex]);			
         }
+        // export cubemaps
+        Array<String> Cubes = IoServer::Instance()->ListDirectories(assetPath, "*.cube");
+        for (fileIndex = 0; fileIndex < Cubes.Size(); fileIndex++)
+        {
+            console->Clear();
+            this->textureExporter.SetDstDir("tex:");
+            this->textureExporter.ConvertCubemap(assetPath + Cubes[fileIndex], "temp:textureconverter");
+            log.AddEntry(console, "Texture", Cubes[fileIndex]);
+        }
     }
 
 	if (this->mode & ExportModes::Surfaces)

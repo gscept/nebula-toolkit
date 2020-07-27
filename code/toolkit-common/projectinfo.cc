@@ -7,7 +7,7 @@
 #include "projectinfo.h"
 #include "io/ioserver.h"
 #include "io/stream.h"
-#include "io/xmlreader.h"
+#include "io/jsonreader.h"
 #include "system/nebulasettings.h"
 #include "system/environment.h"
 #include "app/application.h"
@@ -23,9 +23,7 @@ using namespace System;
 //------------------------------------------------------------------------------
 /**
 */
-ProjectInfo::ProjectInfo() :
-    defPlatform(Platform::InvalidPlatform),
-    curPlatform(Platform::InvalidPlatform)
+ProjectInfo::ProjectInfo() 
 {
     // empty
 }
@@ -44,16 +42,15 @@ ProjectInfo::~ProjectInfo()
 bool
 ProjectInfo::HasAttr(const Util::String& attrName) const
 {
-    n_assert(attrName.IsValid());
-    n_assert(Platform::InvalidPlatform != this->curPlatform);
-    if (this->platformAttrs.Contains(this->curPlatform))
-    {
-        return this->platformAttrs[this->curPlatform].Contains(attrName);
-    }
-    else
-    {
-        return false;
-    }
+    return this->attrs.Contains(attrName);
+}
+//------------------------------------------------------------------------------
+/**
+*/
+bool
+ProjectInfo::HasListAttr(const Util::String& attrName) const
+{
+    return this->listAttrs.Contains(attrName);
 }
 
 //------------------------------------------------------------------------------
@@ -63,13 +60,29 @@ const Util::String&
 ProjectInfo::GetAttr(const Util::String& attrName) const
 {
     n_assert(attrName.IsValid());
-    n_assert(Platform::InvalidPlatform != this->curPlatform);
-    if (!this->platformAttrs[this->curPlatform].Contains(attrName))
+
+    if (!this->HasAttr(attrName))
     {
-        n_error("ProjectInfo: attr '%s' does not exist for platform '%s' in projectinfo.xml!",
-            attrName.AsCharPtr(), Platform::ToString(this->curPlatform).AsCharPtr());
+        n_error("ProjectInfo: attr '%s' does not exist in projectinfo!",
+            attrName.AsCharPtr());
     }
-    return this->platformAttrs[this->curPlatform][attrName];
+    return this->attrs[attrName];
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+const Util::Dictionary<Util::String, Util::String>&
+ProjectInfo::GetListAttr(const Util::String& attrName) const
+{
+    n_assert(attrName.IsValid());
+
+    if (!this->HasListAttr(attrName))
+    {
+        n_error("ProjectInfo: attr '%s' does not exist in projectinfo!",
+            attrName.AsCharPtr());
+    }
+    return this->listAttrs[attrName];
 }
 
 //------------------------------------------------------------------------------
@@ -78,7 +91,7 @@ ProjectInfo::GetAttr(const Util::String& attrName) const
 bool
 ProjectInfo::IsValid() const
 {
-    return (this->platformAttrs.Size() > 0);
+    return (this->attrs.Size() > 0);
 }
 
 //------------------------------------------------------------------------------
@@ -93,7 +106,8 @@ ProjectInfo::Setup()
 
 	// check for cmdline overrides for project
 	const Util::CommandLineArgs & args = App::Application::Instance()->GetCmdLineArgs();
-	if (args.HasArg("-workdir"))
+
+    if (args.HasArg("-workdir"))
 	{
 		projPath = args.GetString("-workdir");
 	}
@@ -122,10 +136,22 @@ ProjectInfo::Setup()
     AssignRegistry::Instance()->SetAssign(Assign("toolkit", toolkitPath));
 
     // parse project info XML file
-    Result res = ProjectInfo::Success;
-    if (IoServer::Instance()->FileExists("proj:projectinfo.xml"))
+    Util::String projectPath = "proj:projectinfo.json";
+    if (args.HasArg("-project"))
     {
-        res = this->ParseProjectInfoFile(URI("proj:projectinfo.xml"));
+        projectPath = args.GetString("-project");
+        if (IoServer::Instance()->FileExists(projectPath))
+        {
+            projPath = projectPath.ExtractToLastSlash();
+            AssignRegistry::Instance()->SetAssign(Assign("proj", projPath));
+        }
+    }
+
+    Result res = ProjectInfo::Success;
+    if (IoServer::Instance()->FileExists(projectPath))
+    {
+        res = this->ParseProjectInfoFile(URI(projectPath));
+        this->AddAttrAssigns();
     }
     else
     {
@@ -138,9 +164,21 @@ ProjectInfo::Setup()
 /**
 */
 void
+ProjectInfo::AddAttrAssigns()
+{
+    for (auto const& attr : this->attrs)
+    {
+        AssignRegistry::Instance()->SetAssign(Assign(attr.Key(), attr.Value()));
+    }
+}
+//------------------------------------------------------------------------------
+/**
+*/
+void
 ProjectInfo::Discard()
 {
-    this->platformAttrs.Clear();
+    this->attrs.Clear();
+    this->listAttrs.Clear();
 }
 
 //------------------------------------------------------------------------------
@@ -154,46 +192,31 @@ ProjectInfo::ParseProjectInfoFile(const IO::URI & path)
     n_assert(!this->IsValid());
 
     Ptr<Stream> stream = IoServer::Instance()->CreateStream(path);
-    Ptr<XmlReader> xmlReader = XmlReader::Create();
-    xmlReader->SetStream(stream);
-    if (xmlReader->Open())
+    Ptr<JsonReader> jsonReader = JsonReader::Create();
+    jsonReader->SetStream(stream);
+    if (jsonReader->Open())
     {
-        // check if it's a valid project info file
-        if (!xmlReader->HasNode("/Nebula/Project"))
-        {
-            return ProjectFileContentInvalid;
-        }
-        xmlReader->SetToNode("/Nebula/Project");
-        n_assert(xmlReader->HasAttr("defaultPlatform"));
-        this->defPlatform = Platform::FromString(xmlReader->GetString("defaultPlatform"));
-        
-        // for each platform...
-        if (xmlReader->SetToFirstChild("Platform")) do
-        {
-            // setup a new set of platform attributes
-            n_assert(xmlReader->HasAttr("name"));
-            Platform::Code platform = Platform::FromString(xmlReader->GetString("name"));
-            n_assert(!this->platformAttrs.Contains(platform));
-            Dictionary<String,String> emptyDict;
-            this->platformAttrs.Add(platform, emptyDict);
 
-            // load attributes
-            if (xmlReader->SetToFirstChild("Attr")) do
+        if (jsonReader->SetToFirstChild()) do
+        {
+            if (!jsonReader->HasChildren())
             {
-                n_assert(xmlReader->HasAttr("name"));
-                n_assert(xmlReader->HasAttr("value"));
-                String attrName = xmlReader->GetString("name");
-                String attrValue = xmlReader->GetString("value");
-                if (this->platformAttrs[platform].Contains(attrName))
-                {
-                    n_error("projectinfo.xml: multiple definitions of attr '%s' in platform section '%s'!\n",
-                        attrName.AsCharPtr(), Platform::ToString(platform).AsCharPtr());
-                }
-                this->platformAttrs[platform].Add(attrName, attrValue);
+                this->attrs.Add(jsonReader->GetCurrentNodeName(), jsonReader->GetString());
             }
-            while (xmlReader->SetToNextChild("Attr"));
-        }
-        while (xmlReader->SetToNextChild("Platform"));
+            else
+            {
+                String currentKey = jsonReader->GetCurrentNodeName();
+                Dictionary<String, String> values;
+                jsonReader->SetToFirstChild();
+                do
+                {
+                    values.Add(jsonReader->GetString("Name"), jsonReader->GetString("Value"));
+                } 
+                while (jsonReader->SetToNextChild());
+                this->listAttrs.Add(currentKey, values);
+            }
+        } 
+        while (jsonReader->SetToNextChild());
         return Success;
     }
     else

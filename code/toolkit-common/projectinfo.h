@@ -3,17 +3,18 @@
 /**
     @class ToolkitUtil::ProjectInfo
   
-    Reads the projectinfo.xml file in the projects root directory and 
+    Reads the projectinfo.json file in the projects root directory and 
     exposes its content through a C++ class.
     
     Setup() performs the following steps:
     
     - query the "proj:" path from the Win32 registry
-    - read the "proj:projectinfo.xml" file
-    - setup assigns "src:" and "dst:"
+    - read the "proj:projectinfo.json" file
+    - setup assigns "src:" and "dst:" 
+    - add assigns from th projectinfo
     
     (C) 2008 Radon Labs GmbH
-    (C) 2013-2016 Individual contributors, see AUTHORS file
+    (C) 2013-2020 Individual contributors, see AUTHORS file
 */
 #include "core/types.h"
 #include "platform.h"
@@ -51,19 +52,17 @@ public:
     /// get error string for result code
     Util::String GetErrorString(Result res) const;
 
-    /// get the default platform which has been defined in the project info
-    Platform::Code GetDefaultPlatform() const;
-    /// return true if a platform exists in the project info
-    bool HasPlatform(Platform::Code platform) const;
-    /// set the project info object to a specific platform
-    void SetCurrentPlatform(Platform::Code platform);
-    /// get currently selected platform
-    Platform::Code GetCurrentPlatform() const;
+    
     
     /// return true if a platform attribute exists
     bool HasAttr(const Util::String& attrName) const;
     /// get platform attribute value
     const Util::String& GetAttr(const Util::String& attrName) const;
+
+    /// return true if a list attribute exists
+    bool HasListAttr(const Util::String& attrName) const;
+    ///
+    const Util::Dictionary<Util::String, Util::String>& GetListAttr(const Util::String& attrName) const;
     /// get platform attribute as path (resolves env- and reg-variables)
     Util::String GetPathAttr(const Util::String& attrName) const;
     /// create a projectinfo object directly from a path
@@ -74,49 +73,14 @@ private:
     Util::String QueryProjectPathFromRegistry();
     /// query registry for the toolkit directory
     Util::String QueryToolkitPathFromRegistry();
-    /// parse the project info XML file
+    /// parse the project info json file
     Result ParseProjectInfoFile(const IO::URI & path);
-
-    Platform::Code defPlatform;
-    Platform::Code curPlatform;
-    Util::Dictionary<Platform::Code, Util::Dictionary<Util::String,Util::String>> platformAttrs;
+    /// apply all assigns from the projectinfo file (non-list keys)
+    void AddAttrAssigns();
+    
+    Util::Dictionary<Util::String, Util::String> attrs;
+    Util::Dictionary<Util::String, Util::Dictionary<Util::String, Util::String>> listAttrs;
 };
-
-//------------------------------------------------------------------------------
-/**
-*/
-inline Platform::Code
-ProjectInfo::GetDefaultPlatform() const
-{
-    return this->defPlatform;
-}
-
-//------------------------------------------------------------------------------
-/**
-*/
-inline bool 
-ProjectInfo::HasPlatform(Platform::Code platform) const
-{
-    return this->platformAttrs.Contains(platform);
-}
-
-//------------------------------------------------------------------------------
-/**
-*/
-inline void
-ProjectInfo::SetCurrentPlatform(Platform::Code platform)
-{
-    this->curPlatform = platform;
-}
-
-//------------------------------------------------------------------------------
-/**
-*/
-inline Platform::Code
-ProjectInfo::GetCurrentPlatform() const
-{
-    return this->curPlatform;
-}
 
 } // namespace ToolkitUtil
 //------------------------------------------------------------------------------

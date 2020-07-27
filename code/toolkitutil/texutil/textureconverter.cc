@@ -72,7 +72,7 @@ TextureConverter::Setup(Logger& logger)
     else
     {
         // use externally provided texture attribute table
-        n_assert(this->textureAttrTable->IsValid());
+        n_assert(this->textureAttrTable != nullptr);
     }
     this->valid = true;
 
@@ -129,7 +129,6 @@ TextureConverter::ConvertFiles(const Util::Array<Util::String>& files)
         if (files[index].CheckFileExtension("tga") ||
             files[index].CheckFileExtension("bmp") ||
             files[index].CheckFileExtension("dds") ||
-            files[index].CheckFileExtension("psd") ||
 			files[index].CheckFileExtension("png") ||
             files[index].CheckFileExtension("exr") ||
 			files[index].CheckFileExtension("jpg"))

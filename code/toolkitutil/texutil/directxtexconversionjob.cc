@@ -121,12 +121,12 @@ DirectXTexConversionJob::Convert()
         
         
         args.Append(" \"");
-        Util::String srcPath = srcPathUri.LocalPath();
-        srcPath.ReplaceChars("/", '\\');
+        Util::String srcPath = IO::IoServer::NativePath(srcPathUri.LocalPath());
+        //srcPath.ReplaceChars("/", '\\');
         args.Append(srcPath);
         args.Append("\" -o \"");
-        Util::String tmpPath = tmpDirUri.LocalPath();
-        tmpPath.ReplaceChars("/", '\\');
+        Util::String tmpPath = IO::IoServer::NativePath(tmpDirUri.LocalPath());
+        //tmpPath.ReplaceChars("/", '\\');
         args.Append(tmpPath);
         args.Append("\"");
 

@@ -37,9 +37,9 @@ ToolkitApp::Open()
         // need to disable ZIP file system in tools!
         IoServer::Instance()->SetArchiveFileSystemEnabled(false);
 
-		// add toolkit handler for structured logging
-		this->handler = ToolkitUtil::ToolkitConsoleHandler::Create();
-		IO::Console::Instance()->AttachHandler(this->handler.cast<IO::ConsoleHandler>());
+        // add toolkit handler for structured logging
+        this->handler = ToolkitUtil::ToolkitConsoleHandler::Create();
+        IO::Console::Instance()->AttachHandler(this->handler.cast<IO::ConsoleHandler>());
         return true;
     }
     return false;
@@ -51,9 +51,9 @@ ToolkitApp::Open()
 void
 ToolkitApp::Close()
 {
-	IO::Console::Instance()->RemoveHandler(this->handler.cast<IO::ConsoleHandler>());
-	this->handler = nullptr;
-	ConsoleApplication::Close();
+    IO::Console::Instance()->RemoveHandler(this->handler.cast<IO::ConsoleHandler>());
+    this->handler = nullptr;
+    ConsoleApplication::Close();
 }
 
 //------------------------------------------------------------------------------
@@ -82,34 +82,20 @@ ToolkitApp::ParseCmdLineArgs()
 bool
 ToolkitApp::SetupProjectInfo()
 {
-    // read the projectinfo.xml file
+    // read the projectinfo.json file
     ProjectInfo::Result res = this->projectInfo.Setup();
 
     switch (res)
     {
     case ProjectInfo::NoProjectInfoFile:
         n_printf("No Projectinfo found in projectfolder, assuming defaults\n");
-        AssignRegistry::Instance()->SetAssign(Assign("src", "proj:work"));
-        AssignRegistry::Instance()->SetAssign(Assign("dst", "proj:export_win32"));
+        AssignRegistry::Instance()->SetAssign(Assign("dst", "proj:export"));
         AssignRegistry::Instance()->SetAssign(Assign("int", "proj:intermediate"));
-        this->projectInfo.SetCurrentPlatform(this->platform);
         return true;
 
     case ProjectInfo::Success:
-        // gather the relevant paths from the project info object
-        if (!this->projectInfo.HasPlatform(this->platform))
-        {
-            n_printf("ERROR: platform '%s' not defined in projectinfo.xml file!\n",
-                Platform::ToString(this->platform).AsCharPtr());
-            this->SetReturnCode(10);
-            return false;
-        }
-
-        // prepare generic info about project
-        this->projectInfo.SetCurrentPlatform(this->platform);
-        AssignRegistry::Instance()->SetAssign(Assign("src", this->projectInfo.GetAttr("SrcDir")));
-        AssignRegistry::Instance()->SetAssign(Assign("dst", this->projectInfo.GetAttr("DstDir")));
-        AssignRegistry::Instance()->SetAssign(Assign("int", this->projectInfo.GetAttr("IntDir")));
+        AssignRegistry::Instance()->SetAssign(Assign("dst", this->projectInfo.GetAttr("DestDir")));
+        AssignRegistry::Instance()->SetAssign(Assign("int", this->projectInfo.GetAttr("IntermediateDir")));
 
         return true;
     default:

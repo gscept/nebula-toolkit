@@ -26,11 +26,7 @@ ExporterBase::ExporterBase() :
 	hasErrors(false),
 	isOpen(false),
 	remote(true),
-#if __WIN32__
 	platform(Platform::Win32),
-#elif __LINUX__
-        platform(Platform::Linux),
-#endif
 	progressCallback(0),
 	minMaxCallback(0),
 	force(false)

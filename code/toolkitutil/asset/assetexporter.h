@@ -52,8 +52,8 @@ public:
     /// returns true if exporter is open
     bool IsOpen() const;
 
-	/// explicitly exports the system directories (toolkit:system and toolkit:lighting)
-	void ExportSystem();
+    /// trigger refresh of any resource databases due to source change
+    void UpdateSource();
     /// exports a single category
     void ExportDir(const Util::String& category);
 	/// export a single folder with absolute path
@@ -75,6 +75,7 @@ private:
     ToolkitUtil::TextureConverter textureExporter;
 	Ptr<ToolkitUtil::SurfaceExporter> surfaceExporter;
     Ptr<ToolkitUtil::ModelBuilder> modelBuilder;	
+    ToolkitUtil::TextureAttrTable textureAttrTable;
     Logger logger;
     unsigned int mode;
 	Util::Array<ToolLog> messages;

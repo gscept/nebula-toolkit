@@ -94,6 +94,9 @@ AssetBatcherApp::DoWork()
     ExporterBase::ExportFlag exportFlag = ExporterBase::All;
     Dictionary<String, String> sources;
 
+    // override dests with settings from projectinfo
+    AssignRegistry::Instance()->SetAssign(Assign("tex", this->projectInfo.GetAttr("TextureDestDir")));
+
     bool force = false;
     if (this->args.HasArg("-source"))
     {
@@ -129,7 +132,7 @@ AssetBatcherApp::DoWork()
         force = this->args.GetBoolFlag("-force");
     }
 
-    IO::AssignRegistry::Instance()->SetAssign(Assign("home","proj:"));
+    AssignRegistry::Instance()->SetAssign(Assign("home","proj:"));
     exporter->Open();
     exporter->SetForce(force);
     if (force)

@@ -80,6 +80,10 @@ DirectXTexConversionJob::Convert()
 			(String::MatchPattern(this->srcPath, "*bump.*")))
         {
             isNormalMap = true;
+            if (attrs.GetFlipNormalY())
+            {
+                args.Append(" -inverty ");
+            }
         }
 /*
         args.Append(" -w ");

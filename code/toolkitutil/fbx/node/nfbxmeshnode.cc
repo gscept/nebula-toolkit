@@ -50,7 +50,10 @@ NFbxMeshNode::Setup( FbxNode* node, const Ptr<NFbxScene>& scene )
 	NFbxNode::Setup(node, scene);
 	n_assert(node->GetMesh());
 	this->fbxMesh = node->GetMesh();
-	this->material = node->GetMaterial(0)->GetName();
+	if (node->GetMaterialCount() > 0)
+	{
+		this->material = node->GetMaterial(0)->GetName();
+	}
 
 	// triangulate mesh if it isn't already...
 	if (!this->fbxMesh->IsTriangleMesh())

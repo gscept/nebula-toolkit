@@ -17,6 +17,7 @@
 #include "coreanimation/infinitytype.h"
 #include "animutil/animbuilder.h"
 #include "modelutil/modelattributes.h"
+#include "core/weakptr.h"
 
 #define KEYS_PER_MS 40
 
@@ -130,7 +131,7 @@ protected:
 	FbxNode*						fbxNode;
 	Util::Array<Ptr<NFbxNode> >		children;
 	Ptr<NFbxNode>					parent;
-	Ptr<NFbxScene>					scene;
+	WeakPtr<NFbxScene>				scene;
 
 	Util::String					name;
 

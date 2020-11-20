@@ -64,6 +64,7 @@ NFbxNode::Setup( FbxNode* node, const Ptr<NFbxScene>& scene )
 void 
 NFbxNode::Discard()
 {
+	this->scene = nullptr;
 	this->fbxNode = 0;
 	this->parent = nullptr;
 	this->children.Clear();

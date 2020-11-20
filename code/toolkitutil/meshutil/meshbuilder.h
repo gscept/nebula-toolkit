@@ -80,6 +80,14 @@ public:
 	bool MoveTriangleUvsIntoRange(IndexT triIndex, float minUv, float maxUv);
 	void Cleanup(Util::Array<Util::Array<int> > *collapseMap);
 
+    /// Merge mesh with this mesh. NOTE: This does not take care of primitive groups!
+    void Merge(MeshBuilder const& srcMesh);
+
+    /// helper function for calculating normals
+    void CalculateNormals();
+    /// helper function for calculating tangents and binormals
+    void CalculateTangentsAndBinormals();
+
 private:
     /// a qsort() hook for generating a sorted index array
     static int __cdecl VertexSorter(const void* elm0, const void* elm1);

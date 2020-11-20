@@ -135,6 +135,7 @@ DirectXTexConversionJob::Convert()
         args.Append("\"");
 
         // launch texconv to perform the conversion        
+        this->appLauncher.SetNoConsoleWindow(true);
         this->appLauncher.SetExecutable(this->toolPath);
         this->appLauncher.SetWorkingDirectory(this->srcPath.ExtractDirName());
         this->appLauncher.SetArguments(args);

@@ -8,11 +8,13 @@
     (C) 2009 Radon Labs GmbH
     (C) 2013-2016 Individual contributors, see AUTHORS file
 */
+#include "core/ptr.h"
 #include "toolkit-common/platform.h"
 #include "toolkit-common/logger.h"
 #include "util/string.h"
 #include "util/stringatom.h"
 #include "io/xmlreader.h"
+#include "io/memorystream.h"
 #include "io/util/bxmlfilestructs.h"
 
 //------------------------------------------------------------------------------
@@ -33,6 +35,8 @@ public:
     bool ConvertDir(const Util::String& srcDir, const Util::String& dstDir, Logger& logger);
 	/// convert a single file
 	bool ConvertFile(const Util::String& srcFile, const Util::String& dstFile, Logger& logger);
+    /// convert from a memory file stream
+    bool ConvertStream(const Ptr<IO::MemoryStream>& stream, const Util::String& dstFile, Logger& logger);
 
 private:
     static const ushort InvalidNodeIndex = 0xffff;

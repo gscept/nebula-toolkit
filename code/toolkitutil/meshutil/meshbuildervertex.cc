@@ -18,7 +18,7 @@ MeshBuilderVertex::MeshBuilderVertex() :
     flagMask(0)
 {
     IndexT i;
-    for (i = 0; i < NumComponents; i++)
+    for (i = 0; i < compsSize; i++)
     {
         this->comps[i].set(0.0f, 0.0f, 0.0f, 0.0f);
     }
@@ -31,7 +31,10 @@ void
 MeshBuilderVertex::SetComponent(ComponentIndex compIndex, const vec4& value)
 {
     n_assert((compIndex >= 0) && (compIndex < NumComponents));
-    this->comps[compIndex] = value;
+    
+    // both versions of a component maps to the same index within the array.
+    const int i = (compIndex + 1) / 2;
+    this->comps[i] = value;
     this->compMask |= (1<<compIndex);
 }
 
@@ -42,7 +45,8 @@ const vec4&
 MeshBuilderVertex::GetComponent(ComponentIndex compIndex) const
 {
     n_assert((compIndex >= 0) && (compIndex < NumComponents));
-    return this->comps[compIndex];
+    const int i = (compIndex + 1) / 2;
+    return this->comps[i];
 }
 
 //------------------------------------------------------------------------------
@@ -60,8 +64,9 @@ MeshBuilderVertex::Compare(const MeshBuilderVertex& rhs) const
         ComponentMask mask = (1<<i);
         if ((this->compMask & mask) && (rhs.compMask & mask))
         {
-            const vec4& f0 = this->comps[i];
-            const vec4& f1 = rhs.comps[i];
+            const int idx = (i + 1) / 2;
+            const vec4& f0 = this->comps[idx];
+            const vec4& f1 = rhs.comps[idx];
             if (greater_any(f0, f1))
             {
                 return 1;
@@ -120,32 +125,20 @@ MeshBuilderVertex::Transform(const mat4& m)
 {
     if (this->compMask & CoordBit)
     {
-        this->comps[CoordIndex] = m * this->comps[CoordIndex];
+        this->SetComponent(CoordIndex, m * this->GetComponent(CoordIndex));
     }
-    if (this->compMask & NormalBit)
+    if (this->compMask & NormalBit || this->compMask & NormalB4NBit)
     {
-        this->comps[NormalIndex] = m * this->comps[NormalIndex];
+        this->SetComponent(NormalIndex, m * this->GetComponent(NormalIndex));
     }
-    if (this->compMask & TangentBit)
+    if (this->compMask & TangentBit || this->compMask & TangentB4NBit)
     {
-        this->comps[TangentIndex] = m * this->comps[TangentIndex];
+        this->SetComponent(TangentIndex, m * this->GetComponent(TangentIndex));
     }
-    if (this->compMask & BinormalBit)
+    if (this->compMask & BinormalBit || this->compMask & BinormalB4NBit)
     {
-        this->comps[BinormalIndex] = m * this->comps[BinormalIndex];
+        this->SetComponent(BinormalIndex, m * this->GetComponent(BinormalIndex));
     }
-	if (this->compMask & NormalB4NBit)
-	{
-		this->comps[NormalB4NIndex] = m * this->comps[NormalB4NIndex];
-	}
-	if (this->compMask & TangentB4NBit)
-	{
-		this->comps[TangentB4NIndex] = m * this->comps[TangentB4NIndex];
-	}
-	if (this->compMask & BinormalB4NBit)
-	{
-		this->comps[BinormalB4NIndex] = m * this->comps[BinormalB4NIndex];
-	}
 }
 
 //------------------------------------------------------------------------------
@@ -160,10 +153,11 @@ MeshBuilderVertex::InitComponents(ComponentMask mask)
     {
         if (mask & (1<<i))
         {
+            const int idx = (i + 1) / 2;
             switch (i)
             {
                 case CoordIndex:    
-                    this->comps[i].set(0.0f, 0.0f, 0.0f, 1.0f); 
+                    this->comps[idx].set(0.0f, 0.0f, 0.0f, 1.0f);
                     break;
 
                 case NormalIndex:
@@ -172,7 +166,7 @@ MeshBuilderVertex::InitComponents(ComponentMask mask)
 				case TangentB4NIndex:
                 case BinormalIndex:
 				case BinormalB4NIndex:
-                    this->comps[i].set(0.0f, 1.0f, 0.0f, 0.0f);
+                    this->comps[idx].set(0.0f, 1.0f, 0.0f, 0.0f);
                     break;
 
                 case Uv0Index:
@@ -187,12 +181,12 @@ MeshBuilderVertex::InitComponents(ComponentMask mask)
 				case WeightsUB4NIndex:
                 case JIndicesIndex:
 				case JIndicesUB4Index:
-                    this->comps[i].set(0.0f, 0.0f, 0.0f, 0.0f);
+                    this->comps[idx].set(0.0f, 0.0f, 0.0f, 0.0f);
                     break;
 
                 case ColorIndex:
 				case ColorUB4NIndex:
-                    this->comps[i].set(1.0f, 1.0f, 1.0f, 1.0f);
+                    this->comps[idx].set(1.0f, 1.0f, 1.0f, 1.0f);
                     break;
             }
         }

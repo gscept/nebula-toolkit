@@ -10,6 +10,7 @@
 #include "io/textreader.h"
 #include "asset/assetexporter.h"
 #include "io/console.h"
+#include "profiling/profiling.h"
 #ifdef WIN32
 #include "io/win32/win32consolehandler.h"
 #else
@@ -47,6 +48,10 @@ AssetBatcherApp::~AssetBatcherApp()
 bool 
 AssetBatcherApp::Open()
 {
+#if NEBULA_ENABLE_PROFILING
+    Profiling::ProfilingRegisterThread();
+#endif
+
     if (DistributedToolkitApp::Open())
     {
         Ptr<IO::Console> console = IO::Console::Instance();		
@@ -87,6 +92,9 @@ AssetBatcherApp::Close()
 void 
 AssetBatcherApp::DoWork()
 {
+#if NEBULA_ENABLE_PROFILING
+    Profiling::ProfilingNewFrame();
+#endif
     Ptr<AssetExporter> exporter = AssetExporter::Create();
     String dir = "";
     String file = "";
@@ -137,7 +145,7 @@ AssetBatcherApp::DoWork()
     exporter->SetForce(force);
     if (force)
     {
-        exporter->SetExportMode(AssetExporter::All | AssetExporter::ForceFBX | AssetExporter::ForceModels | AssetExporter::ForceSurfaces);
+        exporter->SetExportMode(AssetExporter::All | AssetExporter::ForceFBX | AssetExporter::ForceModels | AssetExporter::ForceSurfaces | AssetExporter::ForceGLTF);
     }
     exporter->SetExportFlag(exportFlag);
     exporter->SetPlatform(this->platform);

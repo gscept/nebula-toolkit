@@ -195,6 +195,10 @@ ExporterBase::NeedsConversion( const Util::String& src, const Util::String& dst 
 	}
 
 	IoServer* ioServer = IoServer::Instance();
+	if (!ioServer->FileExists(src))
+	{
+		return false;
+	}
 	if (ioServer->FileExists(dst))
 	{
 		FileTime srcFileTime = ioServer->GetFileWriteTime(src);

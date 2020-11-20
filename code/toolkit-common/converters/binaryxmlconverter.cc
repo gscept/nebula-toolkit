@@ -143,6 +143,35 @@ BinaryXmlConverter::ConvertFile(const String& srcFile, const String& dstFile, Lo
 //------------------------------------------------------------------------------
 /**
 */
+bool
+BinaryXmlConverter::ConvertStream(const Ptr<IO::MemoryStream>& stream, const Util::String& dstFile, Logger& logger)
+{
+    Ptr<XmlReader> xmlReader = XmlReader::Create();
+    xmlReader->SetStream(stream);
+    if (!xmlReader->Open())
+    {
+        return false;
+    }
+
+    // recursively parse XML content
+    if (!this->RecurseParseXml(xmlReader, this->rootNode, logger))
+    {
+        logger.Error("Error parsing XML stream!\n");
+        return false;
+    }
+    xmlReader->Close();
+
+    this->BuildFileArrays();
+    if (!this->SaveFile(dstFile, logger))
+    {
+        return false;
+    }
+    return true;
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
 void
 BinaryXmlConverter::ClearUniqueStrings()
 {

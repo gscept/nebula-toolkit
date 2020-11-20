@@ -19,6 +19,7 @@ class MeshBuilderVertex
 {
 public:
     /// vertex component indices
+    /// @note   Normalized version is (and should) always be right after the normal version. (ex. NormalIndex + 1 = NormalB4NIndex)
     enum ComponentIndex
     {
         CoordIndex = 0,
@@ -126,7 +127,10 @@ public:
 private:
     ComponentMask compMask;
     FlagMask flagMask;
-    Math::vec4 comps[NumComponents];
+
+    /// we only allow one component of each type. That means, ex. the normal and normalb4n maps to the same index in the comps array.
+    static const int compsSize = NumComponents / 2 + 1;
+    Math::vec4 comps[compsSize];
 };
 
 //------------------------------------------------------------------------------

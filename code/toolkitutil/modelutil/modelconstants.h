@@ -27,7 +27,7 @@ public:
 		Util::String path;
 		float LODMax;
 		float LODMin;
-		bool useLOD;
+		bool useLOD = false;
 		ToolkitUtil::Transform transform;
 		Math::bbox boundingBox;
 	};

@@ -33,6 +33,24 @@ MeshBuilder::Reserve(SizeT numVertices, SizeT numTriangles)
 //------------------------------------------------------------------------------
 /**
 */
+void
+MeshBuilder::SetPrimitiveTopology(const CoreGraphics::PrimitiveTopology::Code& p)
+{
+    this->topology = p;
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+const CoreGraphics::PrimitiveTopology::Code&
+MeshBuilder::GetPrimitiveTopology()
+{
+    return this->topology;
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
 SizeT
 MeshBuilder::CountGroupTriangles(IndexT groupId, IndexT startTriangleIndex) const
 {
@@ -701,4 +719,210 @@ void MeshBuilder::Cleanup(Array<Array<int> > *collapseMap)
 	n_delete_array(sortMap);
 	n_delete_array(shiftMap);
 }
+
+//------------------------------------------------------------------------------
+/**
+    @note   This does not handle primitive groups. You need to manually adjust group ids!
+*/
+void
+MeshBuilder::Merge(MeshBuilder const& sourceMesh)
+{
+    uint primitiveGroup = 0;
+        
+    SizeT vertOffset = this->GetNumVertices();
+
+    SizeT vertCount = sourceMesh.GetNumVertices();
+    IndexT vertIndex;
+    SizeT triCount = sourceMesh.GetNumTriangles();
+    IndexT triIndex;
+
+    for (vertIndex = 0; vertIndex < sourceMesh.GetNumVertices(); vertIndex++)
+    {
+        this->AddVertex(sourceMesh.VertexAt(vertIndex));
+    }
+
+    // then add triangles and update vertex indices
+    for (triIndex = 0; triIndex < triCount; triIndex++)
+    {
+        MeshBuilderTriangle tri = sourceMesh.TriangleAt(triIndex);
+        tri.SetVertexIndex(0, vertOffset + tri.GetVertexIndex(0));
+        tri.SetVertexIndex(1, vertOffset + tri.GetVertexIndex(1));
+        tri.SetVertexIndex(2, vertOffset + tri.GetVertexIndex(2));
+
+        // add triangle to mesh
+        this->AddTriangle(tri);
+    }
+}
+
+
+//------------------------------------------------------------------------------
+/**
+*/
+void
+MeshBuilder::CalculateNormals()
+{
+    int numTriangles = this->GetNumTriangles();
+    for (int triIndex = 0; triIndex < numTriangles; triIndex++)
+    {
+        MeshBuilderTriangle& tri = this->TriangleAt(triIndex);
+        int vertIndex1, vertIndex2, vertIndex3;
+        tri.GetVertexIndices(vertIndex1, vertIndex2, vertIndex3);
+
+        MeshBuilderVertex& v1 = this->VertexAt(vertIndex1);
+        MeshBuilderVertex& v2 = this->VertexAt(vertIndex2);
+        MeshBuilderVertex& v3 = this->VertexAt(vertIndex3);
+
+        vec4 p1 = v1.GetComponent(MeshBuilderVertex::CoordIndex);
+        vec4 p2 = v2.GetComponent(MeshBuilderVertex::CoordIndex);
+        vec4 p3 = v3.GetComponent(MeshBuilderVertex::CoordIndex);
+
+        vec4 normal1 = cross3(p2 - p1, p3 - p1);
+
+        if (v1.HasComponent(MeshBuilderVertex::NormalB4NBit))
+        {
+            vec4 normal = v1.GetComponent(MeshBuilderVertex::NormalB4NIndex) + normal1;
+            normal = normalize3(normal);
+            v1.SetComponent(MeshBuilderVertex::NormalB4NIndex, normal);
+        }
+        else
+        {
+            v1.SetComponent(MeshBuilderVertex::NormalB4NIndex, normal1);
+        }
+
+        if (v2.HasComponent(MeshBuilderVertex::NormalB4NBit))
+        {
+            vec4 normal = v1.GetComponent(MeshBuilderVertex::NormalB4NIndex) + normal1;
+            normal = normalize3(normal);
+            v2.SetComponent(MeshBuilderVertex::NormalB4NIndex, normal);
+        }
+        else
+        {
+            v2.SetComponent(MeshBuilderVertex::NormalB4NIndex, normal1);
+        }
+
+        if (v3.HasComponent(MeshBuilderVertex::NormalB4NBit))
+        {
+            vec4 normal = v1.GetComponent(MeshBuilderVertex::NormalB4NIndex) + normal1;
+            normal = normalize3(normal);
+            v3.SetComponent(MeshBuilderVertex::NormalB4NIndex, normal);
+        }
+        else
+        {
+            v3.SetComponent(MeshBuilderVertex::NormalB4NIndex, normal1);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+void
+MeshBuilder::CalculateTangentsAndBinormals()
+{
+    int numVertices = this->GetNumVertices();
+    int numTriangles = this->GetNumTriangles();
+    vec4* tangents1 = new vec4[numVertices * 2];
+    vec4* tangents2 = tangents1 + numVertices;
+
+    memset(tangents1, 0, numVertices * sizeof(vec4) * 2);
+    for (int triangleIndex = 0; triangleIndex < numTriangles; triangleIndex++)
+    {
+        MeshBuilderTriangle& triangle = this->TriangleAt(triangleIndex);
+        int v1Index = triangle.GetVertexIndex(0);
+        int v2Index = triangle.GetVertexIndex(1);
+        int v3Index = triangle.GetVertexIndex(2);
+
+        MeshBuilderVertex& vertex1 = this->VertexAt(v1Index);
+        MeshBuilderVertex& vertex2 = this->VertexAt(v2Index);
+        MeshBuilderVertex& vertex3 = this->VertexAt(v3Index);
+
+        // v1 normal
+        const vec4& v1 = vertex1.GetComponent(MeshBuilderVertex::CoordIndex);
+        // v2 normal
+        const vec4& v2 = vertex2.GetComponent(MeshBuilderVertex::CoordIndex);
+        // v3 normal
+        const vec4& v3 = vertex3.GetComponent(MeshBuilderVertex::CoordIndex);
+
+        // v1 texture coordinate
+        const vec4& w1 = vertex1.GetComponent(MeshBuilderVertex::Uv0Index);
+        // v2 texture coordinate
+        const vec4& w2 = vertex2.GetComponent(MeshBuilderVertex::Uv0Index);
+        // v3 texture coordinate
+        const vec4& w3 = vertex3.GetComponent(MeshBuilderVertex::Uv0Index);
+
+        float x1 = v2.x - v1.x;
+        float x2 = v3.x - v1.x;
+        float y1 = v2.y - v1.y;
+        float y2 = v3.y - v1.y;
+        float z1 = v2.z - v1.z;
+        float z2 = v3.z - v1.z;
+
+        float s1 = w2.x - w1.x;
+        float s2 = w3.x - w1.x;
+        float t1 = w2.y - w1.y;
+        float t2 = w3.y - w1.y;
+
+        float rDenom = (s1 * t2 - s2 * t1);
+        float r = 1 / rDenom;
+
+        vec4 sdir = vec4((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r, (t2 * z1 - t1 * z2) * r, 0.0f);
+        vec4 tdir = vec4((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r, (s1 * z2 - s2 * z1) * r, 0.0f);
+
+        tangents1[v1Index] += sdir;
+        tangents1[v2Index] += sdir;
+        tangents1[v3Index] += sdir;
+
+        tangents2[v1Index] += tdir;
+        tangents2[v2Index] += tdir;
+        tangents2[v3Index] += tdir;
+    }
+
+    for (int vertexIndex = 0; vertexIndex < numVertices; vertexIndex++)
+    {
+        MeshBuilderVertex& vertex = this->VertexAt(vertexIndex);
+        const MeshBuilderVertex::ComponentIndex normalComponent = vertex.HasComponent(MeshBuilderVertex::ComponentBit::NormalBit) ? MeshBuilderVertex::NormalIndex : MeshBuilderVertex::NormalB4NIndex;
+        vec4 n = normalize3(vertex.GetComponent(normalComponent));
+        vec4 t = tangents1[vertexIndex];
+        vec4 b = tangents2[vertexIndex];
+
+        vec4 tangent = normalize3(t - n * dot3(n, t));
+        float handedNess = (dot3(cross3(n, t), tangents2[vertexIndex]) < 0.0f ? 1.0f : -1.0f);
+        vec4 bitangent = normalize3(cross3(n, tangent) * handedNess);
+
+        if (vertex.HasComponent(MeshBuilderVertex::TangentB4NBit))
+        {
+            vec4 oldTangent = vertex.GetComponent(MeshBuilderVertex::TangentB4NIndex);
+            vec4 newTangent = oldTangent + tangent;
+            vertex.SetComponent(MeshBuilderVertex::TangentB4NIndex, newTangent);
+        }
+        else
+        {
+            vertex.SetComponent(MeshBuilderVertex::TangentB4NIndex, tangent);
+        }
+
+        if (vertex.HasComponent(MeshBuilderVertex::BinormalB4NBit))
+        {
+            vec4 oldBinormal = vertex.GetComponent(MeshBuilderVertex::BinormalB4NIndex);
+            vec4 newBinormal = oldBinormal + bitangent;
+            vertex.SetComponent(MeshBuilderVertex::BinormalB4NIndex, newBinormal);
+        }
+        else
+        {
+            vertex.SetComponent(MeshBuilderVertex::BinormalB4NIndex, bitangent);
+        }
+    }
+
+    // finally normalize all of it
+    //for (int vertexIndex = 0; vertexIndex < numVertices; vertexIndex++)
+    //{
+    //    MeshBuilderVertex& vertex = this->VertexAt(vertexIndex);
+    //    vertex.SetComponent(MeshBuilderVertex::NormalB4NIndex, normalize3(vertex.GetComponent(MeshBuilderVertex::NormalB4NIndex)));
+    //    vertex.SetComponent(MeshBuilderVertex::TangentB4NIndex, normalize3(vertex.GetComponent(MeshBuilderVertex::TangentB4NIndex)));
+    //    vertex.SetComponent(MeshBuilderVertex::BinormalB4NIndex, normalize3(vertex.GetComponent(MeshBuilderVertex::BinormalB4NIndex)));
+    //}
+
+    delete[] tangents1;
+}
+
+
 } // namespace ToolkitUtil

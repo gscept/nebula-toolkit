@@ -7,7 +7,7 @@ find_package(Fbx REQUIRED)
 fips_begin_module(toolkitutil)
 	fips_vs_warning_level(3)
     fips_include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CODE_ROOT}/foundation ${CODE_ROOT}/render ${CODE_ROOT}/)
-    fips_deps(foundation render)
+    fips_deps(foundation render gltf)
 	fips_libs_debug(${FBX_LIBRARY_DEBUG})
 	fips_libs_release(${FBX_LIBRARY})
 	if(FIPS_WINDOWS)
@@ -165,6 +165,24 @@ fips_begin_module(toolkitutil)
 					skinpartitioner.cc
 					skinpartitioner.h
 				)
+		fips_dir(gltf)
+			fips_files(
+				ngltfexporter.cc
+				ngltfexporter.h
+				ngltfscenewriter.cc
+				ngltfscenewriter.h
+			)
+			fips_dir(gltf/node)
+				fips_files(
+					ngltfmesh.cc
+					ngltfmesh.h
+					ngltfnode.cc
+					ngltfnode.h
+					ngltfscene.cc
+					ngltfscene.h
+					meshprimitive.cc
+					meshprimitive.h
+				)
 IF(NOT N_MINIMAL_TOOLKIT)
 		#fips_dir(game)
 		#	fips_files(
@@ -205,6 +223,8 @@ ENDIF()
 			fips_files(
 				surfaceexporter.cc
 				surfaceexporter.h
+				surfacebuilder.h
+				surfacebuilder.cc
 			)
 fips_end_module()
 

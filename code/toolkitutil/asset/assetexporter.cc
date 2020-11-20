@@ -115,6 +115,29 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
         this->fbxExporter = nullptr;
     }    
 
+    if (this->mode & ExportModes::GLTF)
+    {
+        console->Clear();
+        // export GLTF sources
+        Array<String> files = IoServer::Instance()->ListFiles(assetPath, "*.gltf");
+        //files.AppendArray(IoServer::Instance()->ListFiles(assetPath, "*.glb"));
+        this->gltfExporter = ToolkitUtil::NglTFExporter::Create();
+        this->gltfExporter->SetTextureConverter(&this->textureExporter);
+        this->gltfExporter->Open();
+        this->gltfExporter->SetForce(this->force || (this->mode & ExportModes::ForceGLTF) != 0);
+        this->gltfExporter->SetCategory(category);
+        log.AddEntry(console, "GLTF", category);
+        for (fileIndex = 0; fileIndex < files.Size(); fileIndex++)
+        {
+            console->Clear();
+            this->gltfExporter->SetFile(files[fileIndex]);
+            this->gltfExporter->ExportFile(assetPath + files[fileIndex]);
+            log.AddEntry(console, "GLTF", files[fileIndex]);
+        }
+        this->gltfExporter->Close();
+        this->gltfExporter = nullptr;
+    }
+
     if (this->mode & ExportModes::Models)
     {
         // export models

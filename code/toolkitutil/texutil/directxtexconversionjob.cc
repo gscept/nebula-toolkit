@@ -26,6 +26,9 @@ DirectXTexConversionJob::DirectXTexConversionJob()
     this->SetDstFileExtension("dds");
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 static const char* 
 GetTexConvFormat(TextureAttrs const& attrs)
 {

@@ -94,27 +94,7 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
     IndexT fileIndex;
     ToolLog log(category);
     Ptr<ToolkitUtil::ToolkitConsoleHandler> console = ToolkitUtil::ToolkitConsoleHandler::Instance();
-    if (this->mode & ExportModes::FBX)
-    {
-        console->Clear();
-        // export FBX sources
-        Array<String> files = IoServer::Instance()->ListFiles(assetPath, "*.fbx");
-        this->fbxExporter = ToolkitUtil::NFbxExporter::Create();
-        this->fbxExporter->Open();
-        this->fbxExporter->SetForce(this->force || (this->mode & ExportModes::ForceFBX) != 0);
-        this->fbxExporter->SetCategory(category);
-        log.AddEntry(console, "FBX", category);
-        for (fileIndex = 0; fileIndex < files.Size(); fileIndex++)
-        {
-            console->Clear();
-            this->fbxExporter->SetFile(files[fileIndex]);
-            this->fbxExporter->ExportFile(assetPath + files[fileIndex]);			
-            log.AddEntry(console, "FBX", files[fileIndex]);
-        }
-        this->fbxExporter->Close();
-        this->fbxExporter = nullptr;
-    }    
-
+    
     if (this->mode & ExportModes::GLTF)
     {
         console->Clear();
@@ -136,6 +116,27 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
         }
         this->gltfExporter->Close();
         this->gltfExporter = nullptr;
+    }
+
+    if (this->mode & ExportModes::FBX)
+    {
+        console->Clear();
+        // export FBX sources
+        Array<String> files = IoServer::Instance()->ListFiles(assetPath, "*.fbx");
+        this->fbxExporter = ToolkitUtil::NFbxExporter::Create();
+        this->fbxExporter->Open();
+        this->fbxExporter->SetForce(this->force || (this->mode & ExportModes::ForceFBX) != 0);
+        this->fbxExporter->SetCategory(category);
+        log.AddEntry(console, "FBX", category);
+        for (fileIndex = 0; fileIndex < files.Size(); fileIndex++)
+        {
+            console->Clear();
+            this->fbxExporter->SetFile(files[fileIndex]);
+            this->fbxExporter->ExportFile(assetPath + files[fileIndex]);
+            log.AddEntry(console, "FBX", files[fileIndex]);
+        }
+        this->fbxExporter->Close();
+        this->fbxExporter = nullptr;
     }
 
     if (this->mode & ExportModes::Models)

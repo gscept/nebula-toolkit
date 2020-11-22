@@ -81,6 +81,7 @@ public:
 	ToolkitUtil::MeshBuilder* GetMesh() const;
 	
 private:
+	void ExtractMeshNodes(const Gltf::Node* node, Math::mat4 parentTransform);
 	///Gathers all mesh nodes and adds them to meshnodes and nodes
 	void GatherMeshNodes();
 

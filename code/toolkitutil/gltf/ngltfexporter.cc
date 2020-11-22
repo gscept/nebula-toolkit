@@ -30,8 +30,10 @@ __ImplementClass(ToolkitUtil::NglTFExporter, 'glte', Base::ExporterBase);
 NglTFExporter::NglTFExporter() :
 	scaleFactor(1.0f),
 	exportMode(Static),
-	exportFlags(ToolkitUtil::FlipUVs)
+	exportFlags(ToolkitUtil::FlipUVs),
+	texConverter(nullptr)
 {
+	// empty
 }
 
 //------------------------------------------------------------------------------
@@ -60,8 +62,11 @@ void NglTFExporter::Close()
 {
 	ExporterBase::Close();
 
-	this->scene->Close();
-	this->scene = nullptr;
+	if (this->scene != nullptr)
+	{
+		this->scene->Close();
+		this->scene = nullptr;
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -70,6 +75,7 @@ void NglTFExporter::Close()
 bool NglTFExporter::StartExport(const IO::URI & file)
 {
 	n_assert(this->isOpen);
+	
 	IO::IoServer* ioServer = IO::IoServer::Instance();
 
 	String localPath = file.GetHostAndLocalPath();
@@ -118,7 +124,7 @@ bool NglTFExporter::StartExport(const IO::URI & file)
 				break;
 			}
 		}
-
+		
 		if (hasEmbedded)
 		{
 			IO::IoServer::Instance()->CreateDirectory(embeddedPath);
@@ -170,7 +176,6 @@ bool NglTFExporter::StartExport(const IO::URI & file)
 				{
 					n_error("ERROR: failed to convert texture\n");
 				}
-
 				if (IO::IoServer::Instance()->DirectoryExists(tmpDir))
 				{
 					if (!IO::IoServer::Instance()->DeleteDirectory(tmpDir))
@@ -242,8 +247,9 @@ bool NglTFExporter::StartExport(const IO::URI & file)
 			builder.ExportBinary(surfaceExportPath + "/" + material.name + ".sur");
 		}
 	}
-	
+
 	Timing::Timer timer;
+	timer.Reset();
 	timer.Start();
 
 	this->scene->SetName(fileName);
@@ -292,6 +298,7 @@ void NglTFExporter::EndExport()
 	// generate models
 	this->sceneWriter->GenerateModels(basePath, this->exportFlags, this->exportMode);
 	this->sceneWriter = nullptr;
+	this->scene->Cleanup();
 
 	// cleanup data
 	this->gltfScene = Gltf::Document();
@@ -327,7 +334,8 @@ void NglTFExporter::ExportFile(const IO::URI & file)
 void NglTFExporter::ExportDir(const Util::String & dirName)
 {
 	String categoryDir = "src:assets/" + dirName;
-	Array<String> files = IO::IoServer::Instance()->ListFiles(categoryDir, "*.fbx");
+	Array<String> files = IO::IoServer::Instance()->ListFiles(categoryDir, "*.gltf");
+	//files.AppendArray(IO::IoServer::Instance()->ListFiles(category, "*.glb"));
 	for (int fileIndex = 0; fileIndex < files.Size(); fileIndex++)
 	{
 		String file = categoryDir + "/" + files[fileIndex];
@@ -347,7 +355,8 @@ void NglTFExporter::ExportAll()
 	{
 		String category = workDir + "/" + directories[directoryIndex];
 		this->SetCategory(directories[directoryIndex]);
-		Array<String> files = IO::IoServer::Instance()->ListFiles(category, "*.fbx");
+		Array<String> files = IO::IoServer::Instance()->ListFiles(category, "*.gltf");
+		//files.AppendArray(IO::IoServer::Instance()->ListFiles(category, "*.glb"));
 		for (int fileIndex = 0; fileIndex < files.Size(); fileIndex++)
 		{
 			String file = category + "/" + files[fileIndex];

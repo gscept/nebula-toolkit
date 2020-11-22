@@ -16,6 +16,7 @@
 #include "io/binarywriter.h"
 #include "io/filestream.h"
 #include "surface/surfacebuilder.h"
+#include "ngltfmaterialexporter.h"
 
 #define NEBULA_VALIDATE_GLTF 1
 
@@ -185,67 +186,15 @@ bool NglTFExporter::StartExport(const IO::URI & file)
 		}
 	}
 
-	String surfaceExportPath = "sur:" + catName + "/" + fileName + "_" + fileExtension;
+	String subDir = fileName + "_" + fileExtension;
 
-	if (gltfScene.materials.Size() > 0)
 	{
-		if (IO::IoServer::Instance()->DirectoryExists(surfaceExportPath))
-		{
-			// delete all previously generated images
-			if (!IO::IoServer::Instance()->DeleteDirectory(surfaceExportPath))
-				n_warning("Warning: NglTFExporter: Could not delete old directory for gltf-specific surfaces.\n");
-		}
-
-		Util::String texCatDir = "tex:" + catName;
-		Util::String textureDir = texCatDir + "/" + fileName + "_" + fileExtension + "/";
-		// Generate surfaces
-		for (IndexT i = 0; i < gltfScene.materials.Size(); i++)
-		{
-			Gltf::Material const& material = gltfScene.materials[i];
-			
-			SurfaceBuilder builder;
-			builder.SetDstDir(surfaceExportPath);
-			builder.SetMaterial("GLTF Static");
-			if (material.pbrMetallicRoughness.baseColorTexture.index != -1)
-			{
-				int baseColorTexture = gltfScene.textures[material.pbrMetallicRoughness.baseColorTexture.index].source;
-				if (gltfScene.images[baseColorTexture].embedded)
-					builder.AddParam("baseColorTexture", textureDir + Util::String::FromInt(baseColorTexture));
-				else
-				{
-					// texture is not embedded, we need to find the correct path to it
-					n_error("TODO");
-				}
-			}
-			else
-			{
-				builder.AddParam("baseColorTexture", "tex:system/white");
-			}
-
-			if (material.pbrMetallicRoughness.metallicRoughnessTexture.index != -1)
-			{
-				int metallicRoughnessTexture = gltfScene.textures[material.pbrMetallicRoughness.metallicRoughnessTexture.index].source;
-
-				if (gltfScene.images[metallicRoughnessTexture].embedded)
-					builder.AddParam("metallicRoughnessTexture", textureDir + Util::String::FromInt(metallicRoughnessTexture));
-				else
-				{
-					// texture is not embedded, we need to find the correct path to it
-					n_error("TODO");
-				}
-			}
-			else
-			{
-				builder.AddParam("metallicRoughnessTexture", "tex:system/white");
-			}
-			
-			int normalTexture = gltfScene.textures[material.normalTexture.index].source;
-			builder.AddParam("normalTexture", textureDir + Util::String::FromInt(normalTexture));
-			builder.AddParam("baseColorFactor", Util::String::FromVec4(material.pbrMetallicRoughness.baseColorFactor));
-			builder.AddParam("metallicFactor", Util::String::FromFloat(material.pbrMetallicRoughness.metallicFactor));
-			builder.AddParam("roughnessFactor", Util::String::FromFloat(material.pbrMetallicRoughness.roughnessFactor));
-			builder.ExportBinary(surfaceExportPath + "/" + material.name + ".sur");
-		}
+		// Extract materials into .sur files
+		NglTFMaterialExtractor extractor;
+		extractor.SetCategoryName(catName);
+		extractor.SetDocument(&this->gltfScene);
+		extractor.SetExportSubDirectory(subDir);
+		extractor.ExportAll();
 	}
 
 	Timing::Timer timer;
@@ -276,7 +225,7 @@ bool NglTFExporter::StartExport(const IO::URI & file)
 	
 	// create scene writer
 	this->sceneWriter = NglTFSceneWriter::Create();
-	this->sceneWriter->SetSurfaceExportPath(surfaceExportPath);
+	this->sceneWriter->SetSurfaceExportPath("sur:" + catName + "/" + subDir);
 	this->sceneWriter->SetForce(true);
 	this->sceneWriter->SetPlatform(this->platform);
 	this->sceneWriter->SetScene(this->scene);

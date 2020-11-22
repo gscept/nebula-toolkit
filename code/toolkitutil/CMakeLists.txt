@@ -169,6 +169,8 @@ fips_begin_module(toolkitutil)
 			fips_files(
 				ngltfexporter.cc
 				ngltfexporter.h
+				ngltfmaterialexporter.cc
+				ngltfmaterialexporter.h
 				ngltfscenewriter.cc
 				ngltfscenewriter.h
 			)

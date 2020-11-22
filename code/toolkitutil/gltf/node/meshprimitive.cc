@@ -186,7 +186,7 @@ SetupPrimitiveGroupJobFunc(Jobs::JobFuncContext const& context)
 		uint const triCount = scene->accessors[primitive->indices].count / 3;
 
 		meshBuilder->Reserve(vertCount, triCount);
-	
+		
 		for (uint i = 0; i < vertCount; i++)
 		{
 			meshBuilder->AddVertex(MeshBuilderVertex());
@@ -232,6 +232,25 @@ SetupPrimitiveGroupJobFunc(Jobs::JobFuncContext const& context)
 			}
 		}
 
+		// Setup triangles
+		Gltf::Accessor const& indexBufferAccessor = scene->accessors[primitive->indices];
+		Gltf::BufferView const& indexBufferView = scene->bufferViews[indexBufferAccessor.bufferView];
+		Gltf::Buffer const& buffer = scene->buffers[indexBufferView.buffer];
+		Util::Blob const& indexBuffer = buffer.data;
+		const uint bufferOffset = indexBufferAccessor.byteOffset + indexBufferView.byteOffset;
+
+		// TODO: sparse accessors
+		n_assert2(indexBufferAccessor.sparse.count == 0, "Sparse accessors not yet supported!");
+
+		switch (indexBufferAccessor.componentType)
+		{
+		case Gltf::Accessor::ComponentType::UnsignedShort: SetupIndexBuffer<ushort>(*meshBuilder, indexBuffer, bufferOffset, indexBufferAccessor, 0); break;
+		case Gltf::Accessor::ComponentType::UnsignedInt: SetupIndexBuffer<uint>(*meshBuilder, indexBuffer, bufferOffset, indexBufferAccessor, 0); break;
+		default:
+			n_error("ERROR: Invalid vertex index type!");
+			break;
+		}
+
 		if (attributeFlags.IsSet<(IndexT)Gltf::Primitive::Attribute::Normal>() &&
 			attributeFlags.IsSet<(IndexT)Gltf::Primitive::Attribute::Tangent>())
 		{
@@ -264,26 +283,6 @@ SetupPrimitiveGroupJobFunc(Jobs::JobFuncContext const& context)
 		{
 			meshBuilder->FlipUvs();
 		}
-
-		// Setup triangles
-		Gltf::Accessor const& indexBufferAccessor = scene->accessors[primitive->indices];
-		Gltf::BufferView const& indexBufferView = scene->bufferViews[indexBufferAccessor.bufferView];
-		Gltf::Buffer const& buffer = scene->buffers[indexBufferView.buffer];
-		Util::Blob const& indexBuffer = buffer.data;
-		const uint bufferOffset = indexBufferAccessor.byteOffset + indexBufferView.byteOffset;
-
-		// TODO: sparse accessors
-		n_assert2(indexBufferAccessor.sparse.count == 0, "Sparse accessors not yet supported!");
-
-		switch (indexBufferAccessor.componentType)
-		{
-		case Gltf::Accessor::ComponentType::UnsignedShort: SetupIndexBuffer<ushort>(*meshBuilder, indexBuffer, bufferOffset, indexBufferAccessor, 0); break;
-		case Gltf::Accessor::ComponentType::UnsignedInt: SetupIndexBuffer<uint>(*meshBuilder, indexBuffer, bufferOffset, indexBufferAccessor, 0); break;
-		default:
-			n_error("ERROR: Invalid vertex index type!");
-			break;
-		}
-
 	}
 }
 } // namespace ToolkitUtil

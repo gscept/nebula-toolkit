@@ -96,7 +96,7 @@ NglTFMesh::ExtractMesh()
 			this->gltfMesh,
 			&primitive,
 			// TODO: attributes per primitive group
-			ExportFlags::None, //attributes->GetExportFlags()
+			this->scene->GetExportFlags(),
 			this->meshId
 		};
 

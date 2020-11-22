@@ -821,7 +821,7 @@ MeshBuilder::CalculateTangentsAndBinormals()
 {
     int numVertices = this->GetNumVertices();
     int numTriangles = this->GetNumTriangles();
-    vec4* tangents1 = new vec4[numVertices * 2];
+    vec4* tangents1 = new vec4[(size_t)numVertices * 2];
     vec4* tangents2 = tangents1 + numVertices;
 
     memset(tangents1, 0, numVertices * sizeof(vec4) * 2);
@@ -881,13 +881,13 @@ MeshBuilder::CalculateTangentsAndBinormals()
     {
         MeshBuilderVertex& vertex = this->VertexAt(vertexIndex);
         const MeshBuilderVertex::ComponentIndex normalComponent = vertex.HasComponent(MeshBuilderVertex::ComponentBit::NormalBit) ? MeshBuilderVertex::NormalIndex : MeshBuilderVertex::NormalB4NIndex;
-        vec4 n = normalize3(vertex.GetComponent(normalComponent));
+        vec4 n = normalize(vertex.GetComponent(normalComponent));
         vec4 t = tangents1[vertexIndex];
         vec4 b = tangents2[vertexIndex];
 
-        vec4 tangent = normalize3(t - n * dot3(n, t));
+        vec4 tangent = normalize(t - n * dot3(n, t));
         float handedNess = (dot3(cross3(n, t), tangents2[vertexIndex]) < 0.0f ? 1.0f : -1.0f);
-        vec4 bitangent = normalize3(cross3(n, tangent) * handedNess);
+        vec4 bitangent = normalize(cross3(n, tangent) * handedNess);
 
         if (vertex.HasComponent(MeshBuilderVertex::TangentB4NBit))
         {

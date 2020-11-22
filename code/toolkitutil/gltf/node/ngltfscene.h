@@ -74,6 +74,8 @@ public:
 	/// removes mesh node from main node dictionary and mesh node dictionary
 	void RemoveMeshNode(const Ptr<NglTFMesh>& node);
 	
+	ExportMode GetExportMode() const;
+	ExportFlags GetExportFlags() const;
 		
 	/// flattens all hierarchical structures except for joints and lights, and join meshes into one builder
 	void Flatten();
@@ -192,6 +194,25 @@ NglTFScene::GetNodes()
 {
 	return this->nodes;
 }
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline ExportFlags
+NglTFScene::GetExportFlags() const
+{
+	return this->flags;
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline ExportMode
+NglTFScene::GetExportMode() const
+{
+	return this->mode;
+}
+
 
 } // namespace ToolkitUtil
 //------------------------------------------------------------------------------

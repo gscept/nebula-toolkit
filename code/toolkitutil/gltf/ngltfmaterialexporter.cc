@@ -130,6 +130,7 @@ NglTFMaterialExtractor::ExtractMaterial(SurfaceBuilder& builder, Gltf::Material 
 	if (normalTexture > -1)
 	{
 		builder.AddParam("normalTexture", this->textureDir + Util::String::FromInt(normalTexture));
+		builder.AddParam("normalScale", Util::String::FromFloat(material.normalTexture.scale));
 	}
 	else
 	{
@@ -151,7 +152,7 @@ NglTFMaterialExtractor::ExtractMaterial(SurfaceBuilder& builder, Gltf::Material 
 	}
 	else
 	{
-		builder.AddParam("emissiveTexture", "tex:system/black");
+		builder.AddParam("emissiveTexture", "tex:system/white");
 	}
 
 	if (material.occlusionTexture.index != -1)

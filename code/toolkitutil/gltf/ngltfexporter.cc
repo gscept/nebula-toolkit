@@ -105,6 +105,16 @@ bool NglTFExporter::StartExport(const IO::URI & file)
 	fileName.StripFileExtension();
 	String catName = localPath.ExtractLastDirName();
 
+	String subDir = fileName + "_" + fileExtension;
+	{
+		// Extract materials into .sur files
+		NglTFMaterialExtractor extractor;
+		extractor.SetCategoryName(catName);
+		extractor.SetDocument(&this->gltfScene);
+		extractor.SetExportSubDirectory(subDir);
+		extractor.ExportAll();
+	}
+
 	if (gltfScene.images.Size() > 0)
 	{
 		// Export embedded textures to file-specific directory
@@ -125,11 +135,34 @@ bool NglTFExporter::StartExport(const IO::URI & file)
 				break;
 			}
 		}
-		
+
 		if (hasEmbedded)
 		{
 			IO::IoServer::Instance()->CreateDirectory(embeddedPath);
-			
+
+			TextureAttrTable texAttrTable;
+			texAttrTable.Setup("temp:texconverter");
+
+			for (IndexT i = 0; i < gltfScene.materials.Size(); i++)
+			{
+				Gltf::Material const& material = gltfScene.materials[i];
+				if (material.normalTexture.index != -1)
+				{
+					// Set texture attrs for normal textures
+					TextureAttrs attrs;
+					attrs.SetPixelFormat(TextureAttrs::DXT5NM);
+					attrs.SetFlipNormalY(true);
+
+					Gltf::Image const& image = gltfScene.images[material.normalTexture.index];
+					Util::String format = (image.type == Gltf::Image::Type::Jpg) ? ".jpg" : ".png";
+					Util::String intermediateDir = fileName + "_" + fileExtension;
+					Util::String intermediateFile = intermediateDir + "/" + Util::String::FromInt(material.normalTexture.index);
+					texAttrTable.SetEntry(intermediateFile, attrs);
+				}
+			}
+
+			texConverter->SetExternalTextureAttrTable(&texAttrTable);
+
 			// export all embedded images
 			for (IndexT i = 0; i < gltfScene.images.Size(); i++)
 			{
@@ -151,10 +184,12 @@ bool NglTFExporter::StartExport(const IO::URI & file)
 				}
 
 				// create temp directory from guid. so that other jobs won't interfere
-				Guid guid;
-				guid.Generate();
-				String tmpDir;
-				tmpDir.Format("%s/%s", "temp:textureconverter", guid.AsString().AsCharPtr());
+				//Guid guid;
+				//guid.Generate();
+				//String tmpDir;
+				//tmpDir.Format("%s", "temp:textureconverter", guid.AsString().AsCharPtr());
+
+				String tmpDir = "temp:textureconverter";
 
 				Util::String format = (image.type == Gltf::Image::Type::Jpg) ? ".jpg" : ".png";
 				// export the content of blob to a temporary file
@@ -184,17 +219,6 @@ bool NglTFExporter::StartExport(const IO::URI & file)
 				}
 			}
 		}
-	}
-
-	String subDir = fileName + "_" + fileExtension;
-
-	{
-		// Extract materials into .sur files
-		NglTFMaterialExtractor extractor;
-		extractor.SetCategoryName(catName);
-		extractor.SetDocument(&this->gltfScene);
-		extractor.SetExportSubDirectory(subDir);
-		extractor.ExportAll();
 	}
 
 	Timing::Timer timer;

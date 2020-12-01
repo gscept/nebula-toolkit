@@ -20,6 +20,7 @@ using namespace Util;
 using namespace IO;
 
 TexGenApp::TexGenApp() :
+    ToolkitApp(),
     outputWidth(0),
     outputHeight(0)
 {
@@ -162,7 +163,7 @@ TexGenApp::Run()
 
             for (int y = 0; y < imgHeight; y++)
             {
-                for (int x = 0; x < imgHeight; x++)
+                for (int x = 0; x < imgWidth; x++)
                 {
                     int const oPixel = (x + y * imgWidth) * numChannels;
                     int const iPixel = ((int)(x * dW) + (int)(y * dH) * channelWidth) * numInputChannels;
@@ -186,7 +187,7 @@ TexGenApp::Run()
 
                 for (int y = 0; y < imgHeight; y++)
                 {
-                    for (int x = 0; x < imgHeight; x++)
+                    for (int x = 0; x < imgWidth; x++)
                     {
                         int pixel = (x + y * imgWidth) * numChannels;
                         uint val = (uint)(this->BGRA[channel] * 255.f);
@@ -202,7 +203,7 @@ TexGenApp::Run()
 
                 for (int y = 0; y < imgHeight; y++)
                 {
-                    for (int x = 0; x < imgHeight; x++)
+                    for (int x = 0; x < imgWidth; x++)
                     {
                         int pixel = (x + y * imgWidth) * numChannels;
                         out[pixel + channel] = 0;
@@ -252,10 +253,18 @@ bool TexGenApp::ParseCmdLineArgs()
         for (int i = 0; i < 4; i++)
         {
             Util::String arg;
-            arg.Format("-o:%c", bgra[i]);
+            arg.Format("-%c", bgra[i]);
             if (this->args.HasArg(arg))
             {
-                this->outputBGRA[i] = this->args.GetString(arg);
+                Util::String val = this->args.GetString(arg);
+                if (val.IsValidFloat() || val.IsValidInt())
+                {
+                    this->BGRA[i] = val.AsFloat();
+                }
+                else
+                {
+                    this->outputBGRA[i] = val;
+                }
             }
         }
 
@@ -263,7 +272,7 @@ bool TexGenApp::ParseCmdLineArgs()
         {
             Util::String arg;
             arg.Format("-%c", bgra[i]);
-            this->BGRA[i] = this->args.GetFloat(arg, -1.0f);
+            
         }
 
         this->outputWidth = this->args.GetInt("-w", 0);
@@ -280,19 +289,19 @@ bool TexGenApp::ParseCmdLineArgs()
 void
 TexGenApp::ShowHelp()
 {
-    n_printf("Nebula texture generator %\n"
+    n_printf("Nebula texture generator %s\n"
             "[Toolkit %s]\n"
-            "(C) 2020 Individual Authors, see AUTHORS file.\n\n", this->GetAppVersion(), this->GetToolkitVersion());
+            "(C) 2020 Individual Authors, see AUTHORS file.\n\n", this->GetAppVersion().AsCharPtr(), this->GetToolkitVersion().AsCharPtr());
     n_printf("Available options:"
-             "-help                          -- Print this help message\n"
-             "-o <file>                      -- Output file path and extension\n"
-             "-w [width]                     -- Output file's width. Will infer from input if not specified.\n"
-             "-h [height]                    -- Output file's height. Will infer from input if not specified.\n"
-             "-i <file>                      -- Input file path and extension\n"
-             "-(r|g|b|a) [0, 1]              -- Set a channel to a value between 0 and 1. Takes priority over '-i'\n"
-             "-o:(r|g|b|a) <file>:(r|g|b|a)  -- Set output's red, green, blue or alpha channel from a specific channel in an input file.\n"
-             "                                  Can be specified multiple times.\n"
-             "                                  Takes priority over '-(r/g/b/a)' and '-i'\n\n"
+             "-help                        -- Print this help message\n"
+             "-o <file>                    -- Output file path and extension\n"
+             "-w [width]                   -- Output file's width. Will infer from input if not specified.\n"
+             "-h [height]                  -- Output file's height. Will infer from input if not specified.\n"
+             "-i <file>                    -- Input file path and extension\n"
+             "-(r|g|b|a) [0, 1]            -- Set a channel to a value between 0 and 1. Takes priority over '-i'\n"
+             "-(r|g|b|a) <file>:(r|g|b|a)  -- Set output's red, green, blue or alpha channel from a specific channel in an input file.\n"
+             "                                Can be specified multiple times.\n"
+             "                                Takes priority over '-(r/g/b/a)' and '-i'\n\n"
              "Example: texgen -o foo.bmp -i bar.bmp -o:r gnyrf.bmp:b -a 0.5\n"
              "     - This will create output file foo.bmp, using bar.bmp as base, overriding the red channel with the blue channel from gnyrf.bmp and settings the alpha channel to 0.5 across the entire image.\n\n"
     );

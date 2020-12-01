@@ -15,7 +15,7 @@ main(int argc, const char** argv)
     Toolkit::TexGenApp app;
     app.SetCompanyName("gscept");
     app.SetAppTitle("Nebula Texture Generator");
-    app.SetAppVersion("0.1.0");
+    app.SetAppVersion("0.1.1");
     app.SetCmdLineArgs(args);
     
     if (app.Open())

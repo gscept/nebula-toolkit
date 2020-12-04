@@ -172,6 +172,7 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
 
     if (this->mode & ExportModes::Textures)
     {
+        this->textureExporter.SetExternalTextureAttrTable(&this->textureAttrTable);
         // export textures
         Array<String> files = IoServer::Instance()->ListFiles(assetPath, "*.tga");
         files.AppendArray(IoServer::Instance()->ListFiles(assetPath, "*.bmp"));

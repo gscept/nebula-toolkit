@@ -31,7 +31,7 @@ __ImplementClass(ToolkitUtil::NglTFExporter, 'glte', Base::ExporterBase);
 NglTFExporter::NglTFExporter() :
 	scaleFactor(1.0f),
 	exportMode(Static),
-	exportFlags(ToolkitUtil::FlipUVs),
+	exportFlags(ExportFlags::None),
 	texConverter(nullptr)
 {
 	// empty
@@ -289,7 +289,20 @@ void NglTFExporter::ExportFile(const IO::URI & file)
 	fileName.StripFileExtension();
 
 	// get model attributes
-	const Ptr<ModelAttributes>& attrs = ModelDatabase::Instance()->LookupAttributes(dir + "/" + fileName);
+    Ptr<ModelAttributes> attrs = nullptr;
+    Util::String attrName = dir + "/" + fileName;
+    if (!ModelDatabase::Instance()->AttributesExist(attrName))
+    {
+        // this will create a new attributes file.
+        attrs = ModelDatabase::Instance()->LookupAttributes(attrName);
+        // overload the export flags only when the attributes table is new
+        ExportFlags flags = ToolkitUtil::ExportFlags::None;
+        attrs->SetExportFlags(flags);
+    }
+    else
+    {
+        attrs = ModelDatabase::Instance()->LookupAttributes(attrName);
+    }
 
 	this->SetExportFlags(attrs->GetExportFlags());
 	this->SetExportMode(attrs->GetExportMode());

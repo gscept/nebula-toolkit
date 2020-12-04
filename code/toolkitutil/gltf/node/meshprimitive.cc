@@ -246,6 +246,7 @@ SetupPrimitiveGroupJobFunc(Jobs::JobFuncContext const& context)
 		{
 		case Gltf::Accessor::ComponentType::UnsignedShort: SetupIndexBuffer<ushort>(*meshBuilder, indexBuffer, bufferOffset, indexBufferAccessor, 0); break;
 		case Gltf::Accessor::ComponentType::UnsignedInt: SetupIndexBuffer<uint>(*meshBuilder, indexBuffer, bufferOffset, indexBufferAccessor, 0); break;
+		case Gltf::Accessor::ComponentType::UnsignedByte: SetupIndexBuffer<uchar>(*meshBuilder, indexBuffer, bufferOffset, indexBufferAccessor, 0); break;
 		default:
 			n_error("ERROR: Invalid vertex index type!");
 			break;

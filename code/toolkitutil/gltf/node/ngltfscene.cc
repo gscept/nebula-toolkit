@@ -75,12 +75,24 @@ NglTFScene::ExtractMeshNodes(const Gltf::Node* node, Math::mat4 parentTransform)
 
 	if (node->mesh != -1)
 	{
-		// @todo	Gltf supports mesh instancing and we should handle it
-		Ptr<NglTFMesh> meshNode = NglTFMesh::Create();
-		meshNode->Setup(node, this);
-		meshNode->ExtractTransform(worldTransform);
-		this->meshNodes.Add(&this->scene->meshes[node->mesh], meshNode);
-		this->nodes.Add(node, meshNode);
+        Ptr<NglTFMesh> meshNode;
+        if (!this->meshNodes.Contains(&this->scene->meshes[node->mesh]))
+        {
+		    // @todo	Gltf supports mesh instancing and we should handle it
+		    meshNode = NglTFMesh::Create();
+		    meshNode->Setup(node, this);
+		    meshNode->ExtractTransform(worldTransform);
+		    this->meshNodes.Add(&this->scene->meshes[node->mesh], meshNode);
+        }
+        else
+        {
+            meshNode = this->meshNodes[&this->scene->meshes[node->mesh]];
+        }
+
+        if (!this->nodes.Contains(node))
+        {
+		    this->nodes.Add(node, meshNode);
+        }
 	}
 
 	for (int child : node->children)
@@ -193,9 +205,13 @@ NglTFScene::Setup(Gltf::Document const* scene, const ExportFlags& exportFlags, c
 	}
 	
 	// root node
-	Gltf::Node* node = &this->scene->nodes[this->scene->scenes[this->scene->scene].nodes[0]];
-	// recursively extract meshnodes and calculate their world transforms
-	this->ExtractMeshNodes(node, Math::mat4::identity);
+    const int numRootNodes = this->scene->scenes[this->scene->scene].nodes.Size();
+    for (int i = 0; i < numRootNodes; i++)
+    {
+	    Gltf::Node* node = &this->scene->nodes[this->scene->scenes[this->scene->scene].nodes[i]];
+	    // recursively extract meshnodes and calculate their world transforms
+	    this->ExtractMeshNodes(node, Math::mat4::identity);
+    }
 }
 
 

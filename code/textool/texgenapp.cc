@@ -104,7 +104,7 @@ TexGenApp::Run()
     {
         if (!this->outputBGRA[channel].IsEmpty())
         {
-            Util::Array<Util::String> tokens = this->outputBGRA[channel].Tokenize(":");
+            Util::Array<Util::String> tokens = this->outputBGRA[channel].Tokenize(";");
             if (tokens.Size() < 2)
             {
                 this->logger.Print("invalid input specified for channel specific images!\n");
@@ -299,10 +299,10 @@ TexGenApp::ShowHelp()
              "-h [height]                  -- Output file's height. Will infer from input if not specified.\n"
              "-i <file>                    -- Input file path and extension\n"
              "-(r|g|b|a) [0, 1]            -- Set a channel to a value between 0 and 1. Takes priority over '-i'\n"
-             "-(r|g|b|a) <file>:(r|g|b|a)  -- Set output's red, green, blue or alpha channel from a specific channel in an input file.\n"
+             "-(r|g|b|a) <file>;(r|g|b|a)  -- Set output's red, green, blue or alpha channel from a specific channel in an input file.\n"
              "                                Can be specified multiple times.\n"
              "                                Takes priority over '-(r/g/b/a)' and '-i'\n\n"
-             "Example: texgen -o foo.bmp -i bar.bmp -o:r gnyrf.bmp:b -a 0.5\n"
+             "Example: texgen -o foo.bmp -i bar.bmp -r gnyrf.bmp;b -a 0.5\n"
              "     - This will create output file foo.bmp, using bar.bmp as base, overriding the red channel with the blue channel from gnyrf.bmp and settings the alpha channel to 0.5 across the entire image.\n\n"
     );
 }

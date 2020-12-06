@@ -6,3 +6,9 @@ imports:
         git: ssh://git@github.com:Duttenheim/fips-anyfx.git
     fips-compressonator:
         git: https://github.com/gscept/fips-compressonator.git
+
+exports:
+    header-dirs :
+        - code/editor
+    modules:
+        editor: code/editor

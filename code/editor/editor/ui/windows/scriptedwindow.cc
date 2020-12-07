@@ -39,7 +39,9 @@ ScriptedWindow::Run()
 
     try
     {
+        ImGui::Begin(this->name.AsCharPtr());
         this->script->attr("draw")();
+        ImGui::End();
     }
     catch (const pybind11::error_already_set& error)
     {

@@ -39,10 +39,8 @@ EditorFeatureUnit::OnActivate()
     FeatureUnit::OnActivate();
     if (this->args.GetBoolFlag("-editor"))
     {
-        Editor::Create();
-        // Editor::ConnectToBackend( ... );
-
         this->AttachManager(Editor::UIManager::Create());
+        Editor::Create();
     }
 }
 

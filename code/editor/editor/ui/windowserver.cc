@@ -12,6 +12,8 @@
 #include "input/inputserver.h"
 #include "input/keyboard.h"
 #include "windows/scriptedwindow.h"
+#include "pybind11/pybind11.h"
+#include "pybind11/embed.h"
 
 using namespace Util;
 
@@ -223,11 +225,12 @@ WindowServer::RegisterWindow(const Ptr<BaseWindow>& base)
 /**
 */
 void
-WindowServer::RegisterWindowScript(Util::String const& script)
+WindowServer::RegisterWindowScript(const char* script, const char* label)
 {
     if (IO::IoServer::Instance()->FileExists(script))
     {
         Ptr<ScriptedWindow> wnd = ScriptedWindow::Create();
+        wnd->SetName(label);
         if (wnd->LoadModule(script))
         {
             this->RegisterWindow(wnd.upcast<BaseWindow>());

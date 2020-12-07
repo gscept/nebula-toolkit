@@ -31,9 +31,10 @@ struct EditorState
 void
 Create()
 {
-    //IO::AssignRegistry::Instance()->SetAssign(IO::Assign("edscr", "toolkit:data/scripts"));
-    //Scripting::ScriptServer::Instance()->AddModulePath("edscr:");
-    //Scripting::ScriptServer::Instance()->EvalFile("edscr:bootstrap.py");
+    IO::AssignRegistry::Instance()->SetAssign(IO::Assign("edscr", "bin:editorscripts"));
+
+    Scripting::ScriptServer::Instance()->AddModulePath("edscr:");
+    Scripting::ScriptServer::Instance()->EvalFile("edscr:bootstrap.py");
 
     /// Import reload to be able to reload modules.
     Scripting::ScriptServer::Instance()->Eval("from importlib import reload");

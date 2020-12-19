@@ -1430,14 +1430,14 @@ N2Converter::MapShaderNameToModelNodeType(const String& shaderName)
     {
         return "UnlitAlpha";
     }
-	else if ("qwiiz_solid_unlit" == shaderName)
-	{
-	    return "UnlitSolid";
-	}
-	else if ("qwiiz_translucent" == shaderName)
-	{
-	    return "Translucent";
-	}
+    else if ("qwiiz_solid_unlit" == shaderName)
+    {
+        return "UnlitSolid";
+    }
+    else if ("qwiiz_translucent" == shaderName)
+    {
+        return "Translucent";
+    }
     else
     {
         return "Solid";
@@ -1456,14 +1456,14 @@ N2Converter::ConvertShaderName(const String& shdName)
     {
         return "shd:lightmapped";
     }
-	else if ("lightmapped2_skinned" == shdName)
-	{
-		return "shd:lightmapped2_skinned";
-	}
-	else if ("lightmapped_environment" == shdName)
-	{
-		return "shd:lightmapped_environment";
-	}
+    else if ("lightmapped2_skinned" == shdName)
+    {
+        return "shd:lightmapped2_skinned";
+    }
+    else if ("lightmapped_environment" == shdName)
+    {
+        return "shd:lightmapped_environment";
+    }
     else if ("skybox" == shdName)
     {
         return "shd:skybox";
@@ -1489,7 +1489,7 @@ N2Converter::ConvertShaderName(const String& shdName)
     {
         return "shd:particle";
     }
-	else if ("particle2_unlit" == shdName)
+    else if ("particle2_unlit" == shdName)
     {
         return "shd:particle";
     }
@@ -1507,26 +1507,26 @@ N2Converter::ConvertShaderName(const String& shdName)
     {
         return "shd:unlit";
     }
-	else if ("qwiiz_lm_alpha" == shdName)
-	{
-		return "shd:qwiiz_lm_alpha";
-	}
-	else if ("qwiiz_lm_env_alpha" == shdName)
-	{
-		return "shd:qwiiz_lm_env_alpha";
-	}
-	else if ("qwiiz_solid_unlit" == shdName)
-	{
-		return "shd:qwiiz_solid_unlit";
-	}
-	else if ("qwiiz_toon_specularmap" == shdName)
-	{
-		return "shd:qwiiz_toon_specularmap";
-	}
-	else if ("qwiiz_uvanimation_lightmapped" == shdName)
-	{
-		return "shd:qwiiz_uvanimated_lightmapped";
-	}
+    else if ("qwiiz_lm_alpha" == shdName)
+    {
+        return "shd:qwiiz_lm_alpha";
+    }
+    else if ("qwiiz_lm_env_alpha" == shdName)
+    {
+        return "shd:qwiiz_lm_env_alpha";
+    }
+    else if ("qwiiz_solid_unlit" == shdName)
+    {
+        return "shd:qwiiz_solid_unlit";
+    }
+    else if ("qwiiz_toon_specularmap" == shdName)
+    {
+        return "shd:qwiiz_toon_specularmap";
+    }
+    else if ("qwiiz_uvanimation_lightmapped" == shdName)
+    {
+        return "shd:qwiiz_uvanimated_lightmapped";
+    }
     else
     {
         // map everything else to static
@@ -2148,7 +2148,7 @@ N2Converter::ReadUvCoordinates(const IO::URI& uri, IndexT meshGroup)
         if (texCoordSize == 0)
         {
             if (components[i].GetSemanticName() != CoreGraphics::VertexComponent::TexCoord1
-                || components[i].GetSemanticIndex() != 0)        	
+                || components[i].GetSemanticIndex() != 0)           
             {                                                              
                 texCoordOffset += components[i].GetByteSize();
             }

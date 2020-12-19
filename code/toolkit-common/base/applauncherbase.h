@@ -21,7 +21,7 @@ public:
     /// constructor
     AppLauncherBase();
 
-	/// set the executable path
+    /// set the executable path
     void SetExecutable(const IO::URI& uri);
     /// set working directory
     void SetWorkingDirectory(const IO::URI& uri);
@@ -68,7 +68,7 @@ inline
 AppLauncherBase::AppLauncherBase() :    
     stdoutCaptureStream(nullptr),
     isRunning(false),
-	noConsoleWindow(false)
+    noConsoleWindow(false)
 { 
     // empty
 }
@@ -107,7 +107,7 @@ AppLauncherBase::SetArguments(const Util::String& a)
 inline void
 AppLauncherBase::SetNoConsoleWindow(bool b)
 {
-	this->noConsoleWindow = b;
+    this->noConsoleWindow = b;
 }
 
 //------------------------------------------------------------------------------

@@ -316,9 +316,9 @@ AssetRegistry::LoadRegistryFile(Logger& logger, const URI& uri)
             {
                 FileTime timeStamp;
                 AssetFile assetFile;
-                assetFile.SetPath(reader->ReadString());		
+                assetFile.SetPath(reader->ReadString());        
                 uint highbits = reader->ReadUInt();
-				uint lowbits = reader->ReadUInt();
+                uint lowbits = reader->ReadUInt();
                 timeStamp.SetBits(lowbits, highbits);
                 assetFile.SetTimeStamp(timeStamp);
                 assetFile.SetChecksum(reader->ReadUInt());

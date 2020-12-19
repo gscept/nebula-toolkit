@@ -1,9 +1,9 @@
 #pragma once
 //------------------------------------------------------------------------------
 /**
-	Builds a skeleton to be saved as a resource
+    Builds a skeleton to be saved as a resource
 
-	(C) 2018 Individual contributors, see AUTHORS file
+    (C) 2018 Individual contributors, see AUTHORS file
 */
 //------------------------------------------------------------------------------
 #include "util/array.h"
@@ -13,7 +13,7 @@ namespace ToolkitUtil
 
 struct SkeletonBuilder
 {
-	Util::Array<ToolkitUtil::Joint> joints;
+    Util::Array<ToolkitUtil::Joint> joints;
 };
 
 } // namespace ToolkitUtil

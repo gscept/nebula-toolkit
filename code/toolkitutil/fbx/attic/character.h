@@ -14,12 +14,12 @@ namespace ToolkitUtil
 {
 class Character : public Core::RefCounted
 {
-	__DeclareClass(Character);
+    __DeclareClass(Character);
 public:
-	/// constructor
-	Character();
-	/// destructor
-	virtual ~Character();
+    /// constructor
+    Character();
+    /// destructor
+    virtual ~Character();
 }; 
 } // namespace ToolkitUtil
 //------------------------------------------------------------------------------

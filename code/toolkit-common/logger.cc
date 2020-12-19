@@ -37,7 +37,7 @@ Logger::Error(const char* msg, ...)
     va_start(argList, msg);
     String str;
     str.FormatArgList(msg, argList);
-	this->messages.Append(String("[ERROR] ") + str);
+    this->messages.Append(String("[ERROR] ") + str);
     if (this->verbose)
     {
         n_error(this->messages.Back().AsCharPtr());

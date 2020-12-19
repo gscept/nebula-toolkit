@@ -14,15 +14,15 @@ namespace ToolkitUtil
 {
 class FbxCharacterParser : public Core::RefCounted
 {
-	__DeclareClass(FbxCharacterParser);
+    __DeclareClass(FbxCharacterParser);
 public:
-	/// constructor
-	FbxCharacterParser();
-	/// destructor
-	virtual ~FbxCharacterParser();
+    /// constructor
+    FbxCharacterParser();
+    /// destructor
+    virtual ~FbxCharacterParser();
 
 private:
-	Util::Array<Ptr<Character> > characters;
+    Util::Array<Ptr<Character> > characters;
 }; 
 } // namespace ToolkitUtil
 //------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 #pragma once
 //------------------------------------------------------------------------------
 /**
-	@class DistributedTools::DistributedJob
+    @class DistributedTools::DistributedJob
 
     Basic implementation of a distributed job.
 
@@ -234,7 +234,7 @@ DistributedJob::GetIdentifier()
 }
 //------------------------------------------------------------------------------
 /**
-    Get job guid	
+    Get job guid    
 */
 inline
 const Util::Guid &
@@ -268,7 +268,7 @@ DistributedJob::SetRunningOnSlave(bool val)
 
 //------------------------------------------------------------------------------
 /**
-	Returns true if job-flag was set that it is running on a
+    Returns true if job-flag was set that it is running on a
     slave machine.
 */
 inline

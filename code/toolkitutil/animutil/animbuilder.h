@@ -44,8 +44,8 @@ public:
     void FixAnimCurveFirstKeyIndices();
     /// fix the static key values for inactive curves
     void FixInactiveCurveStaticKeyValues();
-	/// fix keys which might have had invalid values
-	void FixInvalidKeyValues();
+    /// fix keys which might have had invalid values
+    void FixInvalidKeyValues();
     /// cut keys from end of tracks
     void TrimEnd(SizeT numKeys);
 

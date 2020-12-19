@@ -1,7 +1,7 @@
 #pragma once
 //------------------------------------------------------------------------------
 /**
-	@class DistributedTools::DistributedCreateEmptyFileJob
+    @class DistributedTools::DistributedCreateEmptyFileJob
 
     Creates an empty file at a specifies path.
 

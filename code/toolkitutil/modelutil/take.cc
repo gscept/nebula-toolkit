@@ -14,7 +14,7 @@ __ImplementClass(ToolkitUtil::Take, 'TAKE', Core::RefCounted);
 */
 Take::Take()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ Take::Take()
 */
 Take::~Take()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ Take::Cleanup()
 void 
 Take::AddClip( const Ptr<Clip>& clip )
 {
-	this->clips.Append(clip);
+    this->clips.Append(clip);
 }
 
 //------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ Take::AddClip( const Ptr<Clip>& clip )
 void 
 Take::RemoveClip( const uint index )
 {
-	this->clips.EraseIndex(index);
+    this->clips.EraseIndex(index);
 }
 
 //------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ Take::RemoveClip( const Ptr<Clip>& clip )
 const Ptr<Clip>& 
 Take::GetClip( const uint index )
 {
-	return this->clips[index];
+    return this->clips[index];
 }
 
 //------------------------------------------------------------------------------
@@ -83,7 +83,7 @@ Take::GetClip( const uint index )
 const Util::Array<Ptr<Clip> >& 
 Take::GetClips() const
 {
-	return this->clips;
+    return this->clips;
 }
 
 //------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ Take::GetClips() const
 void 
 Take::SetName( const Util::String& name )
 {
-	this->name = name;
+    this->name = name;
 }
 
 //------------------------------------------------------------------------------
@@ -101,7 +101,7 @@ Take::SetName( const Util::String& name )
 const Util::String& 
 Take::GetName() const
 {
-	return this->name;
+    return this->name;
 }
 
 //------------------------------------------------------------------------------
@@ -110,7 +110,7 @@ Take::GetName() const
 const SizeT 
 Take::GetNumClips()
 {
-	return this->clips.Size();
+    return this->clips.Size();
 }
 
 //------------------------------------------------------------------------------
@@ -119,6 +119,6 @@ Take::GetNumClips()
 const IndexT 
 Take::FindClip( const Ptr<Clip>& clip )
 {
-	return this->clips.FindIndex(clip);
+    return this->clips.FindIndex(clip);
 }
 }

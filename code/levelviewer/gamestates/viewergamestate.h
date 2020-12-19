@@ -20,38 +20,38 @@ namespace Tools
 {
 class LevelViewerGameState : public BaseGameFeature::GameStateHandler
 {
-	__DeclareClass(LevelViewerGameState);
+    __DeclareClass(LevelViewerGameState);
 public:
-	/// constructor
-	LevelViewerGameState();
-	/// destructor
-	virtual ~LevelViewerGameState();
+    /// constructor
+    LevelViewerGameState();
+    /// destructor
+    virtual ~LevelViewerGameState();
 
-	/// called when the state represented by this state handler is entered
-	virtual void OnStateEnter(const Util::String& prevState);
-	/// called when the state represented by this state handler is left
-	virtual void OnStateLeave(const Util::String& nextState);
-	/// called each frame as long as state is current, return new state
-	virtual Util::String OnFrame();
-	/// called after Db is opened, and before entities are loaded
-	virtual void OnLoadBefore();
-	/// called after entities are loaded
-	virtual void OnLoadAfter();
+    /// called when the state represented by this state handler is entered
+    virtual void OnStateEnter(const Util::String& prevState);
+    /// called when the state represented by this state handler is left
+    virtual void OnStateLeave(const Util::String& nextState);
+    /// called each frame as long as state is current, return new state
+    virtual Util::String OnFrame();
+    /// called after Db is opened, and before entities are loaded
+    virtual void OnLoadBefore();
+    /// called after entities are loaded
+    virtual void OnLoadAfter();
 
-	// handle all user input; called @ LevelEditorState::OnFrame()
-	void HandleInput();
+    // handle all user input; called @ LevelEditorState::OnFrame()
+    void HandleInput();
 
-	//
-	void LoadLevel(const Util::String &level, bool applyTransform = false);
-	//
-	void ReloadLevel(bool keepTransform);
+    //
+    void LoadLevel(const Util::String &level, bool applyTransform = false);
+    //
+    void ReloadLevel(bool keepTransform);
 
 private:
-	
-	Math::matrix44 focusTransform;
-	Util::String lastLevel;
-	bool applyTransform;
-	bool entitiesLoaded;	
+    
+    Math::matrix44 focusTransform;
+    Util::String lastLevel;
+    bool applyTransform;
+    bool entitiesLoaded;    
 }; 
 } // namespace Tools
 //------------------------------------------------------------------------------

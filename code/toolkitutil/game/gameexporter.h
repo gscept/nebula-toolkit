@@ -17,30 +17,30 @@ namespace ToolkitUtil
 {
 class GameExporter : public Base::ExporterBase
 {
-	__DeclareClass(GameExporter);
+    __DeclareClass(GameExporter);
 public:
-	/// constructor
-	GameExporter();
-	/// destructor
-	virtual ~GameExporter();
+    /// constructor
+    GameExporter();
+    /// destructor
+    virtual ~GameExporter();
 
-	/// opens the exporter
-	void Open();
-	/// closes the exporter
-	void Close();
+    /// opens the exporter
+    void Open();
+    /// closes the exporter
+    void Close();
 
     /// export only template and instance tables
     void ExportTables();
-	/// exports both game and levels
-	void ExportAll();
-	/// set pointer to a valid logger object
-	void SetLogger(Logger* logger);
-	/// get tool logs
-	const Util::Array<ToolkitUtil::ToolLog> & GetLogs() const;
-	
-private:	
-	Logger* logger;
-	Util::Array<ToolkitUtil::ToolLog> logs;
+    /// exports both game and levels
+    void ExportAll();
+    /// set pointer to a valid logger object
+    void SetLogger(Logger* logger);
+    /// get tool logs
+    const Util::Array<ToolkitUtil::ToolLog> & GetLogs() const;
+    
+private:    
+    Logger* logger;
+    Util::Array<ToolkitUtil::ToolLog> logs;
 }; 
 
 //------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ private:
 inline void
 GameExporter::SetLogger(Logger* l)
 {
-	this->logger = l;
+    this->logger = l;
 }
 
 //------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ inline
 const Util::Array<ToolkitUtil::ToolLog> &
 GameExporter::GetLogs() const
 {
-	return this->logs;
+    return this->logs;
 }
 
 } // namespace ToolkitUtil

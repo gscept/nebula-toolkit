@@ -26,7 +26,7 @@ ShaderCompilerApp::ParseCmdLineArgs()
 
         this->shaderCompiler.SetDebugFlag(this->args.GetBoolFlag("-debug"));
         this->shaderCompiler.SetDstDir(this->args.GetString("-o"));
-		this->shaderCompiler.SetHeaderDir(this->args.GetString("-h"));
+        this->shaderCompiler.SetHeaderDir(this->args.GetString("-h"));
 
         // find include dir args
         for (SizeT i = 0; i < this->args.GetNumArgs(); i++)
@@ -54,10 +54,10 @@ ShaderCompilerApp::Run()
     this->SetReturnCode(-1);
 
     // parse command line args
-	if(!this->ParseCmdLineArgs())
-	{
+    if(!this->ParseCmdLineArgs())
+    {
         return;
-	}
+    }
     bool success = false;
     if (this->type == "frame")
     {

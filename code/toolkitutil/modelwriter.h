@@ -37,10 +37,10 @@ public:
     virtual bool BeginModel(const Util::String& className, Util::FourCC classFourCC, const Util::String& name) = 0;
     /// begin writing a model node
     virtual bool BeginModelNode(const Util::String& className, Util::FourCC classFourCC, const Util::String& name) = 0;
-	/// begin writing a physics node
-	virtual bool BeginPhysicsNode(const Util::String& name) = 0;
-	/// begin collider node
-	virtual void BeginColliderNode() = 0;
+    /// begin writing a physics node
+    virtual bool BeginPhysicsNode(const Util::String& name) = 0;
+    /// begin collider node
+    virtual void BeginColliderNode() = 0;
     /// begin a data tag
     virtual void BeginTag(const Util::String& name, Util::FourCC tagFourCC) = 0;
     /// write int value
@@ -49,8 +49,8 @@ public:
     virtual void WriteInt(int i) = 0;
     /// write float value
     virtual void WriteFloat(float f) = 0;
-	/// write float2 value
-	virtual void WriteFloat2(const Math::vec2& f) = 0;
+    /// write float2 value
+    virtual void WriteFloat2(const Math::vec2& f) = 0;
     /// write vec4 value
     virtual void Writevec4(const Math::vec4& f) = 0;
     /// write string value
@@ -59,10 +59,10 @@ public:
     virtual void WriteIntArray(const Util::Array<int>& a) = 0;
     /// end a data tag
     virtual void EndTag() = 0;
-	/// end a collider node
-	virtual void EndColliderNode() = 0;
-	/// end a physics node
-	virtual void EndPhysicsNode() = 0;
+    /// end a collider node
+    virtual void EndColliderNode() = 0;
+    /// end a physics node
+    virtual void EndPhysicsNode() = 0;
     /// end a model node
     virtual void EndModelNode() = 0;
     /// end model

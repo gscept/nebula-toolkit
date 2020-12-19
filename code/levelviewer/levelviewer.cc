@@ -18,7 +18,7 @@ NebulaMain(const CommandLineArgs& args)
 {
     LevelViewerGameStateApplication app;
     app.SetCompanyName("LTU - Lulea University of Technology");
-    app.SetAppTitle("Level Viewer");	
+    app.SetAppTitle("Level Viewer");    
     app.SetCmdLineArgs(args);
     if (app.Open())
     {

@@ -108,7 +108,7 @@ private:
 
 //------------------------------------------------------------------------------
 /**
-    determine if application is distributed	
+    determine if application is distributed 
 */
 inline
 bool
@@ -119,7 +119,7 @@ DistributedToolkitApp::IsDistributed()
 
 //------------------------------------------------------------------------------
 /**
-    determine if application is in slave mode	
+    determine if application is in slave mode   
 */
 inline
 bool
@@ -130,7 +130,7 @@ DistributedToolkitApp::IsSlave()
 
 //------------------------------------------------------------------------------
 /**
-    determine if application is distributed	
+    determine if application is distributed 
 */
 inline
 const Ptr<SharedDirControl> &

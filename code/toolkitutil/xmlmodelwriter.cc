@@ -118,9 +118,9 @@ XmlModelWriter::BeginModelNode(const String& className, FourCC classFourCC, cons
 bool
 XmlModelWriter::BeginPhysicsNode(const String& name)
 {
-	this->writer->BeginNode("PhysicsNode");
-	this->writer->SetString("name",name);
-	return true;
+    this->writer->BeginNode("PhysicsNode");
+    this->writer->SetString("name",name);
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -129,7 +129,7 @@ XmlModelWriter::BeginPhysicsNode(const String& name)
 void
 XmlModelWriter::BeginColliderNode()
 {
-	this->writer->BeginNode("ColliderNode");
+    this->writer->BeginNode("ColliderNode");
 }
 
 //------------------------------------------------------------------------------
@@ -138,7 +138,7 @@ XmlModelWriter::BeginColliderNode()
 void
 XmlModelWriter::EndPhysicsNode()
 {
-	this->writer->EndNode();
+    this->writer->EndNode();
 }
 
 
@@ -177,7 +177,7 @@ XmlModelWriter::EndTag()
 void
 XmlModelWriter::EndColliderNode()
 {
-	this->writer->EndNode();
+    this->writer->EndNode();
 }
 
 //------------------------------------------------------------------------------
@@ -208,9 +208,9 @@ XmlModelWriter::WriteFloat(float f)
 void 
 XmlModelWriter::WriteFloat2( const Math::vec2& f )
 {
-	this->writer->BeginNode("f2");
-	this->writer->WriteContent(String::FromVec2(f));
-	this->writer->EndNode();
+    this->writer->BeginNode("f2");
+    this->writer->WriteContent(String::FromVec2(f));
+    this->writer->EndNode();
 }
 
 //------------------------------------------------------------------------------

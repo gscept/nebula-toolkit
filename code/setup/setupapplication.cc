@@ -16,7 +16,7 @@ namespace Tools
 */
 SetupApplication::SetupApplication()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -24,7 +24,7 @@ SetupApplication::SetupApplication()
 */
 SetupApplication::~SetupApplication()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -33,9 +33,9 @@ SetupApplication::~SetupApplication()
 bool 
 SetupApplication::Open()
 {
-	bool retval = ToolkitApp::Open();
-	this->DoWork();
-	return retval;
+    bool retval = ToolkitApp::Open();
+    this->DoWork();
+    return retval;
 }
 
 //------------------------------------------------------------------------------
@@ -44,16 +44,16 @@ SetupApplication::Open()
 void 
 SetupApplication::DoWork()
 {
-	switch (this->platform)
-	{
-	case Platform::Win32:
+    switch (this->platform)
+    {
+    case Platform::Win32:
     case Platform::Linux:
-		{
-			NebulaSettings::WriteString("gscept","ToolkitShared", "path", IO::URI("root:").GetHostAndLocalPath());
-			NebulaSettings::WriteString("gscept","ToolkitShared", "workdir", IO::URI("root:").GetHostAndLocalPath());			
-			break;
-		}
-	}
+        {
+            NebulaSettings::WriteString("gscept","ToolkitShared", "path", IO::URI("root:").GetHostAndLocalPath());
+            NebulaSettings::WriteString("gscept","ToolkitShared", "workdir", IO::URI("root:").GetHostAndLocalPath());           
+            break;
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ SetupApplication::DoWork()
 bool 
 SetupApplication::ParseCmdLineArgs()
 {
-	return ToolkitApp::ParseCmdLineArgs();
+    return ToolkitApp::ParseCmdLineArgs();
 }
 
 //------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ SetupApplication::ParseCmdLineArgs()
 bool 
 SetupApplication::SetupProjectInfo()
 {
-	return true;
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -80,12 +80,12 @@ SetupApplication::SetupProjectInfo()
 void 
 SetupApplication::ShowHelp()
 {
-	n_printf("NebulaT Setup application.\n"
-		"(C) 2012-2016 Individual contributors, see AUTHORS file.\n");
-	n_printf("-help         --display this help\n"
-		"-nody      --nody path override"
-		"-working   --nebula working folder (where bins are located)\n"
-		"-project   --nebula project trunk (if empty, attempts to use registry)\n"
-		"-platform     --export platform");
+    n_printf("NebulaT Setup application.\n"
+        "(C) 2012-2016 Individual contributors, see AUTHORS file.\n");
+    n_printf("-help         --display this help\n"
+        "-nody      --nody path override"
+        "-working   --nebula working folder (where bins are located)\n"
+        "-project   --nebula project trunk (if empty, attempts to use registry)\n"
+        "-platform     --export platform");
 }
 } // namespace Tools

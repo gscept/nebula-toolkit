@@ -166,7 +166,7 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
             String physicsPath = String::Sprintf("phys:%s.np3", modelName.AsCharPtr());
             this->modelBuilder->SaveN3Physics(physicsPath, this->platform);
 #endif            
-            log.AddEntry(console, "Model", files[fileIndex]);			
+            log.AddEntry(console, "Model", files[fileIndex]);           
         }
     }
 
@@ -187,7 +187,7 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
             console->Clear();
             this->textureExporter.SetDstDir("tex:");
             this->textureExporter.ConvertTexture(assetPath + files[fileIndex], "temp:textureconverter");
-            log.AddEntry(console, "Texture", files[fileIndex]);			
+            log.AddEntry(console, "Texture", files[fileIndex]);         
         }
         // export cubemaps
         Array<String> Cubes = IoServer::Instance()->ListDirectories(assetPath, "*.cube");
@@ -208,10 +208,10 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
         {
             console->Clear();
             this->surfaceExporter->ExportFile(assetPath + files[fileIndex]);
-            log.AddEntry(console, "Surface", files[fileIndex]);			
+            log.AddEntry(console, "Surface", files[fileIndex]);         
         }
     }
-    this->messages.Append(log);	
+    this->messages.Append(log); 
 }
 
 //------------------------------------------------------------------------------

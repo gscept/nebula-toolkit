@@ -58,7 +58,7 @@ GetTexConvFormat(TextureAttrs const& attrs)
 
 //------------------------------------------------------------------------------
 /**
-    Start the conversion process. Returns false, if the job finished immediately.	
+    Start the conversion process. Returns false, if the job finished immediately.   
 */
 bool
 DirectXTexConversionJob::Convert()
@@ -78,9 +78,9 @@ DirectXTexConversionJob::Convert()
         const TextureAttrs& attrs = this->textureAttrs;
         if ((attrs.GetPixelFormat() == TextureAttrs::DXT5NM) ||
             (attrs.GetPixelFormat() == TextureAttrs::BC5) ||
-			(String::MatchPattern(this->srcPath, "*norm.*")) ||
-			(String::MatchPattern(this->srcPath, "*normal.*")) ||
-			(String::MatchPattern(this->srcPath, "*bump.*")))
+            (String::MatchPattern(this->srcPath, "*norm.*")) ||
+            (String::MatchPattern(this->srcPath, "*normal.*")) ||
+            (String::MatchPattern(this->srcPath, "*bump.*")))
         {
             isNormalMap = true;
             if (attrs.GetFlipNormalY())

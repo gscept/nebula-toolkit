@@ -17,32 +17,32 @@ namespace ToolkitUtil
 {
 class PostEffectExporter : public Base::ExporterBase
 {
-	__DeclareClass(PostEffectExporter);
+    __DeclareClass(PostEffectExporter);
 public:
-	/// constructor
-	PostEffectExporter();
-	/// destructor
-	virtual ~PostEffectExporter();
+    /// constructor
+    PostEffectExporter();
+    /// destructor
+    virtual ~PostEffectExporter();
 
-	/// opens the exporter
-	void Open();
-	/// closes the exporter
-	void Close();
-	/// sets the database factory
-	void SetDb(const Ptr<Db::Database>& staticDb);
+    /// opens the exporter
+    void Open();
+    /// closes the exporter
+    void Close();
+    /// sets the database factory
+    void SetDb(const Ptr<Db::Database>& staticDb);
 
-	/// exports all presets
-	void ExportAll();	
-	/// set pointer to a valid logger object
-	void SetLogger(Logger* logger);
+    /// exports all presets
+    void ExportAll();   
+    /// set pointer to a valid logger object
+    void SetLogger(Logger* logger);
 private:
-	/// create table and columns in case they dont exist
-	void SetupTables();
-	/// makes sure default preset file exists
-	void CheckDefaultPreset();
-	
-	Ptr<Db::Database> staticDb;
-	Logger* logger;	
+    /// create table and columns in case they dont exist
+    void SetupTables();
+    /// makes sure default preset file exists
+    void CheckDefaultPreset();
+    
+    Ptr<Db::Database> staticDb;
+    Logger* logger; 
 };
 
 //------------------------------------------------------------------------------
@@ -50,8 +50,8 @@ private:
 */
 inline void
 PostEffectExporter::SetDb(const Ptr<Db::Database>& staticDb)
-{	
-	this->staticDb = staticDb;
+{   
+    this->staticDb = staticDb;
 }
 
 //------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ PostEffectExporter::SetDb(const Ptr<Db::Database>& staticDb)
 inline void
 PostEffectExporter::SetLogger(Logger* l)
 {
-	this->logger = l;
+    this->logger = l;
 }
 } // namespace ToolkitUtil
 //------------------------------------------------------------------------------

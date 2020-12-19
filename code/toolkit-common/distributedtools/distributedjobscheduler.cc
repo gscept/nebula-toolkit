@@ -17,7 +17,7 @@ namespace DistributedTools
 {
 //------------------------------------------------------------------------------
 /**
-    Constructor	
+    Constructor 
 */
 DistributedJobScheduler::DistributedJobScheduler() :
     isRunningJobs(false),
@@ -30,7 +30,7 @@ DistributedJobScheduler::DistributedJobScheduler() :
 
 //------------------------------------------------------------------------------
 /**
-    Open the scheduler	
+    Open the scheduler  
 */
 bool
 DistributedJobScheduler::Open()
@@ -42,7 +42,7 @@ DistributedJobScheduler::Open()
 
 //------------------------------------------------------------------------------
 /**
-    Close the scheduler	
+    Close the scheduler 
 */
 void
 DistributedJobScheduler::Close()
@@ -232,10 +232,10 @@ DistributedJobScheduler::Update()
                     IndexT guid;
                     for (guid = 0; guid < finishedJobs.Size(); guid++)
                     {
-            	        IndexT i = 0;
-            	        while (i < this->remoteRunningJobs.Size())
-            	        {
-            		        if (this->remoteRunningJobs[i]->GetGuid() == finishedJobs[guid])
+                        IndexT i = 0;
+                        while (i < this->remoteRunningJobs.Size())
+                        {
+                            if (this->remoteRunningJobs[i]->GetGuid() == finishedJobs[guid])
                             {
                                 n_printf("[Remote job #%s] Finished\n",this->remoteRunningJobs[i]->GetIdentifier().AsCharPtr());
                                 this->remoteRunningJobs.EraseIndex(i);
@@ -245,7 +245,7 @@ DistributedJobScheduler::Update()
                             {
                                 i++;
                             }
-            	        }
+                        }
                     }
                     
                     // handle soft failed jobs
@@ -373,7 +373,7 @@ DistributedJobScheduler::Update()
 
 //------------------------------------------------------------------------------
 /**
-    Is any job still running?	
+    Is any job still running?   
 */
 bool
 DistributedJobScheduler::HasActiveJobs()
@@ -415,7 +415,7 @@ DistributedJobScheduler::StartReadyJobs()
 }
 //------------------------------------------------------------------------------
 /**
-    Adds ready jobs to local job list	
+    Adds ready jobs to local job list   
 */
 void
 DistributedJobScheduler::StartReadyJobsLocal()
@@ -470,7 +470,7 @@ DistributedJobScheduler::StartReadyJobsLocal()
 
 //------------------------------------------------------------------------------
 /**
-    Adds ready jobs to remote job lists	
+    Adds ready jobs to remote job lists 
 */
 void
 DistributedJobScheduler::StartReadyJobsRemote()
@@ -490,7 +490,7 @@ DistributedJobScheduler::StartReadyJobsRemote()
             {
                 // becomes true if current service is able to accept jobs
                 bool addJob = false;
-	            // is service connected?
+                // is service connected?
                 if (RemoteJobService::Closed == this->remoteServices[s]->GetServiceState())
                 {
                     this->remoteServices[s]->Open();
@@ -550,7 +550,7 @@ DistributedJobScheduler::StartReadyJobsRemote()
                 IndexT idx;
                 for(idx = 0; idx < this->remoteInitializeJobs.Size(); idx++)
                 {
-            	    initJobs.Append(this->remoteInitializeJobs[idx]->Clone());
+                    initJobs.Append(this->remoteInitializeJobs[idx]->Clone());
                 }
                 for(idx = 0; idx < this->remoteFinalizeJobs.Size(); idx++)
                 {
@@ -715,7 +715,7 @@ DistributedJobScheduler::HandleBannedService(const Ptr<RemoteJobService> & servi
 
 //------------------------------------------------------------------------------
 /**
-	Catch all jobs of a service and reappend them to the ready-job list
+    Catch all jobs of a service and reappend them to the ready-job list
 */
 void
 DistributedJobScheduler::ResetJobsFromService(const Ptr<RemoteJobService> & service)

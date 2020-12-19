@@ -33,8 +33,8 @@ public:
 
     /// recursive convert all XML files in source directory
     bool ConvertDir(const Util::String& srcDir, const Util::String& dstDir, Logger& logger);
-	/// convert a single file
-	bool ConvertFile(const Util::String& srcFile, const Util::String& dstFile, Logger& logger);
+    /// convert a single file
+    bool ConvertFile(const Util::String& srcFile, const Util::String& dstFile, Logger& logger);
     /// convert from a memory file stream
     bool ConvertStream(const Ptr<IO::MemoryStream>& stream, const Util::String& dstFile, Logger& logger);
 

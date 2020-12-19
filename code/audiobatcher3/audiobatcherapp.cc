@@ -36,15 +36,15 @@ AudioBatcherApp::SetupProjectInfo()
         {
             this->audioExporter.SetToolPath(this->projectInfo.GetPathAttr("AudioTool"));
         }
-		if (this->projectInfo.HasAttr("AudioProjectFile"))
-		{
-			this->audioExporter.SetProjectFile(this->projectInfo.GetAttr("AudioProjectFile"));
-		}
-		if (this->projectInfo.HasAttr("AudioSrcDir"))
-		{
-			this->audioExporter.SetSrcDir(this->projectInfo.GetAttr("AudioSrcDir"));
-		}
-		this->audioExporter.SetDstDir(this->projectInfo.GetAttr("AudioDstDir"));
+        if (this->projectInfo.HasAttr("AudioProjectFile"))
+        {
+            this->audioExporter.SetProjectFile(this->projectInfo.GetAttr("AudioProjectFile"));
+        }
+        if (this->projectInfo.HasAttr("AudioSrcDir"))
+        {
+            this->audioExporter.SetSrcDir(this->projectInfo.GetAttr("AudioSrcDir"));
+        }
+        this->audioExporter.SetDstDir(this->projectInfo.GetAttr("AudioDstDir"));
         return true;
     }
     return false;

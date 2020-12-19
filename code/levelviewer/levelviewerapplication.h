@@ -35,45 +35,45 @@ namespace  Tools
 class LevelViewerGameStateApplication : public App::GameApplication
 {
 public:
-	/// constructor
-		LevelViewerGameStateApplication(void);
-	/// destructor
-		virtual ~LevelViewerGameStateApplication(void);
-	/// open application
-	virtual bool Open();
-	/// close application
-	virtual void Close();
-	
-	///
-	Ptr<Tools::LevelViewerGameState> & GetViewerState();
+    /// constructor
+        LevelViewerGameStateApplication(void);
+    /// destructor
+        virtual ~LevelViewerGameStateApplication(void);
+    /// open application
+    virtual bool Open();
+    /// close application
+    virtual void Close();
+    
+    ///
+    Ptr<Tools::LevelViewerGameState> & GetViewerState();
 
 private:
 
-	/// setup application state handlers
-	virtual void SetupStateHandlers();
-	/// setup game features
-	virtual void SetupGameFeatures();
-	/// cleanup game features
-	virtual void CleanupGameFeatures();
+    /// setup application state handlers
+    virtual void SetupStateHandlers();
+    /// setup game features
+    virtual void SetupGameFeatures();
+    /// cleanup game features
+    virtual void CleanupGameFeatures();
 
-	Ptr<QtRemoteInterfaceAddon::QtRemoteServer> remoteServer;
-	Ptr<QtRemoteInterfaceAddon::QtRemoteClient> remoteClient;
+    Ptr<QtRemoteInterfaceAddon::QtRemoteServer> remoteServer;
+    Ptr<QtRemoteInterfaceAddon::QtRemoteClient> remoteClient;
     
-	Ptr<PhysicsFeature::PhysicsFeatureUnit> physicsFeature;
-	Ptr<GraphicsFeature::GraphicsFeatureUnit> graphicsFeature;
-	Ptr<BaseGameFeature::BaseGameFeatureUnit> baseGameFeature;
-	Ptr<ScriptingFeature::ScriptingFeatureUnit> scriptingFeature;
-	Ptr<EffectsFeature::EffectsFeatureUnit> effectFeature;
-	Ptr<UI::UiFeatureUnit> uiFeature;
-	Ptr<PostEffect::PostEffectFeatureUnit> postEffectFeature;
-	Ptr<Navigation::NavigationFeatureUnit> navigationFeature;
+    Ptr<PhysicsFeature::PhysicsFeatureUnit> physicsFeature;
+    Ptr<GraphicsFeature::GraphicsFeatureUnit> graphicsFeature;
+    Ptr<BaseGameFeature::BaseGameFeatureUnit> baseGameFeature;
+    Ptr<ScriptingFeature::ScriptingFeatureUnit> scriptingFeature;
+    Ptr<EffectsFeature::EffectsFeatureUnit> effectFeature;
+    Ptr<UI::UiFeatureUnit> uiFeature;
+    Ptr<PostEffect::PostEffectFeatureUnit> postEffectFeature;
+    Ptr<Navigation::NavigationFeatureUnit> navigationFeature;
     Ptr<InputFeature::InputFeatureUnit> inputFeature;
 
-	Ptr<Tools::LevelViewerGameState> viewerState;
+    Ptr<Tools::LevelViewerGameState> viewerState;
 
-	Ptr<Dynui::ImguiAddon> imgui;	
-	Ptr<Dynui::ImguiConsole> console;
-	Ptr<Dynui::ImguiConsoleHandler> consoleHandler;
+    Ptr<Dynui::ImguiAddon> imgui;   
+    Ptr<Dynui::ImguiConsole> console;
+    Ptr<Dynui::ImguiConsoleHandler> consoleHandler;
 };
 
 }

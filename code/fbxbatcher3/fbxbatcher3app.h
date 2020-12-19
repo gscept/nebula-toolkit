@@ -18,26 +18,26 @@ class FBXBatcher3App : public DistributedTools::DistributedToolkitApp
 
 public:
 
-	/// opens the application
-	bool Open();
-	/// runs the application
-	void DoWork();
-	/// constructor
-	FBXBatcher3App();
-	/// destructor
-	virtual ~FBXBatcher3App();
+    /// opens the application
+    bool Open();
+    /// runs the application
+    void DoWork();
+    /// constructor
+    FBXBatcher3App();
+    /// destructor
+    virtual ~FBXBatcher3App();
 protected:
-	/// creates file list for job-driven exporting
-	virtual Util::Array<Util::String> CreateFileList();
+    /// creates file list for job-driven exporting
+    virtual Util::Array<Util::String> CreateFileList();
 private:
-	/// parse command line arguments
-	bool ParseCmdLineArgs();
-	/// setup project info object
-	bool SetupProjectInfo();
-	/// print help text
-	void ShowHelp();
+    /// parse command line arguments
+    bool ParseCmdLineArgs();
+    /// setup project info object
+    bool SetupProjectInfo();
+    /// print help text
+    void ShowHelp();
 
-	Ptr<ToolkitUtil::ModelDatabase> modelDatabase;
+    Ptr<ToolkitUtil::ModelDatabase> modelDatabase;
 }; 
 } // namespace TookitUtil
 //------------------------------------------------------------------------------

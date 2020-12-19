@@ -32,8 +32,8 @@ public:
     /// get number of keys
     SizeT GetNumKeys() const;
 
-	/// gets whether or not the curve is valid
-	void FixInvalidKeys() const;
+    /// gets whether or not the curve is valid
+    void FixInvalidKeys() const;
 
     /// activate/deactivate the curve, only active curves will be evaluated
     void SetActive(bool b);
@@ -189,20 +189,20 @@ AnimBuilderCurve::GetCurveType() const
 inline void 
 AnimBuilderCurve::FixInvalidKeys() const
 {
-	switch (this->curveType)
-	{
-	case CoreAnimation::CurveType::Scale:
-	case CoreAnimation::CurveType::Translation:
-		{
-			for (int keyIndex = 0; keyIndex < this->keyArray.Size(); keyIndex++)
-			{
-				if (this->keyArray[keyIndex].w != 0)
-				{
-					this->keyArray[keyIndex].w = 0;
-				}
-			}
-		}
-	}
+    switch (this->curveType)
+    {
+    case CoreAnimation::CurveType::Scale:
+    case CoreAnimation::CurveType::Translation:
+        {
+            for (int keyIndex = 0; keyIndex < this->keyArray.Size(); keyIndex++)
+            {
+                if (this->keyArray[keyIndex].w != 0)
+                {
+                    this->keyArray[keyIndex].w = 0;
+                }
+            }
+        }
+    }
 }
 
 } // namespace ToolkitUtil

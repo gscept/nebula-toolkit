@@ -129,9 +129,9 @@ BinaryModelWriter::BeginModelNode(const String& className, FourCC classFourCC, c
 bool
 BinaryModelWriter::BeginPhysicsNode(const Util::String& name)
 {
-	this->writer->WriteUInt(FourCC('>PHN').AsUInt());
-	this->writer->WriteString(name);
-	return true;
+    this->writer->WriteUInt(FourCC('>PHN').AsUInt());
+    this->writer->WriteString(name);
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -140,7 +140,7 @@ BinaryModelWriter::BeginPhysicsNode(const Util::String& name)
 void
 BinaryModelWriter::BeginColliderNode()
 {
-	this->writer->WriteUInt(FourCC('>CLR').AsUInt());
+    this->writer->WriteUInt(FourCC('>CLR').AsUInt());
 }
 
 //------------------------------------------------------------------------------
@@ -149,7 +149,7 @@ BinaryModelWriter::BeginColliderNode()
 void
 BinaryModelWriter::EndPhysicsNode()
 {
-	this->writer->WriteUInt(FourCC('<PHN').AsUInt());
+    this->writer->WriteUInt(FourCC('<PHN').AsUInt());
 }
 
 
@@ -186,7 +186,7 @@ BinaryModelWriter::EndTag()
 void
 BinaryModelWriter::EndColliderNode()
 {
-	this->writer->WriteUInt(FourCC('<CLR').AsUInt());
+    this->writer->WriteUInt(FourCC('<CLR').AsUInt());
 }
 
 //------------------------------------------------------------------------------
@@ -213,7 +213,7 @@ BinaryModelWriter::WriteFloat(float f)
 void 
 BinaryModelWriter::WriteFloat2( const Math::vec2& f )
 {
-	this->writer->WriteVec2(f);
+    this->writer->WriteVec2(f);
 }
 
 //------------------------------------------------------------------------------

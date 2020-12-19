@@ -17,11 +17,11 @@ __ImplementClass(ToolkitUtil::NFbxJointNode, 'FBJN', ToolkitUtil::NFbxNode);
 /**
 */
 NFbxJointNode::NFbxJointNode() : 
-	parentIndex(-1),
-	cluster(0),
-	matrixIsGlobal(false)
+    parentIndex(-1),
+    cluster(0),
+    matrixIsGlobal(false)
 {
-	this->type = NFbxNode::Joint;
+    this->type = NFbxNode::Joint;
 }
 
 //------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ NFbxJointNode::NFbxJointNode() :
 */
 NFbxJointNode::~NFbxJointNode()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -38,22 +38,22 @@ NFbxJointNode::~NFbxJointNode()
 void 
 NFbxJointNode::Setup(FbxNode* node, const Ptr<NFbxScene>& scene, int index, FbxPose* bindpose)
 {
-	n_assert(node->GetSkeleton());
-	this->joint = node->GetSkeleton();
-	this->isSkeletonRoot = this->joint->IsSkeletonRoot();
-	this->jointIndex = index;
-		
-	if (bindpose)
-	{
-		int idx = bindpose->Find(node->GetName());
-		NFbxNode::Setup(node, scene);
-		this->globalMatrix = bindpose->GetMatrix(idx);		
-		this->matrixIsGlobal = true;
-	}
-	else
-	{
-		NFbxNode::Setup(node, scene);
-	}
+    n_assert(node->GetSkeleton());
+    this->joint = node->GetSkeleton();
+    this->isSkeletonRoot = this->joint->IsSkeletonRoot();
+    this->jointIndex = index;
+        
+    if (bindpose)
+    {
+        int idx = bindpose->Find(node->GetName());
+        NFbxNode::Setup(node, scene);
+        this->globalMatrix = bindpose->GetMatrix(idx);      
+        this->matrixIsGlobal = true;
+    }
+    else
+    {
+        NFbxNode::Setup(node, scene);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -62,16 +62,16 @@ NFbxJointNode::Setup(FbxNode* node, const Ptr<NFbxScene>& scene, int index, FbxP
 void 
 NFbxJointNode::ExtractKeySpan( FbxAnimStack* stack, int& span )
 {
-	NFbxNode::ExtractKeySpan(stack, span);
-	for (int childIndex = 0; childIndex < this->children.Size(); childIndex++)
-	{
-		Ptr<NFbxNode> child = this->children[childIndex];
-		if (child->GetNodeType() == NFbxNode::Joint)
-		{
-			Ptr<NFbxJointNode> jointNode = child.downcast<NFbxJointNode>();
-			jointNode->ExtractKeySpan(stack, span);
-		}
-	}
+    NFbxNode::ExtractKeySpan(stack, span);
+    for (int childIndex = 0; childIndex < this->children.Size(); childIndex++)
+    {
+        Ptr<NFbxNode> child = this->children[childIndex];
+        if (child->GetNodeType() == NFbxNode::Joint)
+        {
+            Ptr<NFbxJointNode> jointNode = child.downcast<NFbxJointNode>();
+            jointNode->ExtractKeySpan(stack, span);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -80,16 +80,16 @@ NFbxJointNode::ExtractKeySpan( FbxAnimStack* stack, int& span )
 void 
 NFbxJointNode::ExtractAnimationCurves( FbxAnimStack* stack, Util::Array<ToolkitUtil::AnimBuilderCurve>& curves, int& postInfType, int& preInfType, int span )
 {
-	NFbxNode::ExtractAnimationCurves(stack, curves, postInfType, preInfType, span);
-	for (int childIndex = 0; childIndex < this->children.Size(); childIndex++)
-	{
-		Ptr<NFbxNode> child = this->children[childIndex];
-		if (child->GetNodeType() == NFbxNode::Joint)
-		{
-			Ptr<NFbxJointNode> jointNode = child.downcast<NFbxJointNode>();
-			jointNode->ExtractAnimationCurves(stack, curves, postInfType, preInfType, span);
-		}
-	}
+    NFbxNode::ExtractAnimationCurves(stack, curves, postInfType, preInfType, span);
+    for (int childIndex = 0; childIndex < this->children.Size(); childIndex++)
+    {
+        Ptr<NFbxNode> child = this->children[childIndex];
+        if (child->GetNodeType() == NFbxNode::Joint)
+        {
+            Ptr<NFbxJointNode> jointNode = child.downcast<NFbxJointNode>();
+            jointNode->ExtractAnimationCurves(stack, curves, postInfType, preInfType, span);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -98,27 +98,27 @@ NFbxJointNode::ExtractAnimationCurves( FbxAnimStack* stack, Util::Array<ToolkitU
 void 
 NFbxJointNode::SetupFromCluster(FbxCluster* cluster)
 {
-	// get local matrix
-	FbxAMatrix matrix;
-	cluster->GetTransformLinkMatrix(matrix);
+    // get local matrix
+    FbxAMatrix matrix;
+    cluster->GetTransformLinkMatrix(matrix);
 
-	// set cluster
-	this->cluster = cluster;
+    // set cluster
+    this->cluster = cluster;
 
-	// create components
-	FbxVector4 translation = matrix.GetT();
-	FbxVector4 scale = matrix.GetS();
-	FbxQuaternion rotation = matrix.GetQ();
+    // create components
+    FbxVector4 translation = matrix.GetT();
+    FbxVector4 scale = matrix.GetS();
+    FbxQuaternion rotation = matrix.GetQ();
 
-	// convert from fbx to nebula math
-	this->rotation = quat((scalar)rotation[0], (scalar)rotation[1], (scalar)rotation[2], (scalar)rotation[3]);
-	this->position = vec4((scalar)translation[0], (scalar)translation[1], (scalar)translation[2], (scalar)translation[3]);
-	this->scale = vec4((scalar)scale[0], (scalar)scale[1], (scalar)scale[2], (scalar)scale[3]);
+    // convert from fbx to nebula math
+    this->rotation = quat((scalar)rotation[0], (scalar)rotation[1], (scalar)rotation[2], (scalar)rotation[3]);
+    this->position = vec4((scalar)translation[0], (scalar)translation[1], (scalar)translation[2], (scalar)translation[3]);
+    this->scale = vec4((scalar)scale[0], (scalar)scale[1], (scalar)scale[2], (scalar)scale[3]);
 
-	// get transform from quat
-	this->transform = Math::rotationquat(this->rotation);
-	this->transform.translate(this->position.vec);
-	this->transform.scale(this->scale.vec);
+    // get transform from quat
+    this->transform = Math::rotationquat(this->rotation);
+    this->transform.translate(this->position.vec);
+    this->transform.scale(this->scale.vec);
 }
 
 //------------------------------------------------------------------------------
@@ -127,8 +127,8 @@ NFbxJointNode::SetupFromCluster(FbxCluster* cluster)
 void 
 NFbxJointNode::ConvertJointsToLocal()
 {
-	n_assert(this->IsRoot());
-	this->RecursiveConvertToLocal(this);
+    n_assert(this->IsRoot());
+    this->RecursiveConvertToLocal(this);
 }
 
 //------------------------------------------------------------------------------
@@ -137,50 +137,50 @@ NFbxJointNode::ConvertJointsToLocal()
 void 
 NFbxJointNode::RecursiveConvertToLocal( const Ptr<NFbxJointNode>& parent )
 {
-	// only apply if the joint has a cluster connected to it
-	if (this->cluster != NULL)
-	{
-		FbxAMatrix thisMatrix;		
-		this->cluster->GetTransformLinkMatrix(thisMatrix);
+    // only apply if the joint has a cluster connected to it
+    if (this->cluster != NULL)
+    {
+        FbxAMatrix thisMatrix;      
+        this->cluster->GetTransformLinkMatrix(thisMatrix);
 
-		// if we have a parent, we should multiply this matrix with the inversed matrix of the parent
-		if (this != parent && parent->cluster != NULL)
-		{
-			FbxAMatrix parentMatrix;
-			parent->cluster->GetTransformLinkMatrix(parentMatrix);
-			thisMatrix = parentMatrix.Inverse() * thisMatrix;
-		}
+        // if we have a parent, we should multiply this matrix with the inversed matrix of the parent
+        if (this != parent && parent->cluster != NULL)
+        {
+            FbxAMatrix parentMatrix;
+            parent->cluster->GetTransformLinkMatrix(parentMatrix);
+            thisMatrix = parentMatrix.Inverse() * thisMatrix;
+        }
 
-		// create components
-		FbxVector4 translation = thisMatrix.GetT();
-		FbxVector4 scale = thisMatrix.GetS();
-		FbxQuaternion rotation = thisMatrix.GetQ();
+        // create components
+        FbxVector4 translation = thisMatrix.GetT();
+        FbxVector4 scale = thisMatrix.GetS();
+        FbxQuaternion rotation = thisMatrix.GetQ();
 
-		float scaleFactor = NFbxScene::Instance()->GetScale() * 1 / float(fbxScene->GetGlobalSettings().GetSystemUnit().GetScaleFactor());
+        float scaleFactor = NFbxScene::Instance()->GetScale() * 1 / float(fbxScene->GetGlobalSettings().GetSystemUnit().GetScaleFactor());
 
-		// convert from fbx to nebula math
-		this->rotation = quat((scalar)rotation[0], (scalar)rotation[1], (scalar)rotation[2], (scalar)rotation[3]);
-		this->position = vec4((scalar)translation[0] * scaleFactor, (scalar)translation[1] * scaleFactor, (scalar)translation[2] * scaleFactor, 0);
-		this->scale = vec4((scalar)scale[0], (scalar)scale[1], (scalar)scale[2], (scalar)scale[3]);
-	}	
+        // convert from fbx to nebula math
+        this->rotation = quat((scalar)rotation[0], (scalar)rotation[1], (scalar)rotation[2], (scalar)rotation[3]);
+        this->position = vec4((scalar)translation[0] * scaleFactor, (scalar)translation[1] * scaleFactor, (scalar)translation[2] * scaleFactor, 0);
+        this->scale = vec4((scalar)scale[0], (scalar)scale[1], (scalar)scale[2], (scalar)scale[3]);
+    }   
 
-	// we have a global matrix retrieved from the bindpose, apply inverse parent
-	if (this->matrixIsGlobal && this != parent && parent.isvalid())
-	{
-		FbxMatrix parentMatrix = parent->globalMatrix;
-		FbxMatrix localMatrix = parentMatrix.Inverse() * this->globalMatrix;
-		this->ExtractTransform(localMatrix);
-	}
-	// go through children and do the same
-	IndexT childIndex;
-	for (childIndex = 0; childIndex < this->children.Size(); childIndex++)
-	{
-		Ptr<NFbxNode> child = this->children[childIndex];
-		if (child->GetNodeType() == NFbxNode::Joint)
-		{
-			Ptr<NFbxJointNode> jointNode = child.downcast<NFbxJointNode>();
-			jointNode->RecursiveConvertToLocal(this);
-		}
-	}
+    // we have a global matrix retrieved from the bindpose, apply inverse parent
+    if (this->matrixIsGlobal && this != parent && parent.isvalid())
+    {
+        FbxMatrix parentMatrix = parent->globalMatrix;
+        FbxMatrix localMatrix = parentMatrix.Inverse() * this->globalMatrix;
+        this->ExtractTransform(localMatrix);
+    }
+    // go through children and do the same
+    IndexT childIndex;
+    for (childIndex = 0; childIndex < this->children.Size(); childIndex++)
+    {
+        Ptr<NFbxNode> child = this->children[childIndex];
+        if (child->GetNodeType() == NFbxNode::Joint)
+        {
+            Ptr<NFbxJointNode> jointNode = child.downcast<NFbxJointNode>();
+            jointNode->RecursiveConvertToLocal(this);
+        }
+    }
 }
 } // namespace ToolkitUtil

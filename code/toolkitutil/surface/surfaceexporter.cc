@@ -19,7 +19,7 @@ __ImplementClass(ToolkitUtil::SurfaceExporter, 'SUEX', Base::ExporterBase);
 */
 SurfaceExporter::SurfaceExporter()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -27,7 +27,7 @@ SurfaceExporter::SurfaceExporter()
 */
 SurfaceExporter::~SurfaceExporter()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -36,26 +36,26 @@ SurfaceExporter::~SurfaceExporter()
 void
 SurfaceExporter::ExportFile(const IO::URI& file)
 {
-	// get local path
-	String localPath = file.LocalPath();
+    // get local path
+    String localPath = file.LocalPath();
 
-	// deduct file name from URL
-	String fileName = localPath.ExtractFileName();
-	fileName.StripFileExtension();
-	String catName = localPath.ExtractLastDirName();
-	String dst = String::Sprintf("sur:%s/%s.sur", catName.AsCharPtr(), fileName.AsCharPtr());
+    // deduct file name from URL
+    String fileName = localPath.ExtractFileName();
+    fileName.StripFileExtension();
+    String catName = localPath.ExtractLastDirName();
+    String dst = String::Sprintf("sur:%s/%s.sur", catName.AsCharPtr(), fileName.AsCharPtr());
 
-	// create folder if it doesn't exist
-	if (!IoServer::Instance()->DirectoryExists("sur:" + catName))
-	{
-		IoServer::Instance()->CreateDirectory("sur:" + catName);
-	}
+    // create folder if it doesn't exist
+    if (!IoServer::Instance()->DirectoryExists("sur:" + catName))
+    {
+        IoServer::Instance()->CreateDirectory("sur:" + catName);
+    }
 
-	// simply convert xml to binary
-	Logger logger;
-	logger.Print("Exporting surface material: '%s/%s'\n", catName.AsCharPtr(), fileName.AsCharPtr());
-	BinaryXmlConverter converter;
-	converter.ConvertFile(localPath, dst, logger);
+    // simply convert xml to binary
+    Logger logger;
+    logger.Print("Exporting surface material: '%s/%s'\n", catName.AsCharPtr(), fileName.AsCharPtr());
+    BinaryXmlConverter converter;
+    converter.ConvertFile(localPath, dst, logger);
 }
 
 } // namespace ToolkitUtil

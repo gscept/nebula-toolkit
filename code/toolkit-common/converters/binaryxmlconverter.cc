@@ -39,8 +39,8 @@ bool
 BinaryXmlConverter::ConvertDir(const Util::String& srcDir, const Util::String& dstDir, Logger& logger)
 {
     IoServer* ioServer = IoServer::Instance();
-	this->srcDir = srcDir;
-	this->dstDir = dstDir;
+    this->srcDir = srcDir;
+    this->dstDir = dstDir;
 
     // make sure directories are valid
     if (!this->srcDir.IsValid())

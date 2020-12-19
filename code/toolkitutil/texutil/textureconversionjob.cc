@@ -14,7 +14,7 @@ using namespace Util;
 
 //------------------------------------------------------------------------------
 /**
-    Constructor	
+    Constructor 
 */
 TextureConversionJob::TextureConversionJob() :
     textureAttrTable(0),
@@ -28,7 +28,7 @@ TextureConversionJob::TextureConversionJob() :
 
 //------------------------------------------------------------------------------
 /**
-    Start the conversion job. Override in subclasses.	
+    Start the conversion job. Override in subclasses.   
 */
 bool
 TextureConversionJob::Convert()
@@ -67,7 +67,7 @@ TextureConversionJob::PrepareConversion(const String& srcPath, const String& dst
     // check if we can skip conversion based on the file time stamps and force flag
     if (!this->NeedsConversion(srcPath, dstPath))
     {
-		n_printf("Up to date texture: %s\n", srcPath.AsCharPtr());
+        n_printf("Up to date texture: %s\n", srcPath.AsCharPtr());
         return true;
     }
 
@@ -88,7 +88,7 @@ TextureConversionJob::PrepareConversion(const String& srcPath, const String& dst
     // get texture conversion attributes
     String texEntry;
     texEntry.Format("%s/%s", this->srcPath.ExtractLastDirName().AsCharPtr(), this->srcPath.ExtractFileName().AsCharPtr());
-	texEntry.StripFileExtension();
+    texEntry.StripFileExtension();
     this->textureAttrs = this->textureAttrTable->GetEntry(texEntry);
     
     // if destination file is already in native format, do a plain copy
@@ -125,7 +125,7 @@ TextureConversionJob::NeedsConversion(const String& srcPath, const String& dstPa
         texEntry.Format("%s/%s", srcPath.ExtractLastDirName().AsCharPtr(), srcPath.ExtractFileName().AsCharPtr());
         texEntry.StripFileExtension();
         
-		if (this->textureAttrTable->HasEntry(texEntry))
+        if (this->textureAttrTable->HasEntry(texEntry))
         {
             attrTime = this->textureAttrTable->GetEntry(texEntry).GetTime();
         }

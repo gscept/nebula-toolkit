@@ -14,47 +14,47 @@
 
 namespace Base
 {
-	class ExporterBase;
+    class ExporterBase;
 }
 //------------------------------------------------------------------------------
 namespace ToolkitUtil
 {
 class FBXParserBase : public Core::RefCounted
 {
-	__DeclareAbstractClass(FBXParserBase);
+    __DeclareAbstractClass(FBXParserBase);
 public:
-	/// constructor
-	FBXParserBase();
-	/// destructor
-	virtual ~FBXParserBase();
+    /// constructor
+    FBXParserBase();
+    /// destructor
+    virtual ~FBXParserBase();
 
-	/// sets the FBX SDK context
-	void Setup(KFbxSdkManager* manager);
-	/// parses a model scene
-	virtual void Parse(KFbxScene* scene, ToolkitUtil::AnimBuilder* animBuilder = 0) = 0;
-	
-	/// sets the parent exporter (used to report progress)
-	void SetExporter(const Ptr<Base::ExporterBase>& exporter);
+    /// sets the FBX SDK context
+    void Setup(KFbxSdkManager* manager);
+    /// parses a model scene
+    virtual void Parse(KFbxScene* scene, ToolkitUtil::AnimBuilder* animBuilder = 0) = 0;
+    
+    /// sets the parent exporter (used to report progress)
+    void SetExporter(const Ptr<Base::ExporterBase>& exporter);
 
-	/// sets the scale of the scene
-	void SetScale(float scale);
+    /// sets the scale of the scene
+    void SetScale(float scale);
 
-	/// begins a parse cycle
-	virtual void BeginParse();
-	/// ends a parse cycle
-	virtual void EndParse();
+    /// begins a parse cycle
+    virtual void BeginParse();
+    /// ends a parse cycle
+    virtual void EndParse();
 
-	/// sets increment
-	void SetIncrement(int increment);
+    /// sets increment
+    void SetIncrement(int increment);
 
 protected:
 
-	int increment;
+    int increment;
 
-	Ptr<Base::ExporterBase> exporter;
-	KFbxSdkManager* sdkManager;
-	bool inParse;
-	float scaleFactor;
+    Ptr<Base::ExporterBase> exporter;
+    KFbxSdkManager* sdkManager;
+    bool inParse;
+    float scaleFactor;
 
 }; 
 
@@ -65,7 +65,7 @@ protected:
 inline void 
 FBXParserBase::SetScale( float scale )
 {
-	this->scaleFactor = scale;
+    this->scaleFactor = scale;
 }
 
 
@@ -75,7 +75,7 @@ FBXParserBase::SetScale( float scale )
 inline void 
 FBXParserBase::SetIncrement( int increment )
 {
-	this->increment = increment;
+    this->increment = increment;
 }
 
 } // namespace ToolkitUtil

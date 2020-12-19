@@ -21,9 +21,9 @@ __ImplementSingleton(ToolkitUtil::BatchAttributes);
 /**
 */
 BatchAttributes::BatchAttributes() : 
-	isOpen(false)
+    isOpen(false)
 {
-	__ConstructSingleton;
+    __ConstructSingleton;
 }
 
 //------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ BatchAttributes::BatchAttributes() :
 */
 BatchAttributes::~BatchAttributes()
 {
-	__DestructSingleton;
+    __DestructSingleton;
 }
 
 //------------------------------------------------------------------------------
@@ -40,9 +40,9 @@ BatchAttributes::~BatchAttributes()
 void 
 BatchAttributes::Open()
 {
-	n_assert(!this->isOpen);
-	this->isOpen = true;
-	this->Load();
+    n_assert(!this->isOpen);
+    this->isOpen = true;
+    this->Load();
 }
 
 //------------------------------------------------------------------------------
@@ -51,8 +51,8 @@ BatchAttributes::Open()
 void 
 BatchAttributes::Close()
 {
-	n_assert(this->isOpen);
-	this->isOpen = false;
+    n_assert(this->isOpen);
+    this->isOpen = false;
 }
 
 //------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ BatchAttributes::Close()
 bool 
 BatchAttributes::IsOpen() const
 {
-	return this->isOpen;	
+    return this->isOpen;    
 }
 
 //------------------------------------------------------------------------------
@@ -70,29 +70,29 @@ BatchAttributes::IsOpen() const
 void 
 BatchAttributes::Load()
 {
-	n_assert(this->isOpen);
-	Ptr<Stream> batchFile = IoServer::Instance()->CreateStream(URI("proj:work/assets/batchattributes.xml"));
-	Ptr<XmlReader> xmlReader = XmlReader::Create();
-	if (batchFile->Open())
-	{
-		xmlReader->SetStream(batchFile);
-		xmlReader->Open();
+    n_assert(this->isOpen);
+    Ptr<Stream> batchFile = IoServer::Instance()->CreateStream(URI("proj:work/assets/batchattributes.xml"));
+    Ptr<XmlReader> xmlReader = XmlReader::Create();
+    if (batchFile->Open())
+    {
+        xmlReader->SetStream(batchFile);
+        xmlReader->Open();
 
-		if (xmlReader->SetToFirstChild()) do 
-		{
-			String nodeName = xmlReader->GetCurrentNodeName();
-			String resource = xmlReader->GetString("name");
+        if (xmlReader->SetToFirstChild()) do 
+        {
+            String nodeName = xmlReader->GetCurrentNodeName();
+            String resource = xmlReader->GetString("name");
 
-			Ptr<AnimSplitterHelper> splitter = AnimSplitterHelper::Create();
-			splitter->Setup(xmlReader);
-			this->animSplitters.Add(resource, splitter);
-			Ptr<SkinHelper> skinHelper = SkinHelper::Create();
-			skinHelper->Setup(xmlReader);
-			this->skins.Add(resource, skinHelper);
-						
-		} 
-		while (xmlReader->SetToNextChild());
-	}
+            Ptr<AnimSplitterHelper> splitter = AnimSplitterHelper::Create();
+            splitter->Setup(xmlReader);
+            this->animSplitters.Add(resource, splitter);
+            Ptr<SkinHelper> skinHelper = SkinHelper::Create();
+            skinHelper->Setup(xmlReader);
+            this->skins.Add(resource, skinHelper);
+                        
+        } 
+        while (xmlReader->SetToNextChild());
+    }
 }
 
 

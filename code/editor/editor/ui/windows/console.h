@@ -1,11 +1,11 @@
 #pragma once
 //------------------------------------------------------------------------------
 /**
-	Presentation::Console
+    Presentation::Console
 
-	Console window wrapper
+    Console window wrapper
 
-	(C) 2018 Individual contributors, see AUTHORS file
+    (C) 2018 Individual contributors, see AUTHORS file
 */
 //------------------------------------------------------------------------------
 #include "core/refcounted.h"
@@ -20,17 +20,17 @@ namespace Presentation
 
 class Console : public BaseWindow
 {
-	__DeclareClass(Console)
+    __DeclareClass(Console)
 public:
-	Console();
-	~Console();
+    Console();
+    ~Console();
 
-	void Run();
-	void Update();
+    void Run();
+    void Update();
 
 private:
-	Ptr<Dynui::ImguiConsole> console;
-	Ptr<Dynui::ImguiConsoleHandler> consoleHandler;
+    Ptr<Dynui::ImguiConsole> console;
+    Ptr<Dynui::ImguiConsoleHandler> consoleHandler;
 
 };
 

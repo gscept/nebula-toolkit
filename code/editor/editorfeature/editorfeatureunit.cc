@@ -19,7 +19,7 @@ __ImplementSingleton(EditorFeature::EditorFeatureUnit);
 */
 EditorFeatureUnit::EditorFeatureUnit()
 {
-	__ConstructSingleton;
+    __ConstructSingleton;
 }
 
 //------------------------------------------------------------------------------

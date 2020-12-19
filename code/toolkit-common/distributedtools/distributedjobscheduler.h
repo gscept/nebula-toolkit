@@ -1,7 +1,7 @@
 #pragma once
 //------------------------------------------------------------------------------
 /**
-	@class DistributedTools::DistributedJobScheduler
+    @class DistributedTools::DistributedJobScheduler
     
     The distributed job scheduler can launch the applications, which are defined
     in a DistributedTools::DistributedJob class. The scheduler can accept a list
@@ -106,7 +106,7 @@ private:
 };
 //------------------------------------------------------------------------------
 /**
-    Is scheduler open?	
+    Is scheduler open?  
 */
 inline
 bool
@@ -116,7 +116,7 @@ DistributedJobScheduler::IsOpen()
 }
 //------------------------------------------------------------------------------
 /**
-    Use remote services?	
+    Use remote services?    
 */
 inline
 void
@@ -127,7 +127,7 @@ DistributedJobScheduler::UseRemoteServices(bool flag)
 
 //------------------------------------------------------------------------------
 /**
-    maximal parallel local jobs	
+    maximal parallel local jobs 
 */
 inline
 void
@@ -138,7 +138,7 @@ DistributedJobScheduler::SetMaxParallelLocalJobs(int count)
 
 //------------------------------------------------------------------------------
 /**
-    Append a job as an initialize-job	
+    Append a job as an initialize-job   
 */
 inline
 void
@@ -148,7 +148,7 @@ DistributedJobScheduler::AppendInitializeJob(const Ptr<DistributedJob> & job)
 }
 //------------------------------------------------------------------------------
 /**
-    Get list of all initialize-jobs	
+    Get list of all initialize-jobs 
 */
 inline
 Util::Array<Ptr<DistributedJob>>
@@ -158,7 +158,7 @@ DistributedJobScheduler::GetInitializeJobList()
 }
 //------------------------------------------------------------------------------
 /**
-    Append a job as an finalize-job	
+    Append a job as an finalize-job 
 */
 inline
 void
@@ -169,7 +169,7 @@ DistributedJobScheduler::AppendFinalizeJob(const Ptr<DistributedJob> & job)
 
 //------------------------------------------------------------------------------
 /**
-    Get list of all finalize-jobs	
+    Get list of all finalize-jobs   
 */
 inline
 Util::Array<Ptr<DistributedJob>>
@@ -180,7 +180,7 @@ DistributedJobScheduler::GetFinalizeJobList()
 
 //------------------------------------------------------------------------------
 /**
-	If enabled the scheduler prints the output of the local jobs.
+    If enabled the scheduler prints the output of the local jobs.
     (Remote job outputs are printed anyway)
 */
 inline

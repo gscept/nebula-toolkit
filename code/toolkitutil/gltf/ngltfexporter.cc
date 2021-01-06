@@ -159,6 +159,19 @@ bool NglTFExporter::StartExport(const IO::URI & file)
 					Util::String intermediateFile = intermediateDir + "/" + Util::String::FromInt(material.normalTexture.index);
 					texAttrTable.SetEntry(intermediateFile, attrs);
 				}
+                else if (material.pbrMetallicRoughness.baseColorTexture.index != -1)
+                {
+                    // Set texture attrs for normal textures
+                    TextureAttrs attrs;
+                    attrs.SetPixelFormat(TextureAttrs::BC7);
+                    attrs.SetColorSpace(TextureAttrs::ColorSpace::sRGB);
+                    
+                    Gltf::Image const& image = gltfScene.images[material.normalTexture.index];
+                    Util::String format = (image.type == Gltf::Image::Type::Jpg) ? ".jpg" : ".png";
+                    Util::String intermediateDir = fileName + "_" + fileExtension;
+                    Util::String intermediateFile = intermediateDir + "/" + Util::String::FromInt(material.normalTexture.index);
+                    texAttrTable.SetEntry(intermediateFile, attrs);
+                }
 			}
 
 			texConverter->SetExternalTextureAttrTable(&texAttrTable);

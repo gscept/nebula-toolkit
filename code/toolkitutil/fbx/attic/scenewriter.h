@@ -18,82 +18,82 @@ namespace ToolkitUtil
 {
 class SceneWriter : public Core::RefCounted
 {
-	__DeclareClass(SceneWriter);
+    __DeclareClass(SceneWriter);
 
 
 public:
 
-	enum WriterMode
-	{
-		Static,
-		Skinned,
-		Multilayered,
+    enum WriterMode
+    {
+        Static,
+        Skinned,
+        Multilayered,
 
-		NumWriterModes
-	};
+        NumWriterModes
+    };
 
-	enum ShadingMode
-	{
-		Single,
-		Multiple,
+    enum ShadingMode
+    {
+        Single,
+        Multiple,
 
-		NumShadingModes
-	};
+        NumShadingModes
+    };
 
-	/// constructor
-	SceneWriter();
-	/// destructor
-	virtual ~SceneWriter();
+    /// constructor
+    SceneWriter();
+    /// destructor
+    virtual ~SceneWriter();
 
-	/// sets the list of meshes
-	void SetMeshes(const MeshList& meshes);
-	/// sets the write to which the scene should be written
-	void SetModelWriter(N3Writer* writer);
-	/// sets the writer mode
-	void SetWriterMode(WriterMode mode);
-	/// sets the shading mode
-	void SetShadingMode(ShadingMode mode);
-	/// sets the list of pre-defined states
-	void SetStates(const Util::Queue<State>& states);
-	/// sets the list of pre-defined materials
-	void SetMaterials(const Util::Queue<Util::String>& materials);
-	/// sets the list of fragments sent from the skin fragmenter (only used for skinned objects)
-	void SetFragments(const Util::Dictionary<ShapeNode*, Util::Array<Ptr<SkinFragment> > >& fragments);
-	/// sets the file name
-	void SetFile(const Util::String& file);
-	/// sets the category name
-	void SetCategory(const Util::String& category);
+    /// sets the list of meshes
+    void SetMeshes(const MeshList& meshes);
+    /// sets the write to which the scene should be written
+    void SetModelWriter(N3Writer* writer);
+    /// sets the writer mode
+    void SetWriterMode(WriterMode mode);
+    /// sets the shading mode
+    void SetShadingMode(ShadingMode mode);
+    /// sets the list of pre-defined states
+    void SetStates(const Util::Queue<State>& states);
+    /// sets the list of pre-defined materials
+    void SetMaterials(const Util::Queue<Util::String>& materials);
+    /// sets the list of fragments sent from the skin fragmenter (only used for skinned objects)
+    void SetFragments(const Util::Dictionary<ShapeNode*, Util::Array<Ptr<SkinFragment> > >& fragments);
+    /// sets the file name
+    void SetFile(const Util::String& file);
+    /// sets the category name
+    void SetCategory(const Util::String& category);
 
-	/// write scene
-	void WriteScene();
+    /// write scene
+    void WriteScene();
 private:
 
-	/// recursively traverses node hierarchy and writes scene
-	void WriteNode(ShapeNode* node);
+    /// recursively traverses node hierarchy and writes scene
+    void WriteNode(ShapeNode* node);
 
-	/// convience function for writing skin fragments
-	void WriteFragments(ShapeNode* mesh, 
-						const Util::String& name, 
-						const ToolkitUtil::Transform& transform, 
-						const Math::bbox& boundingBox, 
-						int primitiveIndex, 
-						const Util::String& skinResource, 
-						const ToolkitUtil::State& state, 
-						const Util::String& material
-						);
+    /// convience function for writing skin fragments
+    void WriteFragments(ShapeNode* mesh, 
+                        const Util::String& name, 
+                        const ToolkitUtil::Transform& transform, 
+                        const Math::bbox& boundingBox, 
+                        int primitiveIndex, 
+                        const Util::String& skinResource, 
+                        const ToolkitUtil::State& state, 
+                        const Util::String& material
+                        );
 
-	N3Writer* writer;
+    N3Writer* writer;
 
-	MeshList meshes;
-	WriterMode writerMode;
-	ShadingMode shadingMode;
+    MeshList meshes;
+    WriterMode writerMode;
+    ShadingMode shadingMode;
 
-	Util::String file;
-	Util::String category;
+    Util::String file;
+    Util::String category;
 
-	Util::Queue<State> states;
-	Util::Queue<Util::String> materials;
-	Util::Dictionary<ShapeNode*, Util::Array<Ptr<SkinFragment> > > fragments;
+    Util::Queue<State> states;
+    Util::Queue<Util::String> materials;
+    Util::Dictionary<ShapeNode*, Util::Array<Ptr<SkinFragment> > > fragments;
 
 }; 
 
@@ -103,7 +103,7 @@ private:
 inline void 
 SceneWriter::SetMeshes( const MeshList& meshes )
 {
-	this->meshes = meshes;
+    this->meshes = meshes;
 }
 
 //------------------------------------------------------------------------------
@@ -112,8 +112,8 @@ SceneWriter::SetMeshes( const MeshList& meshes )
 inline void 
 SceneWriter::SetModelWriter( N3Writer* writer )
 {
-	n_assert(writer);
-	this->writer = writer;
+    n_assert(writer);
+    this->writer = writer;
 }
 
 
@@ -123,7 +123,7 @@ SceneWriter::SetModelWriter( N3Writer* writer )
 inline void 
 SceneWriter::SetWriterMode( WriterMode mode )
 {
-	this->writerMode = mode;
+    this->writerMode = mode;
 }
 
 
@@ -133,7 +133,7 @@ SceneWriter::SetWriterMode( WriterMode mode )
 inline void 
 SceneWriter::SetShadingMode( ShadingMode mode )
 {
-	this->shadingMode = mode;
+    this->shadingMode = mode;
 }
 
 //------------------------------------------------------------------------------
@@ -142,7 +142,7 @@ SceneWriter::SetShadingMode( ShadingMode mode )
 inline void 
 SceneWriter::SetStates( const Util::Queue<State>& states )
 {
-	this->states = states;
+    this->states = states;
 }
 
 //------------------------------------------------------------------------------
@@ -151,7 +151,7 @@ SceneWriter::SetStates( const Util::Queue<State>& states )
 inline void 
 SceneWriter::SetMaterials( const Util::Queue<Util::String>& materials )
 {
-	this->materials = materials;
+    this->materials = materials;
 }
 
 
@@ -161,7 +161,7 @@ SceneWriter::SetMaterials( const Util::Queue<Util::String>& materials )
 inline void 
 SceneWriter::SetFragments( const Util::Dictionary<ShapeNode*, Util::Array<Ptr<SkinFragment> > >& fragments )
 {
-	this->fragments = fragments;
+    this->fragments = fragments;
 }
 
 //------------------------------------------------------------------------------
@@ -170,8 +170,8 @@ SceneWriter::SetFragments( const Util::Dictionary<ShapeNode*, Util::Array<Ptr<Sk
 inline void 
 SceneWriter::SetFile( const Util::String& file )
 {
-	n_assert(!file.IsEmpty());
-	this->file = file;
+    n_assert(!file.IsEmpty());
+    this->file = file;
 }
 
 //------------------------------------------------------------------------------
@@ -180,8 +180,8 @@ SceneWriter::SetFile( const Util::String& file )
 inline void 
 SceneWriter::SetCategory( const Util::String& category )
 {
-	n_assert(!category.IsEmpty());
-	this->category = category;
+    n_assert(!category.IsEmpty());
+    this->category = category;
 }
 } // namespace ToolkitUtil
 //------------------------------------------------------------------------------

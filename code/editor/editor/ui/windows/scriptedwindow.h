@@ -3,7 +3,7 @@
 /**
     A scripted window
 
-	(C) 2020 Individual contributors, see AUTHORS file
+    (C) 2020 Individual contributors, see AUTHORS file
 */
 //------------------------------------------------------------------------------
 #include "core/refcounted.h"
@@ -20,12 +20,12 @@ namespace Presentation
 
 class ScriptedWindow : public BaseWindow
 {
-	__DeclareClass(ScriptedWindow)
+    __DeclareClass(ScriptedWindow)
 public:
-	ScriptedWindow();
-	~ScriptedWindow();
+    ScriptedWindow();
+    ~ScriptedWindow();
 
-	void Run();
+    void Run();
 
     /// Set the python module name.
     bool LoadModule(Util::String const& modulePath);

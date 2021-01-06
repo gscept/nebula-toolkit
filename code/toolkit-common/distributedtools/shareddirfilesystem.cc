@@ -17,7 +17,7 @@ namespace DistributedTools
     __ImplementClass(DistributedTools::SharedDirFileSystem,'SDFS',DistributedTools::SharedDirControl)
 //------------------------------------------------------------------------------
 /**
-    Constructor	
+    Constructor 
 */
 SharedDirFileSystem::SharedDirFileSystem()
 {
@@ -26,7 +26,7 @@ SharedDirFileSystem::SharedDirFileSystem()
 
 //------------------------------------------------------------------------------
 /**
-    Destructor	
+    Destructor  
 */
 SharedDirFileSystem::~SharedDirFileSystem()
 {
@@ -282,7 +282,7 @@ SharedDirFileSystem::RemoveControlDir()
 
 //------------------------------------------------------------------------------
 /**
-	copy all content from src to dst recursively 
+    copy all content from src to dst recursively 
 */
 void
 SharedDirFileSystem::CopyDirectoryContent(const Util::String & src, const Util::String & dst)

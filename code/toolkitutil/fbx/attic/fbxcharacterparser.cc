@@ -14,7 +14,7 @@ __ImplementClass(ToolkitUtil::FbxCharacterParser, 'FBXC', Core::RefCounted);
 */
 FbxCharacterParser::FbxCharacterParser()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ FbxCharacterParser::FbxCharacterParser()
 */
 FbxCharacterParser::~FbxCharacterParser()
 {
-	// empty
+    // empty
 }
 
 } // namespace ToolkitUtil

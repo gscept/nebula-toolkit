@@ -54,7 +54,7 @@ AssetBatcherApp::Open()
 
     if (DistributedToolkitApp::Open())
     {
-        Ptr<IO::Console> console = IO::Console::Instance();		
+        Ptr<IO::Console> console = IO::Console::Instance();
 #ifdef WIN32
         const Util::Array<Ptr<IO::ConsoleHandler>> & handlers = console->GetHandlers();
         for (int i = 0; i < handlers.Size(); i++)
@@ -77,7 +77,7 @@ AssetBatcherApp::Open()
 */
 void
 AssetBatcherApp::Close()
-{	
+{
     if (this->modelDatabase.isvalid())
     {
         this->modelDatabase->Close();
@@ -207,10 +207,10 @@ AssetBatcherApp::DoWork()
     stream->Open();
     void * str = stream->Map();
     Util::String streamString;
-    streamString.Set((const char*)str, stream->GetSize());		
+    streamString.Set((const char*)str, stream->GetSize());
     fprintf(stderr, "%s", streamString.AsCharPtr());
 #endif
-    // if we have any errors, set the return code to be errornous	
+    // if we have any errors, set the return code to be errornous
     if (exporter->HasErrors()) this->SetReturnCode(-1);
 }
 
@@ -299,7 +299,7 @@ AssetBatcherApp::CreateFileList()
         // update progressbar in batchexporter
         Ptr<Base::ExporterBase> dummy = Base::ExporterBase::Create();
         dummy->SetProgressMinMax(0, res.Size() * PRECISION);
-    }	
+    }
     return res;
 }
 

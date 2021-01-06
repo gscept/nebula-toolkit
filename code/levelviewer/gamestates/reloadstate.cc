@@ -20,7 +20,7 @@ using namespace Math;
 */
 ReloadState::ReloadState()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -28,7 +28,7 @@ ReloadState::ReloadState()
 */
 ReloadState::~ReloadState()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -37,21 +37,21 @@ ReloadState::~ReloadState()
 void
 ReloadState::OnStateEnter(const Util::String& prevState)
 {
-	this->nextLevelName = this->GetLevelName();
-	GameStateHandler::OnStateEnter(prevState);
+    this->nextLevelName = this->GetLevelName();
+    GameStateHandler::OnStateEnter(prevState);
 }
 //------------------------------------------------------------------------------
 /**
 */
 Util::String 
 ReloadState::OnFrame( )
-{		
-	const Ptr<BaseGameFeature::GameStateHandler>& state = App::GameApplication::Instance()->FindStateHandlerByName("LevelViewerGameState").cast<BaseGameFeature::GameStateHandler>();
-	state->SetSetupMode(GameStateHandler::LoadLevel);
-	state->SetLevelName(this->nextLevelName);
-	//App::GameApplication::Instance()->RequestState("LevelViewerGameState");
-	GameStateHandler::OnFrame();
-	return "LevelViewerGameState";
+{       
+    const Ptr<BaseGameFeature::GameStateHandler>& state = App::GameApplication::Instance()->FindStateHandlerByName("LevelViewerGameState").cast<BaseGameFeature::GameStateHandler>();
+    state->SetSetupMode(GameStateHandler::LoadLevel);
+    state->SetLevelName(this->nextLevelName);
+    //App::GameApplication::Instance()->RequestState("LevelViewerGameState");
+    GameStateHandler::OnFrame();
+    return "LevelViewerGameState";
 
 }
 

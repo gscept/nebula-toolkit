@@ -22,7 +22,7 @@ namespace DistributedTools
     __ImplementClass(DistributedTools::SharedDirFTP,'SDTP',DistributedTools::SharedDirControl)
 //------------------------------------------------------------------------------
 /**
-    Constructor	
+    Constructor 
 */
 SharedDirFTP::SharedDirFTP() :
     needVerboseCommand(false)
@@ -31,7 +31,7 @@ SharedDirFTP::SharedDirFTP() :
 
 //------------------------------------------------------------------------------
 /**
-    Destructor	
+    Destructor  
 */
 SharedDirFTP::~SharedDirFTP()
 {
@@ -72,7 +72,7 @@ SharedDirFTP::CopyFilesToSharedDir(const Util::String & src, const Util::String 
     for(i = 0; i < files.Size(); i++)
     {
         path.Format("%s/%s",src.AsCharPtr(),files[i].AsCharPtr());
-        this->ScriptPutFile(writer, path);	
+        this->ScriptPutFile(writer, path);  
     }
     this->RunScript(this->CloseWriterAndGetStream(writer));
 }
@@ -203,7 +203,7 @@ SharedDirFTP::ContainsGuidSubDir(const Util::Guid & guid)
     IndexT idx;
     for(idx = 0; idx < file.content.Size(); idx++)
     {
-    	if(file.content[idx].name == guid.AsString())
+        if(file.content[idx].name == guid.AsString())
         {
             return true;
         }
@@ -450,7 +450,7 @@ SharedDirFTP::CheckExecutableStatus()
 
 //------------------------------------------------------------------------------
 /**
-	Creates an opened textwriter object to write scripts on it.
+    Creates an opened textwriter object to write scripts on it.
 */
 Ptr<TextWriter>
 SharedDirFTP::CreateScriptWriter()
@@ -607,7 +607,7 @@ SharedDirFTP::RunScript(const Ptr<Stream> & script)
 
 //------------------------------------------------------------------------------
 /**
-	Creates a script, that creates a directory hierachy on the current server location
+    Creates a script, that creates a directory hierachy on the current server location
 */
 void
 SharedDirFTP::ScriptCreateSubDirectory(const Ptr<IO::TextWriter> & writer, const Util::String & path)
@@ -645,7 +645,7 @@ SharedDirFTP::ScriptPutFiles(const Ptr<IO::TextWriter> & writer, const Array<Str
     String putCmd;
     for(i = 0; i < srcArray.Size(); i++)
     {
-    	this->ScriptPutFile(writer, srcArray[i]);
+        this->ScriptPutFile(writer, srcArray[i]);
     }
 }
 
@@ -666,7 +666,7 @@ SharedDirFTP::ScriptPutDirectoryContent(const Ptr<IO::TextWriter> & writer, cons
     IndexT i;
     for(i = 0; i < files.Size(); i++)
     {
-    	filePath.Format("%s/%s",src.AsCharPtr(),files[i].AsCharPtr());
+        filePath.Format("%s/%s",src.AsCharPtr(),files[i].AsCharPtr());
         filePaths.Append(filePath);
     }
     this->ScriptPutFiles(writer,filePaths);
@@ -683,7 +683,7 @@ SharedDirFTP::ScriptPutDirectoryContent(const Ptr<IO::TextWriter> & writer, cons
 
 //------------------------------------------------------------------------------
 /**
-	Script that gets a file in the given ftp location
+    Script that gets a file in the given ftp location
     and copies it to the given destination path
 */
 void

@@ -17,37 +17,37 @@ namespace ToolkitUtil
 {
 class BatchAttributes : public Core::RefCounted
 {
-	__DeclareClass(BatchAttributes);
-	__DeclareSingleton(BatchAttributes);
+    __DeclareClass(BatchAttributes);
+    __DeclareSingleton(BatchAttributes);
 public:
-	/// constructor
-	BatchAttributes();
-	/// destructor
-	virtual ~BatchAttributes();
+    /// constructor
+    BatchAttributes();
+    /// destructor
+    virtual ~BatchAttributes();
 
-	/// opens the batch attributes
-	void Open();
-	/// closes the batch attributes
-	void Close();
-	/// returns true if batch attributes are open
-	bool IsOpen() const;
+    /// opens the batch attributes
+    void Open();
+    /// closes the batch attributes
+    void Close();
+    /// returns true if batch attributes are open
+    bool IsOpen() const;
 
-	/// returns splitter for resource name
-	const Ptr<AnimSplitterHelper>& GetSplitter(const Util::String& resource);
-	/// returns true if resource has splitter
-	bool HasSplitter(const Util::String& resource);
-	/// returns list of skins
-	const Ptr<SkinHelper>& GetSkin(const Util::String& resource);
-	/// returns true if resource has skins
-	bool HasSkin(const Util::String& resource);
+    /// returns splitter for resource name
+    const Ptr<AnimSplitterHelper>& GetSplitter(const Util::String& resource);
+    /// returns true if resource has splitter
+    bool HasSplitter(const Util::String& resource);
+    /// returns list of skins
+    const Ptr<SkinHelper>& GetSkin(const Util::String& resource);
+    /// returns true if resource has skins
+    bool HasSkin(const Util::String& resource);
 private:
-	/// loads batch attributes
-	void Load();
+    /// loads batch attributes
+    void Load();
 
-	Util::Dictionary<Util::String, Ptr<AnimSplitterHelper> > animSplitters;
-	Util::Dictionary<Util::String, Ptr<SkinHelper> > skins;
-	bool isOpen;
-	
+    Util::Dictionary<Util::String, Ptr<AnimSplitterHelper> > animSplitters;
+    Util::Dictionary<Util::String, Ptr<SkinHelper> > skins;
+    bool isOpen;
+    
 }; 
 
 //------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ private:
 inline const Ptr<AnimSplitterHelper>& 
 BatchAttributes::GetSplitter( const Util::String& resource )
 {
-	return this->animSplitters[resource];
+    return this->animSplitters[resource];
 }
 
 //------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ BatchAttributes::GetSplitter( const Util::String& resource )
 inline bool 
 BatchAttributes::HasSplitter( const Util::String& resource )
 {
-	return this->animSplitters.FindIndex(resource) >= 0;
+    return this->animSplitters.FindIndex(resource) >= 0;
 }
 
 
@@ -75,7 +75,7 @@ BatchAttributes::HasSplitter( const Util::String& resource )
 inline const Ptr<SkinHelper>& 
 BatchAttributes::GetSkin(const Util::String& resource)
 {
-	return this->skins[resource];
+    return this->skins[resource];
 }
 
 //------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ BatchAttributes::GetSkin(const Util::String& resource)
 inline bool 
 BatchAttributes::HasSkin( const Util::String& resource )
 {
-	return this->skins.Contains(resource);
+    return this->skins.Contains(resource);
 }
 } // namespace ToolkitUtil
 //------------------------------------------------------------------------------

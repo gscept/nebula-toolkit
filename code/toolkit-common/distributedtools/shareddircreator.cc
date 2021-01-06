@@ -17,7 +17,7 @@ namespace DistributedTools
     __ImplementSingleton(DistributedTools::SharedDirCreator);
 //------------------------------------------------------------------------------
 /**
-    Constructor	
+    Constructor 
 */
 SharedDirCreator::SharedDirCreator()
 {
@@ -26,7 +26,7 @@ SharedDirCreator::SharedDirCreator()
 
 //------------------------------------------------------------------------------
 /**
-    Destructor	
+    Destructor  
 */
 SharedDirCreator::~SharedDirCreator()
 {

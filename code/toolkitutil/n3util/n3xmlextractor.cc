@@ -16,10 +16,10 @@ __ImplementClass(ToolkitUtil::N3XmlExtractor, 'N3XE', Core::RefCounted);
 /**
 */
 N3XmlExtractor::N3XmlExtractor() : 
-	stream(nullptr),
-	reader(nullptr)
+    stream(nullptr),
+    reader(nullptr)
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -27,7 +27,7 @@ N3XmlExtractor::N3XmlExtractor() :
 */
 N3XmlExtractor::~N3XmlExtractor()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -36,17 +36,17 @@ N3XmlExtractor::~N3XmlExtractor()
 bool 
 N3XmlExtractor::Open()
 {
-	n_assert(this->stream.isvalid());
-	n_assert(!this->reader.isvalid());
+    n_assert(this->stream.isvalid());
+    n_assert(!this->reader.isvalid());
 
-	this->reader = IO::XmlReader::Create();
+    this->reader = IO::XmlReader::Create();
 
-	this->reader->SetStream(this->stream);
-	if (!this->reader->GetStream()->IsOpen())
-	{
-		this->stream->Open();
-	}
-	return this->reader->Open();
+    this->reader->SetStream(this->stream);
+    if (!this->reader->GetStream()->IsOpen())
+    {
+        this->stream->Open();
+    }
+    return this->reader->Open();
 }
 
 //------------------------------------------------------------------------------
@@ -55,12 +55,12 @@ N3XmlExtractor::Open()
 void 
 N3XmlExtractor::Close()
 {
-	n_assert(this->reader.isvalid());
-	n_assert(this->reader->IsOpen());
-	this->reader->Close();
+    n_assert(this->reader.isvalid());
+    n_assert(this->reader->IsOpen());
+    this->reader->Close();
 
-	this->reader = nullptr;
-	this->stream = nullptr;
+    this->reader = nullptr;
+    this->stream = nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -69,12 +69,12 @@ N3XmlExtractor::Close()
 void 
 N3XmlExtractor::SetStream( const Ptr<IO::Stream>& stream )
 {
-	n_assert(stream.isvalid());
-	this->stream = stream;
-	if (this->stream->IsOpen())
-	{
-		this->stream->Seek(0, Stream::Begin);
-	}	
+    n_assert(stream.isvalid());
+    this->stream = stream;
+    if (this->stream->IsOpen())
+    {
+        this->stream->Seek(0, Stream::Begin);
+    }   
 }
 
 //------------------------------------------------------------------------------
@@ -83,13 +83,13 @@ N3XmlExtractor::SetStream( const Ptr<IO::Stream>& stream )
 void 
 N3XmlExtractor::ExtractState( const Util::String& targetNode, State& state )
 {
-	Texture tex;
-	Variable var;
-	this->reader->SetToRoot();
-	this->reader->SetToFirstChild();
+    Texture tex;
+    Variable var;
+    this->reader->SetToRoot();
+    this->reader->SetToFirstChild();
 
-	this->reader->SetToNode("ModelNode");
-	this->RecursiveParseState(targetNode, tex, var, state);
+    this->reader->SetToNode("ModelNode");
+    this->RecursiveParseState(targetNode, tex, var, state);
 }
 
 //------------------------------------------------------------------------------
@@ -98,104 +98,104 @@ N3XmlExtractor::ExtractState( const Util::String& targetNode, State& state )
 bool 
 N3XmlExtractor::RecursiveParseState( Util::String targetNodeWithPath, Texture& tex, Variable& var, State& state )
 {
-	String currentNodeName = this->reader->GetCurrentNodeName();
-	if (targetNodeWithPath.IsEmpty())
-	{
-		if (currentNodeName == "STXT")
-		{
-			this->reader->SetToFirstChild("s");
-			String texName = this->reader->GetContent();
-			this->reader->SetToNextChild("s");
-			String texVal = this->reader->GetContent();
-			tex.textureName = texName;
-			tex.textureResource = texVal;
+    String currentNodeName = this->reader->GetCurrentNodeName();
+    if (targetNodeWithPath.IsEmpty())
+    {
+        if (currentNodeName == "STXT")
+        {
+            this->reader->SetToFirstChild("s");
+            String texName = this->reader->GetContent();
+            this->reader->SetToNextChild("s");
+            String texVal = this->reader->GetContent();
+            tex.textureName = texName;
+            tex.textureResource = texVal;
 
-			state.textures.Append(tex);
-			this->reader->SetToParent();
-		}
-		else if (currentNodeName == "SFLT")
-		{
-			this->reader->SetToFirstChild("s");
-			String varName = this->reader->GetContent();
-			this->reader->SetToNextChild("f");
-			float varVal = this->reader->GetContent().AsFloat();
-			var.variableName = varName;
-			var.variableValue = varVal;
+            state.textures.Append(tex);
+            this->reader->SetToParent();
+        }
+        else if (currentNodeName == "SFLT")
+        {
+            this->reader->SetToFirstChild("s");
+            String varName = this->reader->GetContent();
+            this->reader->SetToNextChild("f");
+            float varVal = this->reader->GetContent().AsFloat();
+            var.variableName = varName;
+            var.variableValue = varVal;
 
-			state.variables.Append(var);
-			this->reader->SetToParent();
-		}
-		else if (currentNodeName == "SINT")
-		{
-			this->reader->SetToFirstChild("s");
-			String varName = this->reader->GetContent();
-			this->reader->SetToNextChild("i");
-			int varVal = this->reader->GetContent().AsInt();
-			var.variableName = varName;
-			var.variableValue = varVal;
+            state.variables.Append(var);
+            this->reader->SetToParent();
+        }
+        else if (currentNodeName == "SINT")
+        {
+            this->reader->SetToFirstChild("s");
+            String varName = this->reader->GetContent();
+            this->reader->SetToNextChild("i");
+            int varVal = this->reader->GetContent().AsInt();
+            var.variableName = varName;
+            var.variableValue = varVal;
 
-			state.variables.Append(var);
-			this->reader->SetToParent();
-		}
-		else if (currentNodeName == "SVEC")
-		{
-			this->reader->SetToFirstChild("s");
-			String varName = this->reader->GetContent();
-			this->reader->SetToNextChild("f4");
-			Math::vec4 varVal = this->reader->GetContent().AsVec4();
-			var.variableName = varName;
-			var.variableValue = varVal;
+            state.variables.Append(var);
+            this->reader->SetToParent();
+        }
+        else if (currentNodeName == "SVEC")
+        {
+            this->reader->SetToFirstChild("s");
+            String varName = this->reader->GetContent();
+            this->reader->SetToNextChild("f4");
+            Math::vec4 varVal = this->reader->GetContent().AsVec4();
+            var.variableName = varName;
+            var.variableValue = varVal;
 
-			state.variables.Append(var);
-			this->reader->SetToParent();
-		}
-		else if (currentNodeName == "SBOO")
-		{
-			this->reader->SetToFirstChild("s");
-			String varName = this->reader->GetContent();
-			this->reader->SetToNextChild("b");
-			bool varVal = this->reader->GetContent().AsBool();
-			var.variableName = varName;
-			var.variableValue = varVal;
+            state.variables.Append(var);
+            this->reader->SetToParent();
+        }
+        else if (currentNodeName == "SBOO")
+        {
+            this->reader->SetToFirstChild("s");
+            String varName = this->reader->GetContent();
+            this->reader->SetToNextChild("b");
+            bool varVal = this->reader->GetContent().AsBool();
+            var.variableName = varName;
+            var.variableValue = varVal;
 
-			state.variables.Append(var);
-			this->reader->SetToParent();
-		}
-	
-	}
-	else
-	{
-		int slashIndex = targetNodeWithPath.FindCharIndex('/');
-		String nodeSearch = targetNodeWithPath.Tokenize("/").Front();
-		if (this->reader->HasAttr("name"))
-		{
-			String nodeName = this->reader->GetString("name");
-			if (nodeName == nodeSearch)
-			{
-				if (slashIndex != InvalidIndex)
-				{
-					targetNodeWithPath = targetNodeWithPath.ExtractToEnd(slashIndex);
-					targetNodeWithPath.TrimLeft("/");
-				}
-				else
-				{
-					targetNodeWithPath.Clear();
-				}
-				if (this->reader->SetToFirstChild()) do
-				{
-					if (!RecursiveParseState(targetNodeWithPath, tex, var, state))
-					{
-						return false;
-					}	
-				}
-				while (this->reader->SetToNextChild());
-			}
-		}
-	}
-	
+            state.variables.Append(var);
+            this->reader->SetToParent();
+        }
+    
+    }
+    else
+    {
+        int slashIndex = targetNodeWithPath.FindCharIndex('/');
+        String nodeSearch = targetNodeWithPath.Tokenize("/").Front();
+        if (this->reader->HasAttr("name"))
+        {
+            String nodeName = this->reader->GetString("name");
+            if (nodeName == nodeSearch)
+            {
+                if (slashIndex != InvalidIndex)
+                {
+                    targetNodeWithPath = targetNodeWithPath.ExtractToEnd(slashIndex);
+                    targetNodeWithPath.TrimLeft("/");
+                }
+                else
+                {
+                    targetNodeWithPath.Clear();
+                }
+                if (this->reader->SetToFirstChild()) do
+                {
+                    if (!RecursiveParseState(targetNodeWithPath, tex, var, state))
+                    {
+                        return false;
+                    }   
+                }
+                while (this->reader->SetToNextChild());
+            }
+        }
+    }
+    
 
-	// done recursing
-	return true;
+    // done recursing
+    return true;
 }
 
 
@@ -206,11 +206,11 @@ N3XmlExtractor::RecursiveParseState( Util::String targetNodeWithPath, Texture& t
 void 
 N3XmlExtractor::ExtractMaterial( const Util::String& targetNode, Util::String& material )
 {
-	this->reader->SetToRoot();
-	this->reader->SetToFirstChild();
+    this->reader->SetToRoot();
+    this->reader->SetToFirstChild();
 
-	this->reader->SetToNode("ModelNode");
-	this->RecursiveParseMaterial(targetNode, material);
+    this->reader->SetToNode("ModelNode");
+    this->RecursiveParseMaterial(targetNode, material);
 }
 
 
@@ -220,51 +220,51 @@ N3XmlExtractor::ExtractMaterial( const Util::String& targetNode, Util::String& m
 bool 
 N3XmlExtractor::RecursiveParseMaterial( Util::String targetNodeWithPath, Util::String& material )
 {
-	String currentNodeName = this->reader->GetCurrentNodeName();
-	if (targetNodeWithPath.IsEmpty())
-	{
-		if (currentNodeName == "MNMT")
-		{
-			this->reader->SetToFirstChild("s");
-			material = this->reader->GetContent();
-		}
-	}
-	else
-	{
-		int slashIndex = targetNodeWithPath.FindCharIndex('/');
-		String nodeSearch = targetNodeWithPath.Tokenize("/").Front();
-		if (this->reader->HasAttr("name"))
-		{
-			String nodeName = this->reader->GetString("name");
+    String currentNodeName = this->reader->GetCurrentNodeName();
+    if (targetNodeWithPath.IsEmpty())
+    {
+        if (currentNodeName == "MNMT")
+        {
+            this->reader->SetToFirstChild("s");
+            material = this->reader->GetContent();
+        }
+    }
+    else
+    {
+        int slashIndex = targetNodeWithPath.FindCharIndex('/');
+        String nodeSearch = targetNodeWithPath.Tokenize("/").Front();
+        if (this->reader->HasAttr("name"))
+        {
+            String nodeName = this->reader->GetString("name");
 
-			// we found the parent we want to visit
-			if (nodeName == nodeSearch)
-			{
-				// we found our node, clear the target
-				if (nodeName == targetNodeWithPath)
-				{
-					targetNodeWithPath.Clear();
-				}
-				// we are still looking
-				else if (slashIndex != InvalidIndex)
-				{
-					targetNodeWithPath = targetNodeWithPath.ExtractToEnd(slashIndex);	
-					targetNodeWithPath.TrimLeft("/");
-				}
+            // we found the parent we want to visit
+            if (nodeName == nodeSearch)
+            {
+                // we found our node, clear the target
+                if (nodeName == targetNodeWithPath)
+                {
+                    targetNodeWithPath.Clear();
+                }
+                // we are still looking
+                else if (slashIndex != InvalidIndex)
+                {
+                    targetNodeWithPath = targetNodeWithPath.ExtractToEnd(slashIndex);   
+                    targetNodeWithPath.TrimLeft("/");
+                }
 
-				if (this->reader->SetToFirstChild()) do
-				{
-					if (!RecursiveParseMaterial(targetNodeWithPath, material))
-					{
-						return false;
-					}	
-				}
-				while (this->reader->SetToNextChild());
-			}
-		}
-	}
+                if (this->reader->SetToFirstChild()) do
+                {
+                    if (!RecursiveParseMaterial(targetNodeWithPath, material))
+                    {
+                        return false;
+                    }   
+                }
+                while (this->reader->SetToNextChild());
+            }
+        }
+    }
 
-	return true;
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -273,11 +273,11 @@ N3XmlExtractor::RecursiveParseMaterial( Util::String targetNodeWithPath, Util::S
 void 
 N3XmlExtractor::ExtractType( const Util::String& targetNode, Util::String& type )
 {
-	this->reader->SetToRoot();
-	this->reader->SetToFirstChild();
+    this->reader->SetToRoot();
+    this->reader->SetToFirstChild();
 
-	this->reader->SetToNode("ModelNode");
-	this->RecursiveParseType(targetNode, type);
+    this->reader->SetToNode("ModelNode");
+    this->RecursiveParseType(targetNode, type);
 }
 
 //------------------------------------------------------------------------------
@@ -286,48 +286,48 @@ N3XmlExtractor::ExtractType( const Util::String& targetNode, Util::String& type 
 bool 
 N3XmlExtractor::RecursiveParseType( Util::String targetNodeWithPath, Util::String& type )
 {
-	String currentNodeName = this->reader->GetCurrentNodeName();
+    String currentNodeName = this->reader->GetCurrentNodeName();
 
-	int slashIndex = targetNodeWithPath.FindCharIndex('/');
-	String nodeSearch = targetNodeWithPath.Tokenize("/").Front();
-	if (this->reader->HasAttr("name"))
-	{
-		String nodeName = this->reader->GetString("name");
+    int slashIndex = targetNodeWithPath.FindCharIndex('/');
+    String nodeSearch = targetNodeWithPath.Tokenize("/").Front();
+    if (this->reader->HasAttr("name"))
+    {
+        String nodeName = this->reader->GetString("name");
 
-		// we found the parent we want to visit
-		if (nodeName == nodeSearch)
-		{
-			// we found our node, clear the target
-			if (nodeName == targetNodeWithPath)
-			{
-				targetNodeWithPath.Clear();
-			}
-			// we are still looking
-			else if (slashIndex != InvalidIndex)
-			{
-				targetNodeWithPath = targetNodeWithPath.ExtractToEnd(slashIndex);	
-				targetNodeWithPath.TrimLeft("/");
-			}
+        // we found the parent we want to visit
+        if (nodeName == nodeSearch)
+        {
+            // we found our node, clear the target
+            if (nodeName == targetNodeWithPath)
+            {
+                targetNodeWithPath.Clear();
+            }
+            // we are still looking
+            else if (slashIndex != InvalidIndex)
+            {
+                targetNodeWithPath = targetNodeWithPath.ExtractToEnd(slashIndex);   
+                targetNodeWithPath.TrimLeft("/");
+            }
 
-			// if target is empty, set type and return
-			if (targetNodeWithPath.IsEmpty())
-			{
-				type = this->reader->GetString("className");
-				return true;
-			}
+            // if target is empty, set type and return
+            if (targetNodeWithPath.IsEmpty())
+            {
+                type = this->reader->GetString("className");
+                return true;
+            }
 
-			if (this->reader->SetToFirstChild()) do
-			{
-				if (!RecursiveParseType(targetNodeWithPath, type))
-				{
-					return false;
-				}	
-			}
-			while (this->reader->SetToNextChild());
-		}
-	}
+            if (this->reader->SetToFirstChild()) do
+            {
+                if (!RecursiveParseType(targetNodeWithPath, type))
+                {
+                    return false;
+                }   
+            }
+            while (this->reader->SetToNextChild());
+        }
+    }
 
-	return true;
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -336,10 +336,10 @@ N3XmlExtractor::RecursiveParseType( Util::String targetNodeWithPath, Util::Strin
 void 
 N3XmlExtractor::ExtractNodes( Util::Array<Util::String>& nodes )
 {
-	this->reader->SetToRoot();
-	this->reader->SetToFirstChild();
-	
-	this->RecursiveParseNodes(nodes, false, "");
+    this->reader->SetToRoot();
+    this->reader->SetToFirstChild();
+    
+    this->RecursiveParseNodes(nodes, false, "");
 }
 
 //------------------------------------------------------------------------------
@@ -348,54 +348,54 @@ N3XmlExtractor::ExtractNodes( Util::Array<Util::String>& nodes )
 bool 
 N3XmlExtractor::RecursiveParseNodes( Util::Array<Util::String>& nodes, bool rootVisited, Util::String path )
 {
-	bool saveNode = false;
+    bool saveNode = false;
 
-	String nodeId = "";
-	String nodePath = "";
-	if (this->reader->HasAttr("name") || this->reader->HasAttr("className"))
-	{
-		// get node name
-		String type = this->reader->GetCurrentNodeName();
+    String nodeId = "";
+    String nodePath = "";
+    if (this->reader->HasAttr("name") || this->reader->HasAttr("className"))
+    {
+        // get node name
+        String type = this->reader->GetCurrentNodeName();
 
-		// at the first occurence of a ModelNode, we will set the visited flag and thus traverse futher
-		if (type == "ModelNode")
-		{
-			rootVisited = true;
-		}
+        // at the first occurence of a ModelNode, we will set the visited flag and thus traverse futher
+        if (type == "ModelNode")
+        {
+            rootVisited = true;
+        }
 
-		if (rootVisited)
-		{
-			nodeId = this->reader->GetString("name");
-			if (path.IsEmpty())
-			{
-				nodePath = nodeId;
-			}
-			else
-			{
-				nodePath = path + "/" + nodeId;
-			}			
-		}
+        if (rootVisited)
+        {
+            nodeId = this->reader->GetString("name");
+            if (path.IsEmpty())
+            {
+                nodePath = nodeId;
+            }
+            else
+            {
+                nodePath = path + "/" + nodeId;
+            }           
+        }
 
-		saveNode = true;
+        saveNode = true;
 
-	}
+    }
 
-	if (this->reader->SetToFirstChild()) do 
-	{
-		if (!RecursiveParseNodes(nodes, rootVisited, nodePath))
-		{
-			return false;
-		}
-	} 
-	while (this->reader->SetToNextChild());
+    if (this->reader->SetToFirstChild()) do 
+    {
+        if (!RecursiveParseNodes(nodes, rootVisited, nodePath))
+        {
+            return false;
+        }
+    } 
+    while (this->reader->SetToNextChild());
 
-	if (rootVisited && saveNode)
-	{
-		nodes.Append(nodePath);
-	}
+    if (rootVisited && saveNode)
+    {
+        nodes.Append(nodePath);
+    }
 
-	// recursion done!
-	return true;
+    // recursion done!
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -404,25 +404,25 @@ N3XmlExtractor::RecursiveParseNodes( Util::Array<Util::String>& nodes, bool root
 void 
 N3XmlExtractor::ExtractSceneBoundingBox( Math::bbox& box )
 {
-	this->reader->SetToRoot();
-	this->reader->SetToFirstChild();
+    this->reader->SetToRoot();
+    this->reader->SetToFirstChild();
 
-	if (this->reader->HasNode("ModelNode"))
-	{
-		this->reader->SetToNode("ModelNode");
-		if (this->reader->SetToFirstChild("LBOX"))
-		{
-			Math::point center;
-			Math::vector extents;
+    if (this->reader->HasNode("ModelNode"))
+    {
+        this->reader->SetToNode("ModelNode");
+        if (this->reader->SetToFirstChild("LBOX"))
+        {
+            Math::point center;
+            Math::vector extents;
 
-			this->reader->SetToFirstChild();
-			center = this->reader->GetContent().AsVec4();
-			this->reader->SetToNextChild();
-			extents = this->reader->GetContent().AsVec4().vec;
+            this->reader->SetToFirstChild();
+            center = this->reader->GetContent().AsVec4();
+            this->reader->SetToNextChild();
+            extents = this->reader->GetContent().AsVec4().vec;
 
-			box = Math::bbox(center, extents);
-		}	
-	}
+            box = Math::bbox(center, extents);
+        }   
+    }
 
 
 }

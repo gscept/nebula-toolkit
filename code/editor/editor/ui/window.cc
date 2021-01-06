@@ -15,18 +15,18 @@ __ImplementClass(Presentation::BaseWindow, 'bWnd', Core::RefCounted)
 /**
 */
 BaseWindow::BaseWindow() :
-	additionalFlags((ImGuiWindowFlags_)0),
-	name("UNNAMED WINDOW"),
-	open(true)
-{		
+    additionalFlags((ImGuiWindowFlags_)0),
+    name("UNNAMED WINDOW"),
+    open(true)
+{
 }
 
 //------------------------------------------------------------------------------
 /**
 */
 BaseWindow::BaseWindow(Util::String name) :
-	name(name),
-	open(false)
+    name(name),
+    open(false)
 {
 }
 
@@ -43,7 +43,7 @@ BaseWindow::~BaseWindow()
 const
 Util::String & BaseWindow::GetName() const
 {
-	return this->name;
+    return this->name;
 }
 
 //------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ Util::String & BaseWindow::GetName() const
 void
 BaseWindow::SetName(const char * name)
 {
-	this->name = name;
+    this->name = name;
 }
 
 //------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ BaseWindow::SetName(const char * name)
 const Util::String&
 BaseWindow::GetCategory() const
 {
-	return this->category;
+    return this->category;
 }
 
 //------------------------------------------------------------------------------
@@ -70,7 +70,7 @@ BaseWindow::GetCategory() const
 void
 BaseWindow::SetCategory(const char * category)
 {
-	this->category = category;
+    this->category = category;
 }
 
 //------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ BaseWindow::SetCategory(const char * category)
 bool&
 BaseWindow::Open()
 {
-	return this->open;
+    return this->open;
 }
 
 //------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ BaseWindow::Open()
 void
 BaseWindow::Run()
 {
-	return;
+    return;
 }
 
 //------------------------------------------------------------------------------
@@ -97,7 +97,7 @@ BaseWindow::Run()
 void
 BaseWindow::Update()
 {
-	return;
+    return;
 }
 
 //------------------------------------------------------------------------------
@@ -106,7 +106,7 @@ BaseWindow::Update()
 const ImGuiWindowFlags_&
 BaseWindow::GetAdditionalFlags() const
 {
-	return this->additionalFlags;
+    return this->additionalFlags;
 }
 
 //------------------------------------------------------------------------------
@@ -115,28 +115,28 @@ BaseWindow::GetAdditionalFlags() const
 Math::vec2
 BaseWindow::GetPosition() const
 {
-	ImVec2 pos;
-	ImGuiWindow* imwindow = ImGui::FindWindowByName(this->name.AsCharPtr());
-	if (imwindow != nullptr)
-	{
-		pos = imwindow->Pos;
-	}
-	else
-	{
-		// check if we've got any settings for this window.
-		ImGuiWindowSettings* imWindowSettings = ImGui::FindWindowSettings(ImHashStr(this->name.AsCharPtr(), this->name.Length()));
-		if (imWindowSettings != nullptr)
-		{
-			pos.x = imWindowSettings->Pos.x;
-			pos.y = imWindowSettings->Pos.y;
-		}
-		else
-		{
-			// Nothing found, return default
-			pos = { 0, 0 };
-		}
-	}
-	
+    ImVec2 pos;
+    ImGuiWindow* imwindow = ImGui::FindWindowByName(this->name.AsCharPtr());
+    if (imwindow != nullptr)
+    {
+        pos = imwindow->Pos;
+    }
+    else
+    {
+        // check if we've got any settings for this window.
+        ImGuiWindowSettings* imWindowSettings = ImGui::FindWindowSettings(ImHashStr(this->name.AsCharPtr(), this->name.Length()));
+        if (imWindowSettings != nullptr)
+        {
+            pos.x = imWindowSettings->Pos.x;
+            pos.y = imWindowSettings->Pos.y;
+        }
+        else
+        {
+            // Nothing found, return default
+            pos = { 0, 0 };
+        }
+    }
+    
     return { pos.x, pos.y };
 }
 
@@ -146,27 +146,27 @@ BaseWindow::GetPosition() const
 Math::vec2
 BaseWindow::GetSize() const
 {
-	ImVec2ih size;
-	ImGuiWindow* imwindow = ImGui::FindWindowByName(this->name.AsCharPtr());
-	if (imwindow != nullptr)
-	{
-		size.x = (short)imwindow->Size.x;
-		size.y = (short)imwindow->Size.y;
-	}
-	else
-	{
-		// check if we've got any settings for this window.
-		ImGuiWindowSettings* imWindowSettings = ImGui::FindWindowSettings(ImHashStr(this->name.AsCharPtr(), this->name.Length()));
-		if (imWindowSettings != nullptr)
-		{
-			size = imWindowSettings->Size;
-		}
-		else
-		{
-			// Nothing found, return default
-			size = { 0, 0 };
-		}
-	}
+    ImVec2ih size;
+    ImGuiWindow* imwindow = ImGui::FindWindowByName(this->name.AsCharPtr());
+    if (imwindow != nullptr)
+    {
+        size.x = (short)imwindow->Size.x;
+        size.y = (short)imwindow->Size.y;
+    }
+    else
+    {
+        // check if we've got any settings for this window.
+        ImGuiWindowSettings* imWindowSettings = ImGui::FindWindowSettings(ImHashStr(this->name.AsCharPtr(), this->name.Length()));
+        if (imWindowSettings != nullptr)
+        {
+            size = imWindowSettings->Size;
+        }
+        else
+        {
+            // Nothing found, return default
+            size = { 0, 0 };
+        }
+    }
 
 
     return { (float)size.x, (float)size.y };
@@ -178,24 +178,24 @@ BaseWindow::GetSize() const
 void
 BaseWindow::SetPosition(const Math::vec2 & pos)
 {
-	ImGuiWindow* imwindow = ImGui::FindWindowByName(this->name.AsCharPtr());
-	if (imwindow != nullptr)
-	{
-		imwindow->Pos = ImVec2(pos.x, pos.y);
-		return;
-	}
+    ImGuiWindow* imwindow = ImGui::FindWindowByName(this->name.AsCharPtr());
+    if (imwindow != nullptr)
+    {
+        imwindow->Pos = ImVec2(pos.x, pos.y);
+        return;
+    }
 
-	// check if we've got any settings for this window.
-	ImGuiWindowSettings* imWindowSettings = ImGui::FindWindowSettings(ImHashStr(this->name.AsCharPtr(), this->name.Length()));
-	if (imWindowSettings != nullptr)
-	{
-		imWindowSettings->Pos = ImVec2ih(pos.x, pos.y);
-		return;
-	}
+    // check if we've got any settings for this window.
+    ImGuiWindowSettings* imWindowSettings = ImGui::FindWindowSettings(ImHashStr(this->name.AsCharPtr(), this->name.Length()));
+    if (imWindowSettings != nullptr)
+    {
+        imWindowSettings->Pos = ImVec2ih(pos.x, pos.y);
+        return;
+    }
 
-	// No window or settings found, create new settings for the next time the window is opened.
-	imWindowSettings = ImGui::CreateNewWindowSettings(this->name.AsCharPtr());
-	imWindowSettings->Pos = ImVec2ih(pos.x, pos.y);
+    // No window or settings found, create new settings for the next time the window is opened.
+    imWindowSettings = ImGui::CreateNewWindowSettings(this->name.AsCharPtr());
+    imWindowSettings->Pos = ImVec2ih(pos.x, pos.y);
 }
 
 //------------------------------------------------------------------------------
@@ -204,24 +204,24 @@ BaseWindow::SetPosition(const Math::vec2 & pos)
 void
 BaseWindow::SetSize(const Math::vec2 & size)
 {
-	ImGuiWindow* imwindow = ImGui::FindWindowByName(this->name.AsCharPtr());
-	if (imwindow != nullptr)
-	{
-		imwindow->Size = ImVec2(size.x, size.y);
-		return;
-	}
+    ImGuiWindow* imwindow = ImGui::FindWindowByName(this->name.AsCharPtr());
+    if (imwindow != nullptr)
+    {
+        imwindow->Size = ImVec2(size.x, size.y);
+        return;
+    }
 
-	// check if we've got any settings for this window.
-	ImGuiWindowSettings* imWindowSettings = ImGui::FindWindowSettings(ImHashStr(this->name.AsCharPtr(), this->name.Length()));
-	if (imWindowSettings != nullptr)
-	{
-		imWindowSettings->Size = ImVec2ih(size.x, size.y);
-		return;
-	}
+    // check if we've got any settings for this window.
+    ImGuiWindowSettings* imWindowSettings = ImGui::FindWindowSettings(ImHashStr(this->name.AsCharPtr(), this->name.Length()));
+    if (imWindowSettings != nullptr)
+    {
+        imWindowSettings->Size = ImVec2ih(size.x, size.y);
+        return;
+    }
 
-	// No window or settings found, create new settings for the next time the window is opened.
-	imWindowSettings = ImGui::CreateNewWindowSettings(this->name.AsCharPtr());
-	imWindowSettings->Size = ImVec2ih(size.x, size.y);
+    // No window or settings found, create new settings for the next time the window is opened.
+    imWindowSettings = ImGui::CreateNewWindowSettings(this->name.AsCharPtr());
+    imWindowSettings->Size = ImVec2ih(size.x, size.y);
 }
 
 } // namespace Presentation

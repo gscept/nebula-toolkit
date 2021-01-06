@@ -1,7 +1,7 @@
 #pragma once
 //------------------------------------------------------------------------------
 /**
-	@class DistributedTools::SharedDirControl
+    @class DistributedTools::SharedDirControl
 
     A helper class that encapsulates all administrational activities for
     the shared directory, used by slave applications in distributed build.

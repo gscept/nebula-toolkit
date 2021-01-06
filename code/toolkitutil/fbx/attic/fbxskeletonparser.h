@@ -18,26 +18,26 @@ namespace ToolkitUtil
 
 class FBXSkeletonParser : public FBXParserBase
 {
-	__DeclareClass(FBXSkeletonParser);
+    __DeclareClass(FBXSkeletonParser);
 public:
-	/// constructor
-	FBXSkeletonParser();
-	/// destructor
-	virtual ~FBXSkeletonParser();
+    /// constructor
+    FBXSkeletonParser();
+    /// destructor
+    virtual ~FBXSkeletonParser();
 
-	/// parses a scene in search of skeletons
-	void Parse(KFbxScene* scene, ToolkitUtil::AnimBuilder* animBuilder = 0);
+    /// parses a scene in search of skeletons
+    void Parse(KFbxScene* scene, ToolkitUtil::AnimBuilder* animBuilder = 0);
 
-	/// cleans up skeletons
-	void Cleanup();
+    /// cleans up skeletons
+    void Cleanup();
 
-	/// gets the skeleton list after a parse
-	const Util::Array<Skeleton*> GetSkeletons() const;
+    /// gets the skeleton list after a parse
+    const Util::Array<Skeleton*> GetSkeletons() const;
 private:
-	/// constructs a node tree depth-first
-	void ConstructJointTree(Util::Array<SkeletonJoint*>& joints, KFbxNode* fbxNode, int& currentIndex, int parentIndex);
+    /// constructs a node tree depth-first
+    void ConstructJointTree(Util::Array<SkeletonJoint*>& joints, KFbxNode* fbxNode, int& currentIndex, int parentIndex);
 
-	Util::Array<Skeleton*> skeletons;
+    Util::Array<Skeleton*> skeletons;
 }; 
 
 
@@ -47,7 +47,7 @@ private:
 inline const Util::Array<Skeleton*> 
 FBXSkeletonParser::GetSkeletons() const
 {
-	return this->skeletons;
+    return this->skeletons;
 }
 
 } // namespace ToolkitUtil

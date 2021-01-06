@@ -14,7 +14,7 @@ __ImplementClass(ToolkitUtil::NFbxLightNode, 'FBLN', ToolkitUtil::NFbxNode);
 */
 NFbxLightNode::NFbxLightNode()
 {
-	this->type = NFbxNode::Light;
+    this->type = NFbxNode::Light;
 }
 
 //------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ NFbxLightNode::NFbxLightNode()
 */
 NFbxLightNode::~NFbxLightNode()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -31,24 +31,24 @@ NFbxLightNode::~NFbxLightNode()
 void 
 NFbxLightNode::Setup( FbxNode* node, const Ptr<NFbxScene>& scene )
 {
-	NFbxNode::Setup(node, scene);
-	n_assert(node->GetLight());
-	this->light = node->GetLight();
+    NFbxNode::Setup(node, scene);
+    n_assert(node->GetLight());
+    this->light = node->GetLight();
 
-	switch (this->light->LightType)
-	{
-	case FbxLight::ePoint:
-		this->lightType = Pointlight;
-		break;
-	case FbxLight::eSpot:
-		this->lightType = Spotlight;
-		break;
-	case FbxLight::eArea:
-		this->lightType = AreaLight;
-		break;
-	default:
-		this->lightType = InvalidLight;
-		break;		
-	}
+    switch (this->light->LightType)
+    {
+    case FbxLight::ePoint:
+        this->lightType = Pointlight;
+        break;
+    case FbxLight::eSpot:
+        this->lightType = Spotlight;
+        break;
+    case FbxLight::eArea:
+        this->lightType = AreaLight;
+        break;
+    default:
+        this->lightType = InvalidLight;
+        break;      
+    }
 }
 } // namespace ToolkitUtil

@@ -48,10 +48,10 @@ static nvtt::Format TextureAttrToNVTT(ToolkitUtil::TextureAttrs::PixelFormat for
             return nvtt::Format_DXT5;
         case TextureAttrs::DXT5NM:
             return nvtt::Format_DXT5n;
-		case TextureAttrs::U8888:
-			return nvtt::Format_RGBA;
-		case TextureAttrs::U888:
-			return nvtt::Format_RGB;
+        case TextureAttrs::U8888:
+            return nvtt::Format_RGBA;
+        case TextureAttrs::U888:
+            return nvtt::Format_RGB;
         case TextureAttrs::BC6:
             return nvtt::Format_BC6;
         case TextureAttrs::BC7:
@@ -111,15 +111,15 @@ NVTTTextureConversionJob::Convert()
         nv::AutoPtr<nv::Image> outputImage;
         nvtt::InputOptions inputOptions;
         
-		Timing::Timer timer;
-		timer.Start();		
-		this->logger->Print("Processing: %s\n", src.AsCharPtr());
+        Timing::Timer timer;
+        timer.Start();      
+        this->logger->Print("Processing: %s\n", src.AsCharPtr());
 
-		nvtt::OutputOptions outputOptions;
+        nvtt::OutputOptions outputOptions;
         if (src.CheckFileExtension("exr") || src.CheckFileExtension("hdr"))
         {
             image = nv::ImageIO::loadFloat(src.AsCharPtr());
-			outputOptions.setContainer(nvtt::Container_DDS10);
+            outputOptions.setContainer(nvtt::Container_DDS10);
 
             if (image == NULL)
             {
@@ -130,7 +130,7 @@ NVTTTextureConversionJob::Convert()
         else
         {
             // Regular image.            
-			nv::Image rawimage;
+            nv::Image rawimage;
             if (!rawimage.load(src.AsCharPtr()))
             {
                 this->logger->Warning("The file '%s' is not a supported image type.\n", src.AsCharPtr());                
@@ -142,9 +142,9 @@ NVTTTextureConversionJob::Convert()
         
         bool isDXT5NormalMap = false;
         const TextureAttrs& attrs = this->textureAttrs;
-		
-		ToolkitUtil::TextureAttrs::PixelFormat targetformat;
-		float gamma = 1.0f;
+        
+        ToolkitUtil::TextureAttrs::PixelFormat targetformat;
+        float gamma = 1.0f;
         if ((attrs.GetRGBPixelFormat() == TextureAttrs::DXT5NM) ||
             (attrs.GetRGBAPixelFormat() == TextureAttrs::DXT5NM) ||
             (String::MatchPattern(this->srcPath, "*norm.*"))||
@@ -161,10 +161,10 @@ NVTTTextureConversionJob::Convert()
                 //image->flipY();
             }
             isDXT5NormalMap = true;
-			targetformat = TextureAttrs::DXT5NM;			
+            targetformat = TextureAttrs::DXT5NM;            
         }
-		else
-		{
+        else
+        {
             if ((String::MatchPattern(this->srcPath, "*mat.*")) ||
                 (String::MatchPattern(this->srcPath, "*material.*")))
             {
@@ -179,19 +179,19 @@ NVTTTextureConversionJob::Convert()
                 targetformat = attrs.GetRGBPixelFormat();
             }
 
-			
-			if (attrs.GetColorSpace() == TextureAttrs::Linear)
-			{
-				gamma = 1.0f;
-				inputOptions.setGamma(1.0f, 1.0f);
-			}
-			else if (attrs.GetColorSpace() == TextureAttrs::sRGB)
-			{
-				gamma = 2.2f;
-				inputOptions.setGamma(2.2f, 2.2f);
-				outputOptions.setContainer(nvtt::Container_DDS10);
-			}
-		}
+            
+            if (attrs.GetColorSpace() == TextureAttrs::Linear)
+            {
+                gamma = 1.0f;
+                inputOptions.setGamma(1.0f, 1.0f);
+            }
+            else if (attrs.GetColorSpace() == TextureAttrs::sRGB)
+            {
+                gamma = 2.2f;
+                inputOptions.setGamma(2.2f, 2.2f);
+                outputOptions.setContainer(nvtt::Container_DDS10);
+            }
+        }
         
         nvtt::CompressionOptions compressionOptions;
         compressionOptions.setFormat(TextureAttrToNVTT(targetformat));
@@ -227,8 +227,8 @@ NVTTTextureConversionJob::Convert()
         
         if (needResize)
         {
-			Timing::Time startResize = timer.GetTime();
-			this->logger->Print("Resizing to %d %d using %s ....", width, height, ToolkitUtil::TextureAttrs::FilterToString(attrs.GetScaleFilter()).AsCharPtr());
+            Timing::Time startResize = timer.GetTime();
+            this->logger->Print("Resizing to %d %d using %s ....", width, height, ToolkitUtil::TextureAttrs::FilterToString(attrs.GetScaleFilter()).AsCharPtr());
             nv::AutoPtr<nv::Filter> filter;
             if (attrs.GetScaleFilter() == ToolkitUtil::TextureAttrs::Kaiser)
             {
@@ -254,14 +254,14 @@ NVTTTextureConversionJob::Convert()
             else
             {
                 filter = new nv::LanczosFilter();
-            }			
+            }           
 
             image->toLinear(0, 3, gamma);
             nv::AutoPtr<nv::FloatImage> fresult(image->resize(*filter, width, height, nv::FloatImage::WrapMode_Clamp));
             outputImage = fresult->createImageGammaCorrect(gamma);            
             delete image;
-			Timing::Time diff = timer.GetTime() - startResize;
-			this->logger->Print("done after %f\n",diff);
+            Timing::Time diff = timer.GetTime() - startResize;
+            this->logger->Print("done after %f\n",diff);
         }
         else
         {
@@ -283,18 +283,18 @@ NVTTTextureConversionJob::Convert()
         outputOptions.setFileName(dstPathUri.LocalPath().AsCharPtr());
         if (!isDXT5NormalMap)   outputOptions.setSrgbFlag(attrs.GetColorSpace() == TextureAttrs::sRGB);
 
-		Timing::Time beforeCompress = timer.GetTime();
-		this->logger->Print("Compressing ...");
+        Timing::Time beforeCompress = timer.GetTime();
+        this->logger->Print("Compressing ...");
         nvtt::Context context;
         nv::AutoPtr<nvtt::ParallelTaskDispatcher> taskDispatcher = new nvtt::ParallelTaskDispatcher();
         context.setTaskDispatcher(taskDispatcher.ptr());
         if (!context.process(inputOptions, compressionOptions, outputOptions))
         {
-			this->logger->Print("Failed!\n");
+            this->logger->Print("Failed!\n");
             return false;
         }
-		Timing::Time after = timer.GetTime();
-		this->logger->Print("Done after %f, total time: %f\n", after - beforeCompress, after);
+        Timing::Time after = timer.GetTime();
+        this->logger->Print("Done after %f, total time: %f\n", after - beforeCompress, after);
         return true;         
     }
     return true;

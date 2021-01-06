@@ -16,28 +16,28 @@ class GameBatcherApp : public DistributedTools::DistributedToolkitApp
 
 public:
 
-	/// opens the application
-	bool Open();
-	/// runs the application
-	void DoWork();
-	/// constructor
-	GameBatcherApp();
-	/// destructor
-	virtual ~GameBatcherApp();
+    /// opens the application
+    bool Open();
+    /// runs the application
+    void DoWork();
+    /// constructor
+    GameBatcherApp();
+    /// destructor
+    virtual ~GameBatcherApp();
 
-	Util::String GetXMLLogs();
+    Util::String GetXMLLogs();
 
 
 private:
-	/// parse command line arguments
-	bool ParseCmdLineArgs();
-	/// setup project info object
-	bool SetupProjectInfo();
-	/// print help text
-	void ShowHelp();
+    /// parse command line arguments
+    bool ParseCmdLineArgs();
+    /// setup project info object
+    bool SetupProjectInfo();
+    /// print help text
+    void ShowHelp();
 
-	/// tool logs		
-	Util::Array<ToolkitUtil::ToolLog> logs;
+    /// tool logs       
+    Util::Array<ToolkitUtil::ToolLog> logs;
 }; 
 } // namespace TookitUtil
 //------------------------------------------------------------------------------

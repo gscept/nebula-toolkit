@@ -1,4 +1,4 @@
-﻿//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 //  fbxmeshnode.cc
 //  (C) 2012-2016 Individual contributors, see AUTHORS file
 //------------------------------------------------------------------------------
@@ -20,7 +20,7 @@ __ImplementClass(ToolkitUtil::NFbxMeshNode, 'FBMN', ToolkitUtil::NFbxNode);
 //------------------------------------------------------------------------------
 /**
 */
-NFbxMeshNode::NFbxMeshNode() :
+NFbxMeshNode::NFbxMeshNode() : 
     skeletonLink(nullptr),
     groupId(0),
     lod(NULL),
@@ -44,8 +44,8 @@ NFbxMeshNode::~NFbxMeshNode()
 //------------------------------------------------------------------------------
 /**
 */
-void
-NFbxMeshNode::Setup(FbxNode* node, const Ptr<NFbxScene>& scene)
+void 
+NFbxMeshNode::Setup( FbxNode* node, const Ptr<NFbxScene>& scene )
 {
     NFbxNode::Setup(node, scene);
     n_assert(node->GetMesh());
@@ -125,7 +125,7 @@ NFbxMeshNode::Discard()
 /**
     Extracts mesh information from KfbxMesh
 */
-void
+void 
 NFbxMeshNode::ExtractMesh()
 {
     int vertexCount = fbxMesh->GetControlPointsCount();
@@ -141,7 +141,7 @@ NFbxMeshNode::ExtractMesh()
     {
         n_assert2(uvCount > 0, "You need at least one UV-channel or no shader will be applicable!");
         n_assert2(normalCount > 0, "You need at least one set of normals or no shader will be applicable!");
-    }
+    }    
 
     // get scale
     float scaleFactor = NFbxScene::Instance()->GetScale() * 1 / float(fbxScene->GetGlobalSettings().GetSystemUnit().GetScaleFactor());
@@ -189,11 +189,11 @@ NFbxMeshNode::ExtractMesh()
             // generate rigid skin if necessary
             this->GenerateRigidSkin();
         }
-    }
+    }   
 
 
     // inflate the mesh to prepare for vertex copying
-    this->mesh->Inflate();
+    this->mesh->Inflate();      
 
     int vertexId = 0;
     for (int triangleIndex = 0; triangleIndex < polyCount; triangleIndex++)
@@ -260,7 +260,7 @@ NFbxMeshNode::ExtractMesh()
     // if we want to calculate our own normals, do so...
     if (this->exportFlags & ToolkitUtil::CalcNormals)
     {
-        this->mesh->CalculateNormals();
+        this->CalculateNormals();
     }
 
     // flip uvs if checked
@@ -273,14 +273,14 @@ NFbxMeshNode::ExtractMesh()
     this->boundingBox = this->mesh->ComputeBoundingBox();
 
     // calculate binormals and tangents if either the CalcNormals flag is on, or CalcBinormalsAndTangents is on, or if the model contains no binormals or tangents
-    if (this->exportFlags & ToolkitUtil::CalcNormals ||
-        this->exportFlags & ToolkitUtil::CalcBinormalsAndTangents ||
-        !(this->meshFlags & HasBinormals) ||
+    if (this->exportFlags & ToolkitUtil::CalcNormals || 
+        this->exportFlags & ToolkitUtil::CalcBinormalsAndTangents || 
+        !(this->meshFlags & HasBinormals) || 
         !(this->meshFlags & HasTangents))
     {
         // calculates binormals and tangents using normals and the first UV-set
-        this->mesh->CalculateTangentsAndBinormals();
-    }
+        this->CalculateTangentsAndBinormals();
+    }   
 
     // deflate to remove redundant vertices if flag is set
     if (this->exportFlags & ToolkitUtil::RemoveRedundant)
@@ -302,51 +302,51 @@ NFbxMeshNode::ExtractMesh()
 //------------------------------------------------------------------------------
 /**
 */
-void
-NFbxMeshNode::ExtractUVs(int polygonVertex, int vertexIndex, int uvLayer, MeshBuilderVertex& vertex)
+void 
+NFbxMeshNode::ExtractUVs( int polygonVertex, int vertexIndex, int uvLayer, MeshBuilderVertex& vertex )
 {
     if (uvLayer > 3)
     {
         n_warning("Multilayered texturing only supports up to four layers!");
     }
     FbxGeometryElementUV* uvElement = this->fbxMesh->GetElementUV(uvLayer);
-    switch (uvElement->GetMappingMode())
+    switch(uvElement->GetMappingMode())
     {
     case FbxGeometryElement::eByPolygonVertex:
         switch (uvElement->GetReferenceMode())
         {
         case FbxGeometryElement::eDirect:
-        {
-            FbxVector2 u = uvElement->GetDirectArray().GetAt(vertexIndex);
-            vertex.SetComponent((MeshBuilderVertex::ComponentIndex)(MeshBuilderVertex::Uv0Index + uvLayer * 2), vec4((float)u[0], (float)u[1], 0.0f, 0.0f));
-            break;
-        }
+            {
+                FbxVector2 u = uvElement->GetDirectArray().GetAt(vertexIndex);
+                vertex.SetComponent((MeshBuilderVertex::ComponentIndex)(MeshBuilderVertex::Uv0Index+uvLayer*2), vec4((float)u[0], (float)u[1], 0.0f, 0.0f));
+                break;
+            }
         case FbxGeometryElement::eIndexToDirect:
-        {
-            FbxVector2 u = uvElement->GetDirectArray().GetAt(uvElement->GetIndexArray().GetAt(vertexIndex));
-            vertex.SetComponent((MeshBuilderVertex::ComponentIndex)(MeshBuilderVertex::Uv0Index + uvLayer * 2), vec4((float)u[0], (float)u[1], 0.0f, 0.0f));
-            break;
-        }
+            {
+                FbxVector2 u = uvElement->GetDirectArray().GetAt(uvElement->GetIndexArray().GetAt(vertexIndex));
+                vertex.SetComponent((MeshBuilderVertex::ComponentIndex)(MeshBuilderVertex::Uv0Index+uvLayer*2), vec4((float)u[0], (float)u[1], 0.0f, 0.0f));
+                break;
+            }
         default:
             n_error("UV-coordinates has to be either direct, or indexed to direct");
             break;
-        }
+        } 
         break;
     case FbxGeometryElement::eByControlPoint:
         switch (uvElement->GetReferenceMode())
         {
         case FbxGeometryElement::eDirect:
-        {
-            FbxVector2 u = uvElement->GetDirectArray().GetAt(polygonVertex);
-            vertex.SetComponent((MeshBuilderVertex::ComponentIndex)(MeshBuilderVertex::Uv0Index + uvLayer * 2), vec4((float)u[0], (float)u[1], 0.0f, 0.0f));
-            break;
-        }
+            {
+                FbxVector2 u = uvElement->GetDirectArray().GetAt(polygonVertex);
+                vertex.SetComponent((MeshBuilderVertex::ComponentIndex)(MeshBuilderVertex::Uv0Index+uvLayer*2), vec4((float)u[0], (float)u[1], 0.0f, 0.0f));
+                break;
+            }
         case FbxGeometryElement::eIndexToDirect:
-        {
-            FbxVector2 u = uvElement->GetDirectArray().GetAt(uvElement->GetIndexArray().GetAt(polygonVertex));
-            vertex.SetComponent((MeshBuilderVertex::ComponentIndex)(MeshBuilderVertex::Uv0Index + uvLayer * 2), vec4((float)u[0], (float)u[1], 0.0f, 0.0f));
-            break;
-        }
+            {
+                FbxVector2 u = uvElement->GetDirectArray().GetAt(uvElement->GetIndexArray().GetAt(polygonVertex));
+                vertex.SetComponent((MeshBuilderVertex::ComponentIndex)(MeshBuilderVertex::Uv0Index+uvLayer*2), vec4((float)u[0], (float)u[1], 0.0f, 0.0f));
+                break;
+            }
         default:
             n_error("UV-coordinates has to be either direct, or indexed to direct");
             break;
@@ -361,47 +361,47 @@ NFbxMeshNode::ExtractUVs(int polygonVertex, int vertexIndex, int uvLayer, MeshBu
 //------------------------------------------------------------------------------
 /**
 */
-void
-NFbxMeshNode::ExtractNormals(int polygonVertex, int vertexIndex, MeshBuilderVertex& vertex)
+void 
+NFbxMeshNode::ExtractNormals( int polygonVertex, int vertexIndex, MeshBuilderVertex& vertex )
 {
     FbxGeometryElementNormal* normalElement = this->fbxMesh->GetElementNormal(0);
-    switch (normalElement->GetMappingMode())
+    switch(normalElement->GetMappingMode())
     {
     case FbxGeometryElement::eByPolygonVertex:
         switch (normalElement->GetReferenceMode())
         {
         case FbxGeometryElement::eDirect:
-        {
-            FbxVector4 n = normalElement->GetDirectArray().GetAt(vertexIndex);
-            if (vertex.HasComponent(MeshBuilderVertex::NormalB4NBit))
             {
-                vec4 oldNormal = vertex.GetComponent(MeshBuilderVertex::NormalB4NIndex);
-                vec4 newNormal = vec4(oldNormal.x + (float)n[0], oldNormal.y + (float)n[1], oldNormal.z + (float)n[2], 0.5f);
-                newNormal = Math::normalize(newNormal);
-                vertex.SetComponent(MeshBuilderVertex::NormalB4NIndex, newNormal);
+                FbxVector4 n = normalElement->GetDirectArray().GetAt(vertexIndex);
+                if (vertex.HasComponent(MeshBuilderVertex::NormalB4NBit))
+                {
+                    vec4 oldNormal = vertex.GetComponent(MeshBuilderVertex::NormalB4NIndex);
+                    vec4 newNormal = vec4(oldNormal.x + (float)n[0], oldNormal.y + (float)n[1], oldNormal.z + (float)n[2], 0.5f);
+                    newNormal = Math::normalize(newNormal);
+                    vertex.SetComponent(MeshBuilderVertex::NormalB4NIndex, newNormal);
+                }
+                else
+                {
+                    vertex.SetComponent(MeshBuilderVertex::NormalB4NIndex, vec4((float)n[0], (float)n[1], (float)n[2], 0.5f));
+                }
+                break;
             }
-            else
-            {
-                vertex.SetComponent(MeshBuilderVertex::NormalB4NIndex, vec4((float)n[0], (float)n[1], (float)n[2], 0.5f));
-            }
-            break;
-        }
         case FbxGeometryElement::eIndexToDirect:
-        {
-            FbxVector4 n = normalElement->GetDirectArray().GetAt(normalElement->GetIndexArray().GetAt(vertexIndex));
-            if (vertex.HasComponent(MeshBuilderVertex::NormalB4NBit))
             {
-                vec4 oldNormal = vertex.GetComponent(MeshBuilderVertex::NormalB4NIndex);
-                vec4 newNormal = vec4(oldNormal.x + (float)n[0], oldNormal.y + (float)n[1], oldNormal.z + (float)n[2], 0.5f);
-                newNormal = Math::normalize(newNormal);
-                vertex.SetComponent(MeshBuilderVertex::NormalB4NIndex, newNormal);
+                FbxVector4 n = normalElement->GetDirectArray().GetAt(normalElement->GetIndexArray().GetAt(vertexIndex));
+                if (vertex.HasComponent(MeshBuilderVertex::NormalB4NBit))
+                {
+                    vec4 oldNormal = vertex.GetComponent(MeshBuilderVertex::NormalB4NIndex);
+                    vec4 newNormal = vec4(oldNormal.x + (float)n[0], oldNormal.y + (float)n[1], oldNormal.z + (float)n[2], 0.5f);
+                    newNormal = Math::normalize(newNormal);
+                    vertex.SetComponent(MeshBuilderVertex::NormalB4NIndex, newNormal);
+                }
+                else
+                {
+                    vertex.SetComponent(MeshBuilderVertex::NormalB4NIndex, vec4((float)n[0], (float)n[1], (float)n[2], 0.5f));
+                }
+                break;
             }
-            else
-            {
-                vertex.SetComponent(MeshBuilderVertex::NormalB4NIndex, vec4((float)n[0], (float)n[1], (float)n[2], 0.5f));
-            }
-            break;
-        }
         default:
             n_error("Normals has to be either direct, or indexed to direct");
             break;
@@ -411,37 +411,37 @@ NFbxMeshNode::ExtractNormals(int polygonVertex, int vertexIndex, MeshBuilderVert
         switch (normalElement->GetReferenceMode())
         {
         case FbxGeometryElement::eDirect:
-        {
-            FbxVector4 n = normalElement->GetDirectArray().GetAt(polygonVertex);
-            if (vertex.HasComponent(MeshBuilderVertex::NormalB4NBit))
             {
-                vec4 oldNormal = vertex.GetComponent(MeshBuilderVertex::NormalB4NIndex);
-                vec4 newNormal = vec4(oldNormal.x + (float)n[0], oldNormal.y + (float)n[1], oldNormal.z + (float)n[2], 0.5f);
-                newNormal = Math::normalize(newNormal);
-                vertex.SetComponent(MeshBuilderVertex::NormalB4NIndex, newNormal);
+                FbxVector4 n = normalElement->GetDirectArray().GetAt(polygonVertex);
+                if (vertex.HasComponent(MeshBuilderVertex::NormalB4NBit))
+                {
+                    vec4 oldNormal = vertex.GetComponent(MeshBuilderVertex::NormalB4NIndex);
+                    vec4 newNormal = vec4(oldNormal.x + (float)n[0], oldNormal.y + (float)n[1], oldNormal.z + (float)n[2], 0.5f);
+                    newNormal = Math::normalize(newNormal);
+                    vertex.SetComponent(MeshBuilderVertex::NormalB4NIndex, newNormal);
+                }
+                else
+                {
+                    vertex.SetComponent(MeshBuilderVertex::NormalB4NIndex, vec4((float)n[0], (float)n[1], (float)n[2], 0.5f));
+                }
+                break;
             }
-            else
-            {
-                vertex.SetComponent(MeshBuilderVertex::NormalB4NIndex, vec4((float)n[0], (float)n[1], (float)n[2], 0.5f));
-            }
-            break;
-        }
         case FbxGeometryElement::eIndexToDirect:
-        {
-            FbxVector4 n = normalElement->GetDirectArray().GetAt(normalElement->GetIndexArray().GetAt(polygonVertex));
-            if (vertex.HasComponent(MeshBuilderVertex::NormalB4NBit))
             {
-                vec4 oldNormal = vertex.GetComponent(MeshBuilderVertex::NormalB4NIndex);
-                vec4 newNormal = vec4(oldNormal.x + (float)n[0], oldNormal.y + (float)n[1], oldNormal.z + (float)n[2], 0.5f);
-                newNormal = Math::normalize(newNormal);
-                vertex.SetComponent(MeshBuilderVertex::NormalB4NIndex, newNormal);
+                FbxVector4 n = normalElement->GetDirectArray().GetAt(normalElement->GetIndexArray().GetAt(polygonVertex));
+                if (vertex.HasComponent(MeshBuilderVertex::NormalB4NBit))
+                {
+                    vec4 oldNormal = vertex.GetComponent(MeshBuilderVertex::NormalB4NIndex);
+                    vec4 newNormal = vec4(oldNormal.x + (float)n[0], oldNormal.y + (float)n[1], oldNormal.z + (float)n[2], 0.5f);
+                    newNormal = Math::normalize(newNormal);
+                    vertex.SetComponent(MeshBuilderVertex::NormalB4NIndex, newNormal);
+                }
+                else
+                {
+                    vertex.SetComponent(MeshBuilderVertex::NormalB4NIndex, vec4((float)n[0], (float)n[1], (float)n[2], 0.5f));
+                }
+                break;
             }
-            else
-            {
-                vertex.SetComponent(MeshBuilderVertex::NormalB4NIndex, vec4((float)n[0], (float)n[1], (float)n[2], 0.5f));
-            }
-            break;
-        }
         default:
             n_error("Normals has to be either direct, or indexed to direct");
             break;
@@ -644,47 +644,47 @@ NFbxMeshNode::ExtractBinormalsAndTangents(int polygonVertex, int vertexIndex, To
 //------------------------------------------------------------------------------
 /**
 */
-void
-NFbxMeshNode::ExtractColors(int polygonVertex, int vertexIndex, ToolkitUtil::MeshBuilderVertex& vertex)
+void 
+NFbxMeshNode::ExtractColors( int polygonVertex, int vertexIndex, ToolkitUtil::MeshBuilderVertex& vertex )
 {
-    FbxGeometryElementVertexColor* colorElement = this->fbxMesh->GetElementVertexColor(0);
-    switch (colorElement->GetMappingMode())
+    FbxGeometryElementVertexColor* colorElement = this->fbxMesh->GetElementVertexColor(0);  
+    switch(colorElement->GetMappingMode())
     {
     case FbxGeometryElement::eByPolygonVertex:
         switch (colorElement->GetReferenceMode())
         {
         case FbxGeometryElement::eDirect:
-        {
-            FbxColor n = colorElement->GetDirectArray().GetAt(vertexIndex);
-            if (vertex.HasComponent(MeshBuilderVertex::ColorUB4NBit))
             {
-                vec4 oldColor = vertex.GetComponent(MeshBuilderVertex::ColorUB4NIndex);
-                vec4 newColor = vec4(oldColor.x + (float)n[0], oldColor.y + (float)n[1], oldColor.z + (float)n[2], oldColor.w + (float)n[3]);
-                newColor = Math::normalize(newColor);
-                vertex.SetComponent(MeshBuilderVertex::ColorUB4NIndex, newColor);
+                FbxColor n = colorElement->GetDirectArray().GetAt(vertexIndex);
+                if (vertex.HasComponent(MeshBuilderVertex::ColorUB4NBit))
+                {
+                    vec4 oldColor = vertex.GetComponent(MeshBuilderVertex::ColorUB4NIndex);
+                    vec4 newColor = vec4(oldColor.x + (float)n[0], oldColor.y + (float)n[1], oldColor.z + (float)n[2], oldColor.w + (float)n[3]);
+                    newColor = Math::normalize(newColor);
+                    vertex.SetComponent(MeshBuilderVertex::ColorUB4NIndex, newColor);
+                }
+                else
+                {
+                    vertex.SetComponent(MeshBuilderVertex::ColorUB4NIndex, vec4((float)n[0], (float)n[1], (float)n[2], (float)n[3]));
+                }
+                break;
             }
-            else
-            {
-                vertex.SetComponent(MeshBuilderVertex::ColorUB4NIndex, vec4((float)n[0], (float)n[1], (float)n[2], (float)n[3]));
-            }
-            break;
-        }
         case FbxGeometryElement::eIndexToDirect:
-        {
-            FbxColor n = colorElement->GetDirectArray().GetAt(colorElement->GetIndexArray().GetAt(vertexIndex));
-            if (vertex.HasComponent(MeshBuilderVertex::ColorUB4NBit))
             {
-                vec4 oldColor = vertex.GetComponent(MeshBuilderVertex::ColorUB4NIndex);
-                vec4 newColor = vec4(oldColor.x + (float)n[0], oldColor.y + (float)n[1], oldColor.z + (float)n[2], oldColor.w + (float)n[3]);
-                newColor = Math::normalize(newColor);
-                vertex.SetComponent(MeshBuilderVertex::ColorUB4NIndex, newColor);
+                FbxColor n = colorElement->GetDirectArray().GetAt(colorElement->GetIndexArray().GetAt(vertexIndex));
+                if (vertex.HasComponent(MeshBuilderVertex::ColorUB4NBit))
+                {
+                    vec4 oldColor = vertex.GetComponent(MeshBuilderVertex::ColorUB4NIndex);
+                    vec4 newColor = vec4(oldColor.x + (float)n[0], oldColor.y + (float)n[1], oldColor.z + (float)n[2], oldColor.w + (float)n[3]);
+                    newColor = Math::normalize(newColor);
+                    vertex.SetComponent(MeshBuilderVertex::ColorUB4NIndex, newColor);
+                }
+                else
+                {
+                    vertex.SetComponent(MeshBuilderVertex::ColorUB4NIndex, vec4((float)n[0], (float)n[1], (float)n[2], (float)n[3]));
+                }
+                break;
             }
-            else
-            {
-                vertex.SetComponent(MeshBuilderVertex::ColorUB4NIndex, vec4((float)n[0], (float)n[1], (float)n[2], (float)n[3]));
-            }
-            break;
-        }
         default:
             n_error("Normals has to be either direct, or indexed to direct");
             break;
@@ -694,37 +694,37 @@ NFbxMeshNode::ExtractColors(int polygonVertex, int vertexIndex, ToolkitUtil::Mes
         switch (colorElement->GetReferenceMode())
         {
         case FbxGeometryElement::eDirect:
-        {
-            FbxColor n = colorElement->GetDirectArray().GetAt(polygonVertex);
-            if (vertex.HasComponent(MeshBuilderVertex::ColorUB4NBit))
             {
-                vec4 oldColor = vertex.GetComponent(MeshBuilderVertex::ColorUB4NIndex);
-                vec4 newColor = vec4(oldColor.x + (float)n[0], oldColor.y + (float)n[1], oldColor.z + (float)n[2], oldColor.w + (float)n[3]);
-                newColor = Math::normalize(newColor);
-                vertex.SetComponent(MeshBuilderVertex::ColorUB4NIndex, newColor);
+                FbxColor n = colorElement->GetDirectArray().GetAt(polygonVertex);
+                if (vertex.HasComponent(MeshBuilderVertex::ColorUB4NBit))
+                {
+                    vec4 oldColor = vertex.GetComponent(MeshBuilderVertex::ColorUB4NIndex);
+                    vec4 newColor = vec4(oldColor.x + (float)n[0], oldColor.y + (float)n[1], oldColor.z + (float)n[2], oldColor.w + (float)n[3]);
+                    newColor = Math::normalize(newColor);
+                    vertex.SetComponent(MeshBuilderVertex::ColorUB4NIndex, newColor);
+                }
+                else
+                {
+                    vertex.SetComponent(MeshBuilderVertex::ColorUB4NIndex, vec4((float)n[0], (float)n[1], (float)n[2], (float)n[3]));
+                }
+                break;
             }
-            else
-            {
-                vertex.SetComponent(MeshBuilderVertex::ColorUB4NIndex, vec4((float)n[0], (float)n[1], (float)n[2], (float)n[3]));
-            }
-            break;
-        }
         case FbxGeometryElement::eIndexToDirect:
-        {
-            FbxColor n = colorElement->GetDirectArray().GetAt(colorElement->GetIndexArray().GetAt(polygonVertex));
-            if (vertex.HasComponent(MeshBuilderVertex::ColorUB4NBit))
             {
-                vec4 oldColor = vertex.GetComponent(MeshBuilderVertex::ColorUB4NIndex);
-                vec4 newColor = vec4(oldColor.x + (float)n[0], oldColor.y + (float)n[1], oldColor.z + (float)n[2], oldColor.w + (float)n[3]);
-                newColor = Math::normalize(newColor);
-                vertex.SetComponent(MeshBuilderVertex::ColorUB4NIndex, newColor);
+                FbxColor n = colorElement->GetDirectArray().GetAt(colorElement->GetIndexArray().GetAt(polygonVertex));
+                if (vertex.HasComponent(MeshBuilderVertex::ColorUB4NBit))
+                {
+                    vec4 oldColor = vertex.GetComponent(MeshBuilderVertex::ColorUB4NIndex);
+                    vec4 newColor = vec4(oldColor.x + (float)n[0], oldColor.y + (float)n[1], oldColor.z + (float)n[2], oldColor.w + (float)n[3]);
+                    newColor = Math::normalize(newColor);
+                    vertex.SetComponent(MeshBuilderVertex::ColorUB4NIndex, newColor);
+                }
+                else
+                {
+                    vertex.SetComponent(MeshBuilderVertex::ColorUB4NIndex, vec4((float)n[0], (float)n[1], (float)n[2], (float)n[3]));
+                }
+                break;
             }
-            else
-            {
-                vertex.SetComponent(MeshBuilderVertex::ColorUB4NIndex, vec4((float)n[0], (float)n[1], (float)n[2], (float)n[3]));
-            }
-            break;
-        }
         default:
             n_error("Normals has to be either direct, or indexed to direct");
             break;
@@ -739,7 +739,7 @@ NFbxMeshNode::ExtractColors(int polygonVertex, int vertexIndex, ToolkitUtil::Mes
 //------------------------------------------------------------------------------
 /**
 */
-void
+void 
 NFbxMeshNode::CalculateNormals()
 {
     int numTriangles = this->mesh->GetNumTriangles();
@@ -797,7 +797,7 @@ NFbxMeshNode::CalculateNormals()
 //------------------------------------------------------------------------------
 /**
 */
-void
+void 
 NFbxMeshNode::CalculateTangentsAndBinormals()
 {
     int numVertices = mesh->GetNumVertices();
@@ -844,10 +844,10 @@ NFbxMeshNode::CalculateTangentsAndBinormals()
         float t2 = w3.y - w1.y;
 
         float rDenom = (s1 * t2 - s2 * t1);
-        float r = 1 / rDenom;
+        float r = 1/rDenom;
 
-        vec4 sdir = vec4((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r, (t2 * z1 - t1 * z2) * r, 0.0f);
-        vec4 tdir = vec4((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r, (s1 * z2 - s2 * z1) * r, 0.0f);
+        vec4 sdir = vec4((t2 * x1 - t1*x2) * r, (t2*y1 - t1*y2) * r, (t2*z1 - t1*z2) * r, 0.0f);
+        vec4 tdir = vec4((s1 * x2 - s2*x1) * r, (s1*y2 - s2*y1) * r, (s1*z2 - s2*z1) * r, 0.0f);
 
         tangents1[v1Index] += sdir;
         tangents1[v2Index] += sdir;
@@ -901,24 +901,24 @@ NFbxMeshNode::CalculateTangentsAndBinormals()
         vertex.SetComponent(MeshBuilderVertex::BinormalB4NIndex, Math::normalize(vertex.GetComponent(MeshBuilderVertex::BinormalB4NIndex)));
     }
 
-    delete[] tangents1;
+    delete [] tangents1;
 }
 
 //------------------------------------------------------------------------------
 /**
     Hmm, maybe a way to check if we have more than 255 indices, then we should switch to using Joint indices as complete uints?
 */
-void
+void 
 NFbxMeshNode::ExtractSkin()
 {
     int vertexCount = this->fbxMesh->GetControlPointsCount();
     int skinCount = this->fbxMesh->GetDeformerCount(FbxDeformer::eSkin);
-    int* jointArray = new int[vertexCount * 4];
-    double* weightArray = new double[vertexCount * 4];
+    int* jointArray = new int[vertexCount*4];
+    double* weightArray = new double[vertexCount*4];
     int* slotArray = new int[vertexCount];
-    memset(jointArray, 0, sizeof(int) * vertexCount * 4);
-    memset(weightArray, 0, sizeof(double) * vertexCount * 4);
-    memset(slotArray, 0, sizeof(int) * vertexCount);
+    memset(jointArray, 0, sizeof(int)*vertexCount*4);
+    memset(weightArray, 0, sizeof(double)*vertexCount*4);
+    memset(slotArray, 0, sizeof(int)*vertexCount);
     int maxIndex = 0;
 
     for (int skinIndex = 0; skinIndex < skinCount; skinIndex++)
@@ -947,8 +947,8 @@ NFbxMeshNode::ExtractSkin()
                     if (vertex >= vertexCount)
                         continue;
 
-                    int* jointData = jointArray + (vertex * 4);
-                    double* weightData = weightArray + (vertex * 4);
+                    int* jointData = jointArray + (vertex*4);
+                    double* weightData = weightArray + (vertex*4);
 
                     // ignore weights and indices over 4 (optimal vertex-to-joint ratio for games is 4)
                     if (stride > 3) continue;
@@ -966,8 +966,8 @@ NFbxMeshNode::ExtractSkin()
     for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++)
     {
         MeshBuilderVertex& vertex = mesh->VertexAt(vertexIndex);
-        int* indices = jointArray + (vertexIndex * 4);
-        double* weights = weightArray + (vertexIndex * 4);
+        int* indices = jointArray + (vertexIndex*4);
+        double* weights = weightArray + (vertexIndex*4);
 
         // set weights
         vertex.SetComponent(MeshBuilderVertex::WeightsUB4NIndex, vec4((float)weights[0], (float)weights[1], (float)weights[2], (float)weights[3]));
@@ -977,15 +977,15 @@ NFbxMeshNode::ExtractSkin()
         else                    vertex.SetComponent(MeshBuilderVertex::JIndicesIndex, vec4((float)indices[0], (float)indices[1], (float)indices[2], (float)indices[3]));
     }
 
-    delete[] slotArray;
-    delete[] jointArray;
-    delete[] weightArray;
+    delete [] slotArray;
+    delete [] jointArray;
+    delete [] weightArray;
 }
 
 //------------------------------------------------------------------------------
 /**
 */
-void
+void 
 NFbxMeshNode::GenerateRigidSkin()
 {
     if (!(this->meshFlags & ToolkitUtil::HasSkin))
@@ -1019,7 +1019,7 @@ NFbxMeshNode::GenerateRigidSkin()
                 vertex.SetComponent(MeshBuilderVertex::JIndicesUB4Index, vec4(0, 0, 0, 0));
             }
         }
-
+        
         // set skin flag
         uint flags = this->meshFlags;
         flags |= ToolkitUtil::HasSkin;
@@ -1032,8 +1032,8 @@ NFbxMeshNode::GenerateRigidSkin()
 /**
     Unparents transformations
 */
-void
-NFbxMeshNode::DoMerge(Util::Dictionary<Util::String, Util::Array<Ptr<NFbxMeshNode> > >& meshes)
+void 
+NFbxMeshNode::DoMerge( Util::Dictionary<Util::String, Util::Array<Ptr<NFbxMeshNode> > >& meshes )
 {
     NFbxNode::DoMerge(meshes);
 
@@ -1073,7 +1073,7 @@ NFbxMeshNode::DoMerge(Util::Dictionary<Util::String, Util::Array<Ptr<NFbxMeshNod
 //------------------------------------------------------------------------------
 /**
 */
-const float
+const float 
 NFbxMeshNode::GetLODMaxDistance() const
 {
     n_assert(this->lod != NULL);
@@ -1096,7 +1096,7 @@ NFbxMeshNode::GetLODMaxDistance() const
 //------------------------------------------------------------------------------
 /**
 */
-const float
+const float 
 NFbxMeshNode::GetLODMinDistance() const
 {
     n_assert(this->lod != NULL);

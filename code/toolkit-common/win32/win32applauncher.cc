@@ -325,7 +325,7 @@ Win32AppLauncher::LaunchWithOutputCapturing(DWORD creationFlags, const String& c
     }
 
     // create stderr output
-	if(this->stderrCaptureStream.isvalid())
+    if(this->stderrCaptureStream.isvalid())
     {
         if(!this->CreateStdoutCapturePipe(&stderrRead, &stderrWrite))
         {
@@ -370,12 +370,12 @@ Win32AppLauncher::LaunchWithOutputCapturing(DWORD creationFlags, const String& c
     if(this->stdoutCaptureStream.isvalid())
     {
         this->stdoutCaptureStream->SetAccessMode(Stream::WriteAccess);
-	    if (!this->stdoutCaptureStream->Open())
-	    {
-		    CloseHandle(stdoutRead);
+        if (!this->stdoutCaptureStream->Open())
+        {
+            CloseHandle(stdoutRead);
             CloseHandle(stdoutWrite);
             return false;
-	    }
+        }
     }
 
     // try to open stderr stream
@@ -419,7 +419,7 @@ Win32AppLauncher::CreateStdoutCapturePipe(PHANDLE stdoutRead, PHANDLE stdoutWrit
 {
     // configure pipe security attributes
     SECURITY_ATTRIBUTES security;
-	security.bInheritHandle = TRUE;
+    security.bInheritHandle = TRUE;
     security.lpSecurityDescriptor = 0;
     security.nLength = sizeof(SECURITY_ATTRIBUTES);
     
@@ -514,7 +514,7 @@ Win32AppLauncher::CaptureOutput(HANDLE stdoutRead, HANDLE stderrRead, HANDLE chi
 bool
 Win32AppLauncher::CheckIfExists()
 {
-	return CheckIfExists(this->exePath);
+    return CheckIfExists(this->exePath);
 }
 
 //------------------------------------------------------------------------------
@@ -523,17 +523,17 @@ Win32AppLauncher::CheckIfExists()
 bool
 Win32AppLauncher::CheckIfExists(const IO::URI & program)
 {
-	bool exists = false;
-	PROCESSENTRY32 entry;
-	entry.dwSize = sizeof(PROCESSENTRY32);
-	Util::String procname = program.LocalPath().ExtractFileName();
-	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
-	if (Process32First(snapshot, &entry))
-		while (Process32Next(snapshot, &entry))
-			if (procname == entry.szExeFile)
-				exists = true;
-	CloseHandle(snapshot);
-	return exists;
+    bool exists = false;
+    PROCESSENTRY32 entry;
+    entry.dwSize = sizeof(PROCESSENTRY32);
+    Util::String procname = program.LocalPath().ExtractFileName();
+    HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
+    if (Process32First(snapshot, &entry))
+        while (Process32Next(snapshot, &entry))
+            if (procname == entry.szExeFile)
+                exists = true;
+    CloseHandle(snapshot);
+    return exists;
 }
 
 } // namespace ToolkitUtil

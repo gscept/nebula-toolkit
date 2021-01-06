@@ -15,26 +15,26 @@ namespace ToolkitUtil
 {
 class FBXSkinParser : public FBXParserBase
 {
-	__DeclareClass(FBXSkinParser);
+    __DeclareClass(FBXSkinParser);
 public:
 
-	/// constructor
-	FBXSkinParser();
-	/// destructor
-	virtual ~FBXSkinParser();
+    /// constructor
+    FBXSkinParser();
+    /// destructor
+    virtual ~FBXSkinParser();
 
-	/// parses a scene in search of skins
-	void Parse(KFbxScene* scene, ToolkitUtil::AnimBuilder* animBuilder = 0);
+    /// parses a scene in search of skins
+    void Parse(KFbxScene* scene, ToolkitUtil::AnimBuilder* animBuilder = 0);
 
-	/// sets a list of skeletons to be used for skin->skeleton connections
-	void SetSkeletonList(SkeletonList skeletons);
+    /// sets a list of skeletons to be used for skin->skeleton connections
+    void SetSkeletonList(SkeletonList skeletons);
 
-	/// sets the mesh which should get skinned
-	void SetMesh(ShapeNode* mesh);
+    /// sets the mesh which should get skinned
+    void SetMesh(ShapeNode* mesh);
 
 private:
-	ShapeNode* mesh;
-	SkeletonList skeletons;
+    ShapeNode* mesh;
+    SkeletonList skeletons;
 }; 
 
 
@@ -44,7 +44,7 @@ private:
 inline void 
 FBXSkinParser::SetSkeletonList( SkeletonList skeletons )
 {
-	this->skeletons = skeletons;
+    this->skeletons = skeletons;
 }
 
 //------------------------------------------------------------------------------
@@ -53,8 +53,8 @@ FBXSkinParser::SetSkeletonList( SkeletonList skeletons )
 inline void 
 FBXSkinParser::SetMesh( ShapeNode* mesh )
 {
-	n_assert(mesh);
-	this->mesh = mesh;
+    n_assert(mesh);
+    this->mesh = mesh;
 }
 
 } // namespace ToolkitUtil

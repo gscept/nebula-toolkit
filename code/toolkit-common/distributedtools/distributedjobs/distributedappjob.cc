@@ -20,7 +20,7 @@ __ImplementClass(DistributedAppJob,'DTAJ',DistributedTools::DistributedJob);
 
 //------------------------------------------------------------------------------
 /**
-    Constructor	
+    Constructor 
 */
 DistributedAppJob::DistributedAppJob() :
     appReportedError(false)
@@ -30,7 +30,7 @@ DistributedAppJob::DistributedAppJob() :
 
 //------------------------------------------------------------------------------
 /**
-    Destructor	
+    Destructor  
 */
 DistributedAppJob::~DistributedAppJob()
 {
@@ -127,7 +127,7 @@ DistributedAppJob::WriteXmlContent(const Ptr<IO::XmlWriter> & writer)
     IndexT file;
     for(file = 0; file < this->fileList.Size(); file++)
     {
-    	writer->BeginNode("File");
+        writer->BeginNode("File");
             writer->SetString("path",this->fileList[file]);
         writer->EndNode();
     }
@@ -136,7 +136,7 @@ DistributedAppJob::WriteXmlContent(const Ptr<IO::XmlWriter> & writer)
     IndexT dir;
     for(dir = 0; dir < this->dirList.Size(); dir++)
     {
-    	writer->BeginNode("Dir");
+        writer->BeginNode("Dir");
             writer->SetString("path",this->dirList[dir]);
         writer->EndNode();
     }
@@ -303,7 +303,7 @@ DistributedAppJob::Clone()
 
 //------------------------------------------------------------------------------
 /**
-	Copy the attributes from another job to itself, except the guid	
+    Copy the attributes from another job to itself, except the guid 
 */
 void
 DistributedAppJob::CopyFrom(const Ptr<DistributedAppJob> & job)

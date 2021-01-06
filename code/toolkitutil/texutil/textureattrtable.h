@@ -28,8 +28,8 @@ public:
 
     /// setup content (parses proj:batchattributes.xml)
     bool Setup(const Util::String& path);
-	/// saves content
-	bool Save(const Util::String& path);
+    /// saves content
+    bool Save(const Util::String& path);
     /// discard content (clears attrs table)
     void Discard();
     /// return true if object has been setup
@@ -39,8 +39,8 @@ public:
     bool HasEntry(const Util::String& texName) const;
     /// get the tex attrs for texture, return default attrs if no entry found
     const TextureAttrs& GetEntry(const Util::String& texName) const;
-	/// sets the tex attrs for the texture, replaces if already exists
-	void SetEntry(const Util::String& texName, const TextureAttrs& attrs);
+    /// sets the tex attrs for the texture, replaces if already exists
+    void SetEntry(const Util::String& texName, const TextureAttrs& attrs);
     /// specifically get the default texture attributes entry
     const TextureAttrs& GetDefaultEntry() const;
 

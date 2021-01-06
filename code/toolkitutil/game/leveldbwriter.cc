@@ -22,9 +22,9 @@ __ImplementClass(ToolkitUtil::LevelDbWriter, 'LDBW', Core::RefCounted);
 /**
 */
 LevelDbWriter::LevelDbWriter():
-	inReference(false)
+    inReference(false)
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ LevelDbWriter::LevelDbWriter():
 */
 LevelDbWriter::~LevelDbWriter()
 {
-	// empty
+    // empty
 }
 
 
@@ -42,10 +42,10 @@ LevelDbWriter::~LevelDbWriter()
 void 
 LevelDbWriter::SetName(const Util::String & name)
 {
-	if (!this->inReference)
-	{
-		this->levelname = name;
-	}    
+    if (!this->inReference)
+    {
+        this->levelname = name;
+    }    
 }
 
 //------------------------------------------------------------------------------
@@ -69,11 +69,11 @@ LevelDbWriter::AddEntity(const Util::String & category, const Attr::AttributeCon
     Ptr<Toolkit::EditorBlueprintManager> bm = Toolkit::EditorBlueprintManager::Instance();
     if(!bm->HasCategory(category))
     {
-		// we dont warn about leveleditor builtins
-		if (category[0] != '_')
-		{
-			n_printf("Ignoring object with category %s\n", category.AsCharPtr());
-		}        
+        // we dont warn about leveleditor builtins
+        if (category[0] != '_')
+        {
+            n_printf("Ignoring object with category %s\n", category.AsCharPtr());
+        }        
         return;
     }   
 
@@ -86,7 +86,7 @@ LevelDbWriter::AddEntity(const Util::String & category, const Attr::AttributeCon
         Ptr<Db::Dataset> dataset;        
 
         dataset = table->CreateDataset();
-        dataset->AddAllTableColumns();	
+        dataset->AddAllTableColumns();  
         dataset->PerformQuery();
         this->instanceDataset.Add(instanceName, dataset);
         valueTable = dataset->Values();
@@ -103,22 +103,22 @@ LevelDbWriter::AddEntity(const Util::String & category, const Attr::AttributeCon
     {
         if(valueTable->HasColumn(attrDic.KeyAtIndex(i)))
         {
-			if (attrDic.KeyAtIndex(i) == Attr::Guid)
-			{
-				Util::Guid newguid;
-				newguid.Generate();
-				valueTable->SetAttr(Attr::Attribute(Attr::Guid, newguid), row);
-			}
-			// override level field
-			else if (attrDic.KeyAtIndex(i) == Attr::_Level)
-			{
-				valueTable->SetAttr(Attr::Attribute(Attr::_Level, this->levelname), row);
-			}
-			else
-			{
-				valueTable->SetAttr(attrDic.ValueAtIndex(i), row);
-			}   
-			
+            if (attrDic.KeyAtIndex(i) == Attr::Guid)
+            {
+                Util::Guid newguid;
+                newguid.Generate();
+                valueTable->SetAttr(Attr::Attribute(Attr::Guid, newguid), row);
+            }
+            // override level field
+            else if (attrDic.KeyAtIndex(i) == Attr::_Level)
+            {
+                valueTable->SetAttr(Attr::Attribute(Attr::_Level, this->levelname), row);
+            }
+            else
+            {
+                valueTable->SetAttr(attrDic.ValueAtIndex(i), row);
+            }   
+            
         }
         else
         {
@@ -139,11 +139,11 @@ LevelDbWriter::AddEntity(const Util::String & category, const Attr::AttributeCon
 void 
 LevelDbWriter::SetPosteffect(const Util::String & preset, const Math::matrix44 & globallightTransform)
 {
-	if (!this->inReference)
-	{
-		this->postEffectPreset = preset;
-		this->globallightTransform = globallightTransform;
-	}
+    if (!this->inReference)
+    {
+        this->postEffectPreset = preset;
+        this->globallightTransform = globallightTransform;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -152,10 +152,10 @@ LevelDbWriter::SetPosteffect(const Util::String & preset, const Math::matrix44 &
 void 
 LevelDbWriter::SetDimensions(const Math::bbox & box)
 {
-	if (!this->inReference)	
-	{
-		this->dimensions = box;
-	}
+    if (!this->inReference) 
+    {
+        this->dimensions = box;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -172,8 +172,8 @@ LevelDbWriter::Close()
     this->instanceValues.Clear();
     this->instanceDataset.Clear();
     this->instanceTables.Clear();
-	this->references.Clear();
-	this->inReference = false;
+    this->references.Clear();
+    this->inReference = false;
     this->gameDb = 0;
     this->staticDb = 0;
 }
@@ -186,7 +186,7 @@ LevelDbWriter::Open(const Ptr<Db::Database> & gameDb, const Ptr<Db::Database> & 
 {
     this->gameDb = gameDb;
     this->staticDb = staticDb;
-	this->inReference = false;
+    this->inReference = false;
 }
 
 //------------------------------------------------------------------------------
@@ -195,17 +195,17 @@ LevelDbWriter::Open(const Ptr<Db::Database> & gameDb, const Ptr<Db::Database> & 
 void 
 LevelDbWriter::CommitLevel()
 {
-	if (this->inReference)
-	{
-		return;
-	}	
+    if (this->inReference)
+    {
+        return;
+    }   
 
     Ptr<Table> table = this->staticDb->GetTableByName("_Template_Levels");
     Ptr<Db::Dataset> dataset;
     Ptr<Db::ValueTable> valueTable;
 
     dataset = table->CreateDataset();
-    dataset->AddAllTableColumns();	
+    dataset->AddAllTableColumns();  
 
     dataset->PerformQuery();
     valueTable = dataset->Values();
@@ -228,7 +228,7 @@ LevelDbWriter::CommitLevel()
     table = this->gameDb->GetTableByName("_Instance_Levels");
 
     dataset = table->CreateDataset();
-    dataset->AddAllTableColumns();	
+    dataset->AddAllTableColumns();  
 
     dataset->PerformQuery();
     valueTable = dataset->Values();
@@ -259,7 +259,7 @@ LevelDbWriter::CommitLevel()
 void
 LevelDbWriter::AddReference(const Util::String & name)
 {
-	this->references.Append(name);
+    this->references.Append(name);
 }
 
 } // namespace ToolkitUtil

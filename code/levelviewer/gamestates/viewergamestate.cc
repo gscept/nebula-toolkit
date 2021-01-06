@@ -41,7 +41,7 @@ using namespace Math;
 */
 LevelViewerGameState::LevelViewerGameState():applyTransform(true),entitiesLoaded(false)
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ LevelViewerGameState::LevelViewerGameState():applyTransform(true),entitiesLoaded
 */
 LevelViewerGameState::~LevelViewerGameState()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -58,20 +58,20 @@ LevelViewerGameState::~LevelViewerGameState()
 void 
 LevelViewerGameState::OnStateEnter( const Util::String& prevState )
 {
-	Util::String newLevel = this->GetLevelName();
-	if(this->lastLevel.IsEmpty())
-	{
-		this->lastLevel = newLevel;
-	}
-	
-	GameStateHandler::OnStateEnter(prevState);
-		
-	if(prevState == "Reload" && this->lastLevel == newLevel && this->applyTransform)
-	{
-		Ptr<BaseGameFeature::SetTransform> msg = BaseGameFeature::SetTransform::Create();
-		msg->SetMatrix(this->focusTransform);
-		BaseGameFeature::FocusManager::Instance()->GetCameraFocusEntity()->SendSync(msg.cast<Messaging::Message>());
-	}
+    Util::String newLevel = this->GetLevelName();
+    if(this->lastLevel.IsEmpty())
+    {
+        this->lastLevel = newLevel;
+    }
+    
+    GameStateHandler::OnStateEnter(prevState);
+        
+    if(prevState == "Reload" && this->lastLevel == newLevel && this->applyTransform)
+    {
+        Ptr<BaseGameFeature::SetTransform> msg = BaseGameFeature::SetTransform::Create();
+        msg->SetMatrix(this->focusTransform);
+        BaseGameFeature::FocusManager::Instance()->GetCameraFocusEntity()->SendSync(msg.cast<Messaging::Message>());
+    }
 
 }
 
@@ -80,17 +80,17 @@ LevelViewerGameState::OnStateEnter( const Util::String& prevState )
 */
 void 
 LevelViewerGameState::OnStateLeave( const Util::String& nextState )
-{	
-	if(nextState == "Reload")
-	{
-		Ptr<Game::Entity> ent = BaseGameFeature::FocusManager::Instance()->GetCameraFocusEntity();
-		if(ent.isvalid())
-		{
-			this->focusTransform = ent->GetMatrix44(Attr::Transform);		
-		}				
-	}		
+{   
+    if(nextState == "Reload")
+    {
+        Ptr<Game::Entity> ent = BaseGameFeature::FocusManager::Instance()->GetCameraFocusEntity();
+        if(ent.isvalid())
+        {
+            this->focusTransform = ent->GetMatrix44(Attr::Transform);       
+        }               
+    }       
 
-	GameStateHandler::OnStateLeave(nextState);
+    GameStateHandler::OnStateLeave(nextState);
 }
 
 //------------------------------------------------------------------------------
@@ -99,25 +99,25 @@ LevelViewerGameState::OnStateLeave( const Util::String& nextState )
 Util::String 
 LevelViewerGameState::OnFrame()
 {
-	//handle all user input
-	if (Input::InputServer::HasInstance() && this->entitiesLoaded)
-	{
-		this->HandleInput();
-	}
+    //handle all user input
+    if (Input::InputServer::HasInstance() && this->entitiesLoaded)
+    {
+        this->HandleInput();
+    }
 
-	Dynui::ImguiAddon::BeginFrame();
-	Dynui::ImguiConsole::Instance()->Render();	
+    Dynui::ImguiAddon::BeginFrame();
+    Dynui::ImguiConsole::Instance()->Render();  
 
-	// test text rendering
-	/*Timing::Time frameTime = (float)BaseGameFeature::GameTimeSource::Instance()->GetFrameTime();
-	Util::String fpsTxt;
-	fpsTxt.Format("Game FPS: %.2f", 1/frameTime);
-	_debug_text(fpsTxt, Math::float2(0.0,0.0), Math::float4(1,1,1,1));
-	*/
+    // test text rendering
+    /*Timing::Time frameTime = (float)BaseGameFeature::GameTimeSource::Instance()->GetFrameTime();
+    Util::String fpsTxt;
+    fpsTxt.Format("Game FPS: %.2f", 1/frameTime);
+    _debug_text(fpsTxt, Math::float2(0.0,0.0), Math::float4(1,1,1,1));
+    */
 
-	QtRemoteInterfaceAddon::QtRemoteServer::Instance()->OnFrame();
-	Dynui::ImguiAddon::EndFrame();
-	return GameStateHandler::OnFrame();
+    QtRemoteInterfaceAddon::QtRemoteServer::Instance()->OnFrame();
+    Dynui::ImguiAddon::EndFrame();
+    return GameStateHandler::OnFrame();
 }
 
 //------------------------------------------------------------------------------
@@ -126,7 +126,7 @@ LevelViewerGameState::OnFrame()
 void 
 LevelViewerGameState::OnLoadBefore()
 {
-	this->entitiesLoaded = false;
+    this->entitiesLoaded = false;
 }
 
 //------------------------------------------------------------------------------
@@ -135,7 +135,7 @@ LevelViewerGameState::OnLoadBefore()
 void 
 LevelViewerGameState::OnLoadAfter()
 {
-	this->entitiesLoaded = true;
+    this->entitiesLoaded = true;
 }
 
 //------------------------------------------------------------------------------
@@ -144,34 +144,34 @@ LevelViewerGameState::OnLoadAfter()
 void 
 LevelViewerGameState::HandleInput()
 {
-	const Ptr<Input::Keyboard>& kbd = Input::InputServer::Instance()->GetDefaultKeyboard();
+    const Ptr<Input::Keyboard>& kbd = Input::InputServer::Instance()->GetDefaultKeyboard();
 
-	if(kbd->KeyDown(Input::Key::F5))
-	{
-		bool applyTrans = false;
-		if(kbd->KeyPressed(Input::Key::Shift))
-		{
-			applyTrans = true;
-		}
-		this->ReloadLevel(applyTrans);
-		const Ptr<BaseGameFeature::GameStateHandler>& state = App::GameApplication::Instance()->FindStateHandlerByName("Reload").cast<BaseGameFeature::GameStateHandler>();
-		state->SetLevelName(BaseGameFeature::BaseGameFeatureUnit::GetCurrentLevel());
-		LevelViewerGameStateApplication::Instance()->RequestState("Reload");
-	}
-	if (kbd->KeyDown(Input::Key::F10))
-	{
-		if (UI::UiFeatureUnit::Instance()->HasLayout("_levellist"))
-		{
-			UI::UiFeatureUnit::Instance()->GetLayout("_levellist")->Toggle();
-		}		
-	}
-	if (kbd->KeyDown(Input::Key::F11))
-	{
-		if (UI::UiFeatureUnit::Instance()->HasLayout("_layoutlist"))
-		{
-			UI::UiFeatureUnit::Instance()->GetLayout("_layoutlist")->Toggle();
-		}		
-	}
+    if(kbd->KeyDown(Input::Key::F5))
+    {
+        bool applyTrans = false;
+        if(kbd->KeyPressed(Input::Key::Shift))
+        {
+            applyTrans = true;
+        }
+        this->ReloadLevel(applyTrans);
+        const Ptr<BaseGameFeature::GameStateHandler>& state = App::GameApplication::Instance()->FindStateHandlerByName("Reload").cast<BaseGameFeature::GameStateHandler>();
+        state->SetLevelName(BaseGameFeature::BaseGameFeatureUnit::GetCurrentLevel());
+        LevelViewerGameStateApplication::Instance()->RequestState("Reload");
+    }
+    if (kbd->KeyDown(Input::Key::F10))
+    {
+        if (UI::UiFeatureUnit::Instance()->HasLayout("_levellist"))
+        {
+            UI::UiFeatureUnit::Instance()->GetLayout("_levellist")->Toggle();
+        }       
+    }
+    if (kbd->KeyDown(Input::Key::F11))
+    {
+        if (UI::UiFeatureUnit::Instance()->HasLayout("_layoutlist"))
+        {
+            UI::UiFeatureUnit::Instance()->GetLayout("_layoutlist")->Toggle();
+        }       
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -180,10 +180,10 @@ LevelViewerGameState::HandleInput()
 void
 LevelViewerGameState::LoadLevel(const Util::String &level, bool applyTransform)
 {
-	this->applyTransform = applyTransform;
-	const Ptr<BaseGameFeature::GameStateHandler>& state = App::GameApplication::Instance()->FindStateHandlerByName("Reload").cast<BaseGameFeature::GameStateHandler>();
-	state->SetLevelName(level);
-	LevelViewerGameStateApplication::Instance()->RequestState("Reload");
+    this->applyTransform = applyTransform;
+    const Ptr<BaseGameFeature::GameStateHandler>& state = App::GameApplication::Instance()->FindStateHandlerByName("Reload").cast<BaseGameFeature::GameStateHandler>();
+    state->SetLevelName(level);
+    LevelViewerGameStateApplication::Instance()->RequestState("Reload");
 }
 
 //------------------------------------------------------------------------------
@@ -192,7 +192,7 @@ LevelViewerGameState::LoadLevel(const Util::String &level, bool applyTransform)
 void
 LevelViewerGameState::ReloadLevel(bool keepTransform)
 {
-	this->LoadLevel(BaseGameFeature::BaseGameFeatureUnit::GetCurrentLevel(), keepTransform);
+    this->LoadLevel(BaseGameFeature::BaseGameFeatureUnit::GetCurrentLevel(), keepTransform);
 }
 
 } // namespace Tools

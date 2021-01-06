@@ -14,9 +14,9 @@ __ImplementAbstractClass(ToolkitUtil::FBXParserBase, 'FBXB', Core::RefCounted);
 /**
 */
 FBXParserBase::FBXParserBase() : 
-	inParse(false)
+    inParse(false)
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -24,7 +24,7 @@ FBXParserBase::FBXParserBase() :
 */
 FBXParserBase::~FBXParserBase()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -33,8 +33,8 @@ FBXParserBase::~FBXParserBase()
 void 
 FBXParserBase::BeginParse()
 {
-	n_assert(this->inParse);
-	this->inParse = true;
+    n_assert(this->inParse);
+    this->inParse = true;
 
 }
 
@@ -44,8 +44,8 @@ FBXParserBase::BeginParse()
 void 
 FBXParserBase::EndParse()
 {
-	n_assert(!this->inParse);
-	this->inParse = false;
+    n_assert(!this->inParse);
+    this->inParse = false;
 }
 
 //------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ FBXParserBase::EndParse()
 void 
 FBXParserBase::Setup( KFbxSdkManager* manager )
 {
-	this->sdkManager = manager;
+    this->sdkManager = manager;
 }
 
 //------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ FBXParserBase::Setup( KFbxSdkManager* manager )
 void 
 FBXParserBase::Parse( KFbxScene* scene, AnimBuilder* animBuilder /* = 0 */ )
 {
-	// override this!
+    // override this!
 }
 
 //------------------------------------------------------------------------------
@@ -72,7 +72,7 @@ FBXParserBase::Parse( KFbxScene* scene, AnimBuilder* animBuilder /* = 0 */ )
 void 
 FBXParserBase::SetExporter( const Ptr<Base::ExporterBase>& exporter )
 {
-	this->exporter = exporter;
+    this->exporter = exporter;
 }
 
 } // namespace ToolkitUtil

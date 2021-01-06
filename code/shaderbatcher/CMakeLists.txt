@@ -7,7 +7,7 @@ fips_include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CODE_ROOT}/foundation)
 add_definitions(-D__ANYFX__)
 fips_deps(anyfx glslang)
 fips_files(shadercompiler.cc
-		   shadercompiler.h)		
+           shadercompiler.h)        
 fips_end_module()
 fips_begin_app(shaderbatcher cmdline)
     fips_vs_warning_level(3)

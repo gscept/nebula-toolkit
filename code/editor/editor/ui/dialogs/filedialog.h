@@ -1,9 +1,9 @@
 #pragma once
 //------------------------------------------------------------------------------
 /**
-	FileDialog
+    FileDialog
 
-	(C) 2018 Individual contributors, see AUTHORS file
+    (C) 2018 Individual contributors, see AUTHORS file
 */
 //------------------------------------------------------------------------------
 #include "util/string.h"
@@ -15,16 +15,16 @@ namespace Dialogs
 
 enum FileResult
 {
-	NOINPUT = -1,
-	CANCEL = 0,
-	OKAY = 1,
-	ERR = 2,
+    NOINPUT = -1,
+    CANCEL = 0,
+    OKAY = 1,
+    ERR = 2,
 };
 
 /// Opens a file dialog using imgui
 FileResult OpenFileDialog(const Util::String& title, Util::String& outpath, const char* pattern, bool& open);
 
-/// @todo	SaveFileDialog
+/// @todo   SaveFileDialog
 
 } // namespace Dialogs
 } // namespace Presentation

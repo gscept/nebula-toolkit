@@ -27,8 +27,8 @@ public:
     ToolkitApp();
     /// open the application
     virtual bool Open();
-	/// close the application
-	virtual void Close();
+    /// close the application
+    virtual void Close();
 
     /// retrieve nebula build date and version
     const Util::String& GetToolkitVersion() const;
@@ -47,7 +47,7 @@ protected:
     bool waitForKey;
 
     Util::String toolkitVersion;
-	Ptr<ToolkitUtil::ToolkitConsoleHandler> handler;
+    Ptr<ToolkitUtil::ToolkitConsoleHandler> handler;
 };
 
 //------------------------------------------------------------------------------

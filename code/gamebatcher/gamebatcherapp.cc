@@ -25,7 +25,7 @@ namespace Toolkit
 */
 GameBatcherApp::GameBatcherApp()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -33,7 +33,7 @@ GameBatcherApp::GameBatcherApp()
 */
 GameBatcherApp::~GameBatcherApp()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -42,8 +42,8 @@ GameBatcherApp::~GameBatcherApp()
 bool 
 GameBatcherApp::Open()
 {
-	bool retval = DistributedToolkitApp::Open();
-	return retval;
+    bool retval = DistributedToolkitApp::Open();
+    return retval;
 }
 
 //------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ GameBatcherApp::Open()
 void 
 GameBatcherApp::DoWork()
 {
-	this->logs.Clear();
+    this->logs.Clear();
    Ptr<ToolkitUtil::GameExporter> exporter = ToolkitUtil::GameExporter::Create();
    exporter->SetLogger(&this->logger);
    exporter->Open();   
@@ -67,7 +67,7 @@ GameBatcherApp::DoWork()
 bool 
 GameBatcherApp::ParseCmdLineArgs()
 {
-	return DistributedToolkitApp::ParseCmdLineArgs();
+    return DistributedToolkitApp::ParseCmdLineArgs();
 }
 
 //------------------------------------------------------------------------------
@@ -76,11 +76,11 @@ GameBatcherApp::ParseCmdLineArgs()
 bool 
 GameBatcherApp::SetupProjectInfo()
 {
-	if (DistributedToolkitApp::SetupProjectInfo())
-	{
-		return true;
-	}
-	return false;
+    if (DistributedToolkitApp::SetupProjectInfo())
+    {
+        return true;
+    }
+    return false;
 }
 
 //------------------------------------------------------------------------------
@@ -89,13 +89,13 @@ GameBatcherApp::SetupProjectInfo()
 void 
 GameBatcherApp::ShowHelp()
 {
-	n_printf("Nebula Trifid Game Batcher.\n"
-		"(C) 2012-2016 Individual contributors, see AUTHORS file.\n");	
-	n_printf("-help         --display this help\n"			 
-			 "-dir          --category name\n"
-			 "-file         --file name (if empty, dir will be parsed)\n"
-			 "-projectdir   --nebula project trunk (if empty, attempts to use registry)\n"
-			 "-platform     --export platform");	
+    n_printf("Nebula Trifid Game Batcher.\n"
+        "(C) 2012-2016 Individual contributors, see AUTHORS file.\n");  
+    n_printf("-help         --display this help\n"           
+             "-dir          --category name\n"
+             "-file         --file name (if empty, dir will be parsed)\n"
+             "-projectdir   --nebula project trunk (if empty, attempts to use registry)\n"
+             "-platform     --export platform");    
 }
 
 //------------------------------------------------------------------------------
@@ -103,25 +103,25 @@ GameBatcherApp::ShowHelp()
 */
 Util::String
 GameBatcherApp::GetXMLLogs()
-{	
-	Ptr<IO::MemoryStream> stream = IO::MemoryStream::Create();
-	stream->SetAccessMode(IO::Stream::WriteAccess);
-	Ptr<IO::XmlWriter> writer = IO::XmlWriter::Create();
-	writer->SetStream(stream.cast<IO::Stream>());
-	writer->Open();
-	writer->BeginNode("ToolLogs");
-	for (auto iter = this->logs.Begin(); iter != this->logs.End(); iter++)
-	{
-		iter->ToString(writer);
-	}
-	writer->EndNode();
-	writer->Close();
-	// reopen stream
-	stream->Open();
-	void * str = stream->Map();
-	Util::String streamString;
-	streamString.Set((const char*)str, stream->GetSize());
-	return streamString;
+{   
+    Ptr<IO::MemoryStream> stream = IO::MemoryStream::Create();
+    stream->SetAccessMode(IO::Stream::WriteAccess);
+    Ptr<IO::XmlWriter> writer = IO::XmlWriter::Create();
+    writer->SetStream(stream.cast<IO::Stream>());
+    writer->Open();
+    writer->BeginNode("ToolLogs");
+    for (auto iter = this->logs.Begin(); iter != this->logs.End(); iter++)
+    {
+        iter->ToString(writer);
+    }
+    writer->EndNode();
+    writer->Close();
+    // reopen stream
+    stream->Open();
+    void * str = stream->Map();
+    Util::String streamString;
+    streamString.Set((const char*)str, stream->GetSize());
+    return streamString;
 }
 
 

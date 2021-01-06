@@ -153,12 +153,12 @@ TextureAttrs::StringToQuality(const String& str)
 String
 TextureAttrs::ColorSpaceToString(ColorSpace q)
 {
-	switch (q)
-	{
-	case Linear:       return "RGB";
-	case sRGB:		return "sRGB";
-	default:        return "RGB";
-	}
+    switch (q)
+    {
+    case Linear:       return "RGB";
+    case sRGB:      return "sRGB";
+    default:        return "RGB";
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -167,9 +167,9 @@ TextureAttrs::ColorSpaceToString(ColorSpace q)
 TextureAttrs::ColorSpace
 TextureAttrs::StringToColorSpace(const String& str)
 {
-	if (str == "RGB") return Linear;
-	else if (str == "sRGB") return sRGB;
-	else return Linear;
+    if (str == "RGB") return Linear;
+    else if (str == "sRGB") return sRGB;
+    else return Linear;
 }
 
 } // namespace ToolkitUtil

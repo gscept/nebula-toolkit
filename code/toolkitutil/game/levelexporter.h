@@ -23,47 +23,47 @@ namespace ToolkitUtil
 {
 class LevelExporter : public Base::ExporterBase
 {
-	__DeclareClass(LevelExporter);
+    __DeclareClass(LevelExporter);
 public:
-	/// constructor
-	LevelExporter();
-	/// destructor
-	virtual ~LevelExporter();
+    /// constructor
+    LevelExporter();
+    /// destructor
+    virtual ~LevelExporter();
 
-	/// opens the exporter
-	void Open();
-	/// closes the exporter
-	void Close();
+    /// opens the exporter
+    void Open();
+    /// closes the exporter
+    void Close();
 
-	/// exports a single level
-	void ExportFile(const IO::URI& file);
-	/// exports a directory (does the same as ExportAll)
-	void ExportDir(const Util::String& category);
-	/// exports all levels
-	void ExportAll();
+    /// exports a single level
+    void ExportFile(const IO::URI& file);
+    /// exports a directory (does the same as ExportAll)
+    void ExportDir(const Util::String& category);
+    /// exports all levels
+    void ExportAll();
 
-	/// sets the database factory
-	void SetDbFactory(const Ptr<Db::DbFactory>& factory);
-	/// set pointer to a valid logger object
-	void SetLogger(ToolkitUtil::Logger* logger);
+    /// sets the database factory
+    void SetDbFactory(const Ptr<Db::DbFactory>& factory);
+    /// set pointer to a valid logger object
+    void SetLogger(ToolkitUtil::Logger* logger);
 private:
 
-	/// exports level data
-	bool ExportLevel(const Ptr<IO::XmlReader>& reader, const Ptr<Db::Database>& db);
+    /// exports level data
+    bool ExportLevel(const Ptr<IO::XmlReader>& reader, const Ptr<Db::Database>& db);
 
-	/// creates a table in provided database
-	Ptr<Db::Table> CreateTable(const Ptr<Db::Database>& db, const Util::String& tableName);
-	/// creates a column in given database
-	void CreateColumn(const Ptr<Db::Table>& table, Db::Column::Type type, Attr::AttrId attributeId);
+    /// creates a table in provided database
+    Ptr<Db::Table> CreateTable(const Ptr<Db::Database>& db, const Util::String& tableName);
+    /// creates a column in given database
+    void CreateColumn(const Ptr<Db::Table>& table, Db::Column::Type type, Attr::AttrId attributeId);
 
-	/// loads all attributes from a level object
-	Util::Dictionary<Util::String, Util::String> LoadObjectAttributes(const Ptr<IO::XmlReader> & reader);
+    /// loads all attributes from a level object
+    Util::Dictionary<Util::String, Util::String> LoadObjectAttributes(const Ptr<IO::XmlReader> & reader);
 
-	bool dbHasStartLevel;
-	Ptr<Db::DbFactory> dbFactory;
-	Ptr<Db::Database> staticDb;
-	Ptr<Db::Database> gameDb;
-	ToolkitUtil::Logger* logger;
+    bool dbHasStartLevel;
+    Ptr<Db::DbFactory> dbFactory;
+    Ptr<Db::Database> staticDb;
+    Ptr<Db::Database> gameDb;
+    ToolkitUtil::Logger* logger;
 }; 
 
 //------------------------------------------------------------------------------
@@ -72,7 +72,7 @@ private:
 inline void
 LevelExporter::SetLogger(ToolkitUtil::Logger* l)
 {
-	this->logger = l;
+    this->logger = l;
 }
 
 //------------------------------------------------------------------------------
@@ -81,8 +81,8 @@ LevelExporter::SetLogger(ToolkitUtil::Logger* l)
 inline void 
 LevelExporter::SetDbFactory( const Ptr<Db::DbFactory>& factory )
 {
-	n_assert(!this->isOpen);
-	this->dbFactory = factory;
+    n_assert(!this->isOpen);
+    this->dbFactory = factory;
 }
 
 } // namespace ToolkitUtil

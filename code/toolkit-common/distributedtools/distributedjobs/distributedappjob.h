@@ -1,7 +1,7 @@
 #pragma once
 //------------------------------------------------------------------------------
 /**
-	@class DistributedTools::DistributedAppJob
+    @class DistributedTools::DistributedAppJob
 
     A distributed application job contains information about an application,
     the commandline arguments that should be used, when the application is

@@ -20,90 +20,90 @@ namespace Base
 {
 class ExporterBase : public Core::RefCounted
 {
-	__DeclareClass(ExporterBase);
+    __DeclareClass(ExporterBase);
 
 public:
-	enum ExportFlag
-	{
-		All,
-		Dir,
-		File
-	};
+    enum ExportFlag
+    {
+        All,
+        Dir,
+        File
+    };
 
-	/// constructor
-	ExporterBase();
-	/// destructor
-	virtual ~ExporterBase();
+    /// constructor
+    ExporterBase();
+    /// destructor
+    virtual ~ExporterBase();
 
-	/// opens the exporter
-	virtual void Open();
-	/// closes the exporter
-	virtual void Close();
-	/// returns true if exporter is open
-	bool IsOpen() const;
+    /// opens the exporter
+    virtual void Open();
+    /// closes the exporter
+    virtual void Close();
+    /// returns true if exporter is open
+    bool IsOpen() const;
 
-	/// exports a single file
-	virtual void ExportFile(const IO::URI& file);
-	/// exports a single directory
-	virtual void ExportDir(const Util::String& category);
-	/// exports all files
-	virtual void ExportAll();
+    /// exports a single file
+    virtual void ExportFile(const IO::URI& file);
+    /// exports a single directory
+    virtual void ExportDir(const Util::String& category);
+    /// exports all files
+    virtual void ExportAll();
 
-	/// sets error flag
-	void SetHasErrors(bool flag);
-	/// returns error flag
-	const bool HasErrors() const;
+    /// sets error flag
+    void SetHasErrors(bool flag);
+    /// returns error flag
+    const bool HasErrors() const;
 
-	/// sets the category
-	void SetCategory(const Util::String& category);
-	/// sets the file name
-	void SetFile(const Util::String& file);
-	/// sets the platform
-	void SetPlatform(ToolkitUtil::Platform::Code platform);
-	/// sets the parse flag for the parser
-	void SetExportFlag(ExportFlag parseFlag);
-	/// sets if the parser should force export
-	void SetForce(bool force);
-	/// sets if the parser should be used as a remote tool
-	void SetRemote(bool remote);
-	/// sets the exporter callback (only used if remote is false)
-	void SetProgressCallback(ExporterProgressCallback callback);
-	/// sets the min-max callback (only used if remote is false)
-	void SetMinMaxCallback(ExporterMinMaxCallback callback);
+    /// sets the category
+    void SetCategory(const Util::String& category);
+    /// sets the file name
+    void SetFile(const Util::String& file);
+    /// sets the platform
+    void SetPlatform(ToolkitUtil::Platform::Code platform);
+    /// sets the parse flag for the parser
+    void SetExportFlag(ExportFlag parseFlag);
+    /// sets if the parser should force export
+    void SetForce(bool force);
+    /// sets if the parser should be used as a remote tool
+    void SetRemote(bool remote);
+    /// sets the exporter callback (only used if remote is false)
+    void SetProgressCallback(ExporterProgressCallback callback);
+    /// sets the min-max callback (only used if remote is false)
+    void SetMinMaxCallback(ExporterMinMaxCallback callback);
 
-	/// helper function for reporting progress
-	void Progress(float progress, const Util::String& status);
-	/// helper function for sending the progress min and max values
-	void SetProgressMinMax(int min, int max);
+    /// helper function for reporting progress
+    void Progress(float progress, const Util::String& status);
+    /// helper function for sending the progress min and max values
+    void SetProgressMinMax(int min, int max);
 
-	/// counts number of files to export
-	int CountExports(const Util::String& dir, const Util::String& ext);
+    /// counts number of files to export
+    int CountExports(const Util::String& dir, const Util::String& ext);
 
-	/// sets progress precision
-	void SetProgressPrecision(int precision);
+    /// sets progress precision
+    void SetProgressPrecision(int precision);
 
 protected:
 
-	/// reports an error, depending on what read state we are in, the error will be fatal or a warning
-	void ReportError(const char* error, ...);
-	/// checks whether or not a file needs to be updated 
-	bool NeedsConversion(const Util::String& src, const Util::String& dst);
+    /// reports an error, depending on what read state we are in, the error will be fatal or a warning
+    void ReportError(const char* error, ...);
+    /// checks whether or not a file needs to be updated 
+    bool NeedsConversion(const Util::String& src, const Util::String& dst);
 
-	Util::String category;
-	Util::String file;
+    Util::String category;
+    Util::String file;
 
-	int precision;
-	Ptr<Net::Socket> socket;
-	ToolkitUtil::Platform::Code platform;
-	ExportFlag exportFlag;
-	ExporterProgressCallback progressCallback;
-	ExporterMinMaxCallback	minMaxCallback;
+    int precision;
+    Ptr<Net::Socket> socket;
+    ToolkitUtil::Platform::Code platform;
+    ExportFlag exportFlag;
+    ExporterProgressCallback progressCallback;
+    ExporterMinMaxCallback  minMaxCallback;
 
-	bool hasErrors;
+    bool hasErrors;
 
-	bool force;
-	bool isOpen;
-	bool remote;
+    bool force;
+    bool isOpen;
+    bool remote;
 
 
 }; 
@@ -114,7 +114,7 @@ protected:
 inline bool 
 ExporterBase::IsOpen() const
 {
-	return this->isOpen;
+    return this->isOpen;
 }
 
 //------------------------------------------------------------------------------
@@ -123,7 +123,7 @@ ExporterBase::IsOpen() const
 inline void 
 ExporterBase::SetHasErrors( bool flag )
 {
-	this->hasErrors = flag;
+    this->hasErrors = flag;
 }
 
 //------------------------------------------------------------------------------
@@ -132,7 +132,7 @@ ExporterBase::SetHasErrors( bool flag )
 inline const bool 
 ExporterBase::HasErrors() const
 {
-	return this->hasErrors;
+    return this->hasErrors;
 }
 
 //------------------------------------------------------------------------------
@@ -141,7 +141,7 @@ ExporterBase::HasErrors() const
 inline void 
 ExporterBase::SetProgressPrecision( int precision )
 {
-	this->precision = precision;
+    this->precision = precision;
 }
 
 //------------------------------------------------------------------------------
@@ -150,7 +150,7 @@ ExporterBase::SetProgressPrecision( int precision )
 inline void 
 ExporterBase::SetCategory( const Util::String& category )
 {
-	this->category = category;
+    this->category = category;
 }
 
 //------------------------------------------------------------------------------
@@ -159,8 +159,8 @@ ExporterBase::SetCategory( const Util::String& category )
 inline void 
 ExporterBase::SetFile( const Util::String& file )
 {
-	this->file = file;
-	this->file.StripFileExtension();
+    this->file = file;
+    this->file.StripFileExtension();
 }
 
 
@@ -170,7 +170,7 @@ ExporterBase::SetFile( const Util::String& file )
 inline void 
 ExporterBase::SetPlatform( ToolkitUtil::Platform::Code platform )
 {
-	this->platform = platform;
+    this->platform = platform;
 }
 
 //------------------------------------------------------------------------------
@@ -179,7 +179,7 @@ ExporterBase::SetPlatform( ToolkitUtil::Platform::Code platform )
 inline void 
 ExporterBase::SetExportFlag( ExportFlag exportFlag )
 {
-	this->exportFlag = exportFlag;
+    this->exportFlag = exportFlag;
 }
 
 //------------------------------------------------------------------------------
@@ -188,7 +188,7 @@ ExporterBase::SetExportFlag( ExportFlag exportFlag )
 inline void 
 ExporterBase::SetForce( bool force )
 {
-	this->force = force;
+    this->force = force;
 }
 
 //------------------------------------------------------------------------------
@@ -197,7 +197,7 @@ ExporterBase::SetForce( bool force )
 inline void 
 ExporterBase::SetRemote( bool remote )
 {
-	this->remote = remote;
+    this->remote = remote;
 }
 
 
@@ -207,7 +207,7 @@ ExporterBase::SetRemote( bool remote )
 inline void 
 ExporterBase::SetProgressCallback( ExporterProgressCallback callback )
 {
-	this->progressCallback = callback;
+    this->progressCallback = callback;
 }
 
 
@@ -217,7 +217,7 @@ ExporterBase::SetProgressCallback( ExporterProgressCallback callback )
 inline void 
 ExporterBase::SetMinMaxCallback( ExporterMinMaxCallback callback )
 {
-	this->minMaxCallback = callback;
+    this->minMaxCallback = callback;
 }
 
 //------------------------------------------------------------------------------
@@ -226,17 +226,17 @@ ExporterBase::SetMinMaxCallback( ExporterMinMaxCallback callback )
 inline void 
 ExporterBase::ReportError( const char* error, ... )
 {
-	va_list argList;
-	va_start(argList, error);
-	if (this->exportFlag == ExporterBase::File)
-	{
-		IO::Console::Instance()->Error(error, argList);
-	}
-	else
-	{
-		IO::Console::Instance()->Warning(error, argList);
-	}
-	va_end(argList);
+    va_list argList;
+    va_start(argList, error);
+    if (this->exportFlag == ExporterBase::File)
+    {
+        IO::Console::Instance()->Error(error, argList);
+    }
+    else
+    {
+        IO::Console::Instance()->Warning(error, argList);
+    }
+    va_end(argList);
 }
 
 

@@ -14,7 +14,7 @@ namespace ToolkitUtil
 {
 class ClipEvent : public Core::RefCounted
 {
-	__DeclareClass(ClipEvent);
+    __DeclareClass(ClipEvent);
 public:
 
     enum MarkerType
@@ -23,10 +23,10 @@ public:
         Frames
     };
 
-	/// constructor
-	ClipEvent();
-	/// destructor
-	virtual ~ClipEvent();
+    /// constructor
+    ClipEvent();
+    /// destructor
+    virtual ~ClipEvent();
 
     /// set the name of the event
     void SetName(const Util::String& name);

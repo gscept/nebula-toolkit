@@ -21,56 +21,56 @@
 namespace ToolkitUtil
 {
 class ModelDatabase: public Core::RefCounted
-	
+    
 {
-	__DeclareSingleton(ModelDatabase);
-	__DeclareClass(ModelDatabase);
+    __DeclareSingleton(ModelDatabase);
+    __DeclareClass(ModelDatabase);
 public:
 
-	/// constructor
-	ModelDatabase();
-	/// destructor
-	~ModelDatabase();
+    /// constructor
+    ModelDatabase();
+    /// destructor
+    ~ModelDatabase();
 
-	/// opens the database
-	void Open();
-	/// closes the database
-	void Close();
-	/// returns true if database is open
-	bool IsOpen() const;
+    /// opens the database
+    void Open();
+    /// closes the database
+    void Close();
+    /// returns true if database is open
+    bool IsOpen() const;
 
     /// load all attributes from a folder
     void LoadAttributes(const Util::String& folder);
 
- 	/// performs lookup on model attributes, loads from file if it doesn't exist
-	Ptr<ModelAttributes> LookupAttributes(const Util::String& name, bool reload = false);
-	/// checks if attributes exist
-	bool AttributesExist(const Util::String& name);
-	/// gets name of model attributes pointer
-	const Util::String& GetAttributesName(const Ptr<ModelAttributes>& attrs);
+    /// performs lookup on model attributes, loads from file if it doesn't exist
+    Ptr<ModelAttributes> LookupAttributes(const Util::String& name, bool reload = false);
+    /// checks if attributes exist
+    bool AttributesExist(const Util::String& name);
+    /// gets name of model attributes pointer
+    const Util::String& GetAttributesName(const Ptr<ModelAttributes>& attrs);
 
 #if PHYSEXPORT
-	/// performs lookup on physics attributes, loads from file if it doesn't exist
-	Ptr<ModelPhysics> LookupPhysics(const Util::String& name, bool reload = false);
-	/// checks if attributes exist
-	bool PhysicsExist(const Util::String& name);
-	/// gets name of model attributes pointer
-	const Util::String& GetPhysicsName(const Ptr<ModelPhysics>& attrs);
+    /// performs lookup on physics attributes, loads from file if it doesn't exist
+    Ptr<ModelPhysics> LookupPhysics(const Util::String& name, bool reload = false);
+    /// checks if attributes exist
+    bool PhysicsExist(const Util::String& name);
+    /// gets name of model attributes pointer
+    const Util::String& GetPhysicsName(const Ptr<ModelPhysics>& attrs);
 #endif
 
-	/// performs lookup on model constants, loads from file if it doesn't exist
-	Ptr<ModelConstants> LookupConstants(const Util::String& name, bool reload = false);
-	/// checks if constants exist
-	bool ConstantsExist(const Util::String& name);
-	/// gets name of model constants
-	const Util::String& GetConstantsName(const Ptr<ModelConstants>& constants);
+    /// performs lookup on model constants, loads from file if it doesn't exist
+    Ptr<ModelConstants> LookupConstants(const Util::String& name, bool reload = false);
+    /// checks if constants exist
+    bool ConstantsExist(const Util::String& name);
+    /// gets name of model constants
+    const Util::String& GetConstantsName(const Ptr<ModelConstants>& constants);
 
 private:
-	bool isOpen;
-	Util::Dictionary<Util::String, Ptr<ModelAttributes>> modelAttributes;
-	Util::Dictionary<Util::String, Ptr<ModelConstants>> modelConstants;
+    bool isOpen;
+    Util::Dictionary<Util::String, Ptr<ModelAttributes>> modelAttributes;
+    Util::Dictionary<Util::String, Ptr<ModelConstants>> modelConstants;
 #if PHYSEXPORT
-	Util::Dictionary<Util::String, Ptr<ModelPhysics>> modelPhysics;
+    Util::Dictionary<Util::String, Ptr<ModelPhysics>> modelPhysics;
 #endif
 };
 
@@ -80,6 +80,6 @@ private:
 inline bool 
 ModelDatabase::IsOpen() const
 {
-	return this->isOpen;
+    return this->isOpen;
 }
 }

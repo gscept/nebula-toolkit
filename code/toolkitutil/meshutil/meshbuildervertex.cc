@@ -161,31 +161,31 @@ MeshBuilderVertex::InitComponents(ComponentMask mask)
                     break;
 
                 case NormalIndex:
-				case NormalB4NIndex:
+                case NormalB4NIndex:
                 case TangentIndex:
-				case TangentB4NIndex:
+                case TangentB4NIndex:
                 case BinormalIndex:
-				case BinormalB4NIndex:
+                case BinormalB4NIndex:
                     this->comps[idx].set(0.0f, 1.0f, 0.0f, 0.0f);
                     break;
 
                 case Uv0Index:
-				case Uv0S2Index:
+                case Uv0S2Index:
                 case Uv1Index:
-				case Uv1S2Index:
+                case Uv1S2Index:
                 case Uv2Index:
-				case Uv2S2Index:
+                case Uv2S2Index:
                 case Uv3Index:
-				case Uv3S2Index:
-				case WeightsIndex:
-				case WeightsUB4NIndex:
+                case Uv3S2Index:
+                case WeightsIndex:
+                case WeightsUB4NIndex:
                 case JIndicesIndex:
-				case JIndicesUB4Index:
+                case JIndicesUB4Index:
                     this->comps[idx].set(0.0f, 0.0f, 0.0f, 0.0f);
                     break;
 
                 case ColorIndex:
-				case ColorUB4NIndex:
+                case ColorUB4NIndex:
                     this->comps[idx].set(1.0f, 1.0f, 1.0f, 1.0f);
                     break;
             }

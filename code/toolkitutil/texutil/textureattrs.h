@@ -64,12 +64,12 @@ public:
         High,
     };
 
-	/// color spaces
-	enum ColorSpace
-	{
-		Linear,
-		sRGB
-	};
+    /// color spaces
+    enum ColorSpace
+    {
+        Linear,
+        sRGB
+    };
   
     /// constructor
     TextureAttrs();
@@ -101,10 +101,10 @@ public:
     void SetQuality(Quality q);
     /// get conversion quality
     Quality GetQuality() const;
-	/// set conversion color space
-	void SetColorSpace(ColorSpace c);
-	/// get conversion color space
-	ColorSpace GetColorSpace() const;
+    /// set conversion color space
+    void SetColorSpace(ColorSpace c);
+    /// get conversion color space
+    ColorSpace GetColorSpace() const;
     /// set file date of attributes file to check for changes
     void SetTime(const IO::FileTime & ft);
     /// get attribute file date
@@ -130,10 +130,10 @@ public:
     static Util::String QualityToString(Quality q);
     /// convert string to quality
     static Quality StringToQuality(const Util::String& str);   
-	/// convert color space to string
-	static Util::String ColorSpaceToString(ColorSpace c);
-	/// convert string to color space
-	static ColorSpace StringToColorSpace(const Util::String& str);
+    /// convert color space to string
+    static Util::String ColorSpaceToString(ColorSpace c);
+    /// convert string to color space
+    static ColorSpace StringToColorSpace(const Util::String& str);
 
 private:
     SizeT maxWidth;
@@ -143,7 +143,7 @@ private:
     Filter mipMapFilter;
     Filter scaleFilter;
     Quality quality;
-	ColorSpace colorSpace;
+    ColorSpace colorSpace;
     IO::FileTime attrTime;
     bool flipNormalY;
 
@@ -282,7 +282,7 @@ TextureAttrs::GetQuality() const
 inline void
 TextureAttrs::SetColorSpace(ColorSpace c)
 {
-	this->colorSpace = c;
+    this->colorSpace = c;
 }
 
 //------------------------------------------------------------------------------
@@ -291,7 +291,7 @@ TextureAttrs::SetColorSpace(ColorSpace c)
 inline TextureAttrs::ColorSpace
 TextureAttrs::GetColorSpace() const
 {
-	return this->colorSpace;
+    return this->colorSpace;
 }
 
 //------------------------------------------------------------------------------

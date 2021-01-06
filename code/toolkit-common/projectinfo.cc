@@ -102,36 +102,36 @@ ProjectInfo::Setup()
 {
     n_assert(!this->IsValid());
 
-	String projPath;
+    String projPath;
 
-	// check for cmdline overrides for project
-	const Util::CommandLineArgs & args = App::Application::Instance()->GetCmdLineArgs();
+    // check for cmdline overrides for project
+    const Util::CommandLineArgs & args = App::Application::Instance()->GetCmdLineArgs();
 
     if (args.HasArg("-workdir"))
-	{
-		projPath = args.GetString("-workdir");
-	}
-	else
-	{
-		// grab from registry instead (default)
-		projPath = this->QueryProjectPathFromRegistry();
-	}		    
+    {
+        projPath = args.GetString("-workdir");
+    }
+    else
+    {
+        // grab from registry instead (default)
+        projPath = this->QueryProjectPathFromRegistry();
+    }           
     if (projPath.IsEmpty())
     {
         return NoProjPathInRegistry;
     }
-	AssignRegistry::Instance()->SetAssign(Assign("proj", projPath));
+    AssignRegistry::Instance()->SetAssign(Assign("proj", projPath));
 
-	// same for toolkit, first overrides, then registry
-	String toolkitPath;
-	if (args.HasArg("-toolkit"))
-	{
-		toolkitPath = args.GetString("-toolkit");
-	}
-	else
-	{
-		toolkitPath = this->QueryToolkitPathFromRegistry();
-	}    
+    // same for toolkit, first overrides, then registry
+    String toolkitPath;
+    if (args.HasArg("-toolkit"))
+    {
+        toolkitPath = args.GetString("-toolkit");
+    }
+    else
+    {
+        toolkitPath = this->QueryToolkitPathFromRegistry();
+    }    
     n_assert(toolkitPath.IsValid());    
     AssignRegistry::Instance()->SetAssign(Assign("toolkit", toolkitPath));
 
@@ -318,7 +318,7 @@ ProjectInfo::GetPathAttr(const String& attrName) const
             String regString = varString.ExtractToEnd(4);
             Array<String> regTokens = regString.Tokenize("/");
             n_assert(regTokens.Size() > 2);
-			Win32::Win32Registry::RootKey rootKey = Win32::Win32Registry::AsRootKey(regTokens[0]);
+            Win32::Win32Registry::RootKey rootKey = Win32::Win32Registry::AsRootKey(regTokens[0]);
             String regKeyName = regTokens.Back();
             regTokens.EraseIndex(0);
             regTokens.EraseIndex(regTokens.Size() - 1);

@@ -53,21 +53,21 @@ AssetConverterApp::Run()
         return;
     }
 
-	bool success = true;
+    bool success = true;
 
-	// setup the project info object
-	if (success && !this->SetupProjectInfo())
-	{
-		success = false;
-		this->SetReturnCode(-1);
-	}
+    // setup the project info object
+    if (success && !this->SetupProjectInfo())
+    {
+        success = false;
+        this->SetReturnCode(-1);
+    }
 
-	// parse command line args
-	if (success && !this->ParseCmdLineArgs())
-	{
-		success = false;
-		this->SetReturnCode(-1);
-	}
+    // parse command line args
+    if (success && !this->ParseCmdLineArgs())
+    {
+        success = false;
+        this->SetReturnCode(-1);
+    }
 
     this->modelDatabase = ToolkitUtil::ModelDatabase::Create();
     this->modelDatabase->Open();
@@ -92,19 +92,19 @@ AssetConverterApp::Run()
     IO::AssignRegistry::Instance()->SetAssign(Assign("home","proj:"));
     IO::AssignRegistry::Instance()->SetAssign(Assign("src", "proj:work"));
 
-	exporter->Open();
-	exporter->SetForce(true);
+    exporter->Open();
+    exporter->SetForce(true);
     exporter->SetExportMode(mode);
-	
-	exporter->SetExportFlag(ExporterBase::Dir);
-	exporter->SetPlatform(this->platform);
-	exporter->SetProgressPrecision(PRECISION);
-	exporter->SetProgressMinMax(0, PRECISION);    
+    
+    exporter->SetExportFlag(ExporterBase::Dir);
+    exporter->SetPlatform(this->platform);
+    exporter->SetProgressPrecision(PRECISION);
+    exporter->SetProgressMinMax(0, PRECISION);    
     exporter->ExportDir(dir);
-	exporter->Close();
+    exporter->Close();
 
-	// if we have any errors, set the return code to be errornous	
-	if (exporter->HasErrors()) this->SetReturnCode(-1);
+    // if we have any errors, set the return code to be errornous   
+    if (exporter->HasErrors()) this->SetReturnCode(-1);
     this->modelDatabase->Close();
     this->modelDatabase = nullptr;
 }
@@ -115,11 +115,11 @@ AssetConverterApp::Run()
 void 
 AssetConverterApp::ShowHelp()
 {
-	n_printf("Nebula asset converter.\n"
-		"(C) 2020 Individual contributors, see AUTHORS file.\n");
-	n_printf("Usage assetc [args] -dir [path to assetsfolder]\n"
+    n_printf("Nebula asset converter.\n"
+        "(C) 2020 Individual contributors, see AUTHORS file.\n");
+    n_printf("Usage assetc [args] -dir [path to assetsfolder]\n"
             "-help         --display this help\n"
-			 "-mode         --selects type to batch (fbx,model,texture,surface) defaults to all");
+             "-mode         --selects type to batch (fbx,model,texture,surface) defaults to all");
 }
 
 } // namespace Toolkit

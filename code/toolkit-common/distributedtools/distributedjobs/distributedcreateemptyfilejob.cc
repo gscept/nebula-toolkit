@@ -20,7 +20,7 @@ __ImplementClass(DistributedCreateEmptyFileJob,'DCFJ',DistributedJob);
 
 //------------------------------------------------------------------------------
 /**
-    Constructor	
+    Constructor 
 */
 DistributedCreateEmptyFileJob::DistributedCreateEmptyFileJob()
 {
@@ -28,7 +28,7 @@ DistributedCreateEmptyFileJob::DistributedCreateEmptyFileJob()
 
 //------------------------------------------------------------------------------
 /**
-    Destructor	
+    Destructor  
 */
 DistributedCreateEmptyFileJob::~DistributedCreateEmptyFileJob()
 {
@@ -124,7 +124,7 @@ DistributedCreateEmptyFileJob::Clone()
 }
 //------------------------------------------------------------------------------
 /**
-    copy the attributes of another job to itself, except the guid	
+    copy the attributes of another job to itself, except the guid   
 */
 void
 DistributedCreateEmptyFileJob::CopyFrom(const Ptr<DistributedCreateEmptyFileJob> & job)

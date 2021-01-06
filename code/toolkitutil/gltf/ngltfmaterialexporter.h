@@ -1,11 +1,11 @@
 #pragma once
 //------------------------------------------------------------------------------
 /**
-	@class ToolkitUtil::NglTFMaterialExtractor
+    @class ToolkitUtil::NglTFMaterialExtractor
 
-	Extracts and exports a GLTF file material into a Nebula surface binary file
+    Extracts and exports a GLTF file material into a Nebula surface binary file
 
-	(C) 2020 Individual contributors, see AUTHORS file
+    (C) 2020 Individual contributors, see AUTHORS file
 */
 #include "gltf/gltfdata.h"
 #include "surface/surfacebuilder.h"
@@ -15,27 +15,27 @@ namespace ToolkitUtil
 class NglTFMaterialExtractor
 {
 public:
-	/// constructor
-	NglTFMaterialExtractor();
-	/// destructor
-	~NglTFMaterialExtractor();
+    /// constructor
+    NglTFMaterialExtractor();
+    /// destructor
+    ~NglTFMaterialExtractor();
 
-	void SetDocument(Gltf::Document const* document);
+    void SetDocument(Gltf::Document const* document);
 
-	void SetCategoryName(Util::String const& categoryName);
-	void SetExportSubDirectory(Util::String const& subDir);
+    void SetCategoryName(Util::String const& categoryName);
+    void SetExportSubDirectory(Util::String const& subDir);
 
-	void ExportAll();
+    void ExportAll();
 
-	void ExtractMaterial(SurfaceBuilder& builder, Gltf::Material const& material);
+    void ExtractMaterial(SurfaceBuilder& builder, Gltf::Material const& material);
 private:
-	Gltf::Document const* doc;
-	Util::String catName;
-	Util::String subDir;
+    Gltf::Document const* doc;
+    Util::String catName;
+    Util::String subDir;
 
-	// used when exporting
-	Util::String texCatDir;
-	Util::String textureDir;
+    // used when exporting
+    Util::String texCatDir;
+    Util::String textureDir;
 };
 
 //------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ private:
 inline void
 NglTFMaterialExtractor::SetDocument(Gltf::Document const* document)
 {
-	this->doc = document;
+    this->doc = document;
 }
 
 //------------------------------------------------------------------------------
@@ -53,7 +53,7 @@ NglTFMaterialExtractor::SetDocument(Gltf::Document const* document)
 inline void
 NglTFMaterialExtractor::SetCategoryName(Util::String const& categoryName)
 {
-	this->catName = categoryName;
+    this->catName = categoryName;
 }
 
 //------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ NglTFMaterialExtractor::SetCategoryName(Util::String const& categoryName)
 inline void
 NglTFMaterialExtractor::SetExportSubDirectory(Util::String const& subDir)
 {
-	this->subDir = subDir;
+    this->subDir = subDir;
 }
 
 } // namespace ToolkitUtil

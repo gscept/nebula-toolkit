@@ -42,10 +42,10 @@ public:
     /// get triangle at index
     MeshBuilderTriangle& TriangleAt(IndexT i) const;
 
-	/// set primitive topology
-	void SetPrimitiveTopology(const CoreGraphics::PrimitiveTopology::Code& p);
-	/// get primitive topology
-	const CoreGraphics::PrimitiveTopology::Code& GetPrimitiveTopology();
+    /// set primitive topology
+    void SetPrimitiveTopology(const CoreGraphics::PrimitiveTopology::Code& p);
+    /// get primitive topology
+    const CoreGraphics::PrimitiveTopology::Code& GetPrimitiveTopology();
 
     /// get number of triangles of given group id starting at triangle index
     SizeT CountGroupTriangles(IndexT groupId, IndexT startTriangleIndex) const;
@@ -77,8 +77,8 @@ public:
     /// flip v texture coordinates
     void FlipUvs();
     /// move uv coords of given triangle into range (requires unflattened mesh!)
-	bool MoveTriangleUvsIntoRange(IndexT triIndex, float minUv, float maxUv);
-	void Cleanup(Util::Array<Util::Array<int> > *collapseMap);
+    bool MoveTriangleUvsIntoRange(IndexT triIndex, float minUv, float maxUv);
+    void Cleanup(Util::Array<Util::Array<int> > *collapseMap);
 
     /// Merge mesh with this mesh. NOTE: This does not take care of primitive groups!
     void Merge(MeshBuilder const& srcMesh);
@@ -93,7 +93,7 @@ private:
     static int __cdecl VertexSorter(const void* elm0, const void* elm1);
     Util::Array<MeshBuilderVertex> vertexArray;
     Util::Array<MeshBuilderTriangle> triangleArray;
-	CoreGraphics::PrimitiveTopology::Code topology;
+    CoreGraphics::PrimitiveTopology::Code topology;
     static MeshBuilder* qsortData;
 };
 

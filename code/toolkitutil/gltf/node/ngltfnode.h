@@ -1,11 +1,11 @@
 #pragma once
 //------------------------------------------------------------------------------
 /**
-	@class ToolkitUtil::NglTFNode
+    @class ToolkitUtil::NglTFNode
 
-	Encapsulates an gltf node as a Nebula-friendly object
+    Encapsulates an gltf node as a Nebula-friendly object
 
-	(C) 2020 Individual contributors, see AUTHORS file
+    (C) 2020 Individual contributors, see AUTHORS file
 */
 #include "core/refcounted.h"
 #include "math/quat.h"
@@ -28,79 +28,79 @@ class NglTFScene;
 class NglTFMesh;
 class NglTFNode : public Core::RefCounted
 {
-	__DeclareClass(NglTFNode);
+    __DeclareClass(NglTFNode);
 public:
-	/// constructor
-	NglTFNode();
-	/// destructor
-	virtual ~NglTFNode();
+    /// constructor
+    NglTFNode();
+    /// destructor
+    virtual ~NglTFNode();
 
-	/// sets up node
-	virtual void Setup(Gltf::Node const* node, const Ptr<NglTFScene>& scene);
-	/// discards the node
-	virtual void Discard();
+    /// sets up node
+    virtual void Setup(Gltf::Node const* node, const Ptr<NglTFScene>& scene);
+    /// discards the node
+    virtual void Discard();
 
-	/// extracts rotation, translation and scaling
-	virtual void ExtractTransform();
-	/// extracts rotation, translation and scaling
-	virtual void ExtractTransform(const Math::mat4& transform);
+    /// extracts rotation, translation and scaling
+    virtual void ExtractTransform();
+    /// extracts rotation, translation and scaling
+    virtual void ExtractTransform(const Math::mat4& transform);
 
-	/// sets the initial rotation (overrides extracted data)
-	void SetInitialRotation(const Math::quat& rot);
-	/// returns the initial rotation
-	const Math::quat& GetInitialRotation() const;
-	/// sets the initial position (overrides extracted data)
-	void SetInitialPosition(const Math::vec4& pos);
-	/// returns the initial position
-	const Math::vec4& GetInitialPosition() const;
-	/// sets the initial scale (overrides extracted data)
-	void SetInitialScale(const Math::vec4& scale);
-	/// returns the initial scale
-	const Math::vec4& GetInitialScale() const;
-	/// returns transform
-	const Math::mat4& GetTransform() const;
+    /// sets the initial rotation (overrides extracted data)
+    void SetInitialRotation(const Math::quat& rot);
+    /// returns the initial rotation
+    const Math::quat& GetInitialRotation() const;
+    /// sets the initial position (overrides extracted data)
+    void SetInitialPosition(const Math::vec4& pos);
+    /// returns the initial position
+    const Math::vec4& GetInitialPosition() const;
+    /// sets the initial scale (overrides extracted data)
+    void SetInitialScale(const Math::vec4& scale);
+    /// returns the initial scale
+    const Math::vec4& GetInitialScale() const;
+    /// returns transform
+    const Math::mat4& GetTransform() const;
 
-	/// adds a child to this node
-	void AddChild(const Ptr<NglTFNode>& child);
-	/// removes a child to this node
-	void RemoveChild(const Ptr<NglTFNode>& child);
-	/// returns a child to this node
-	const Ptr<NglTFNode>& GetChild(IndexT index) const;
-	/// returns the number of children
-	const IndexT GetChildCount() const;
-	/// return index of child
-	const IndexT IndexOfChild(const Ptr<NglTFNode>& child);
-	/// set the parent
-	void SetParent(const Ptr<NglTFNode>& parent);
-	/// returns pointer to parent
-	const Ptr<NglTFNode>& GetParent() const;
+    /// adds a child to this node
+    void AddChild(const Ptr<NglTFNode>& child);
+    /// removes a child to this node
+    void RemoveChild(const Ptr<NglTFNode>& child);
+    /// returns a child to this node
+    const Ptr<NglTFNode>& GetChild(IndexT index) const;
+    /// returns the number of children
+    const IndexT GetChildCount() const;
+    /// return index of child
+    const IndexT IndexOfChild(const Ptr<NglTFNode>& child);
+    /// set the parent
+    void SetParent(const Ptr<NglTFNode>& parent);
+    /// returns pointer to parent
+    const Ptr<NglTFNode>& GetParent() const;
 
-	/// returns true if node is a part of the physics hierarchy
-	const bool IsPhysics() const;
+    /// returns true if node is a part of the physics hierarchy
+    const bool IsPhysics() const;
 
-	/// returns FBX node pointer
-	Gltf::Node const* GetNode() const;
+    /// returns FBX node pointer
+    Gltf::Node const* GetNode() const;
 
-	/// sets the node name
-	void SetName(const Util::String& name);
-	/// gets the node name
-	const Util::String& GetName() const;
+    /// sets the node name
+    void SetName(const Util::String& name);
+    /// gets the node name
+    const Util::String& GetName() const;
 
 protected:
-	friend class NglTFScene;
+    friend class NglTFScene;
 
-	const Gltf::Document*			gltfScene;
-	Gltf::Node const*				gltfNode;
-	Util::Array<Ptr<NglTFNode> >	children;
-	Ptr<NglTFNode>					parent;
-	WeakPtr<NglTFScene>				scene;
+    const Gltf::Document*           gltfScene;
+    Gltf::Node const*               gltfNode;
+    Util::Array<Ptr<NglTFNode> >    children;
+    Ptr<NglTFNode>                  parent;
+    WeakPtr<NglTFScene>             scene;
 
-	Util::String					name;
+    Util::String                    name;
 
-	Math::quat					rotation;
-	Math::vec4					position;
-	Math::vec4					scale;
-	Math::mat4					transform;
+    Math::quat                  rotation;
+    Math::vec4                  position;
+    Math::vec4                  scale;
+    Math::mat4                  transform;
 };
 
 //------------------------------------------------------------------------------
@@ -109,7 +109,7 @@ protected:
 inline void
 NglTFNode::SetInitialRotation(const Math::quat& rot)
 {
-	this->rotation = rot;
+    this->rotation = rot;
 }
 
 //------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ NglTFNode::SetInitialRotation(const Math::quat& rot)
 inline const Math::quat&
 NglTFNode::GetInitialRotation() const
 {
-	return this->rotation;
+    return this->rotation;
 }
 
 //------------------------------------------------------------------------------
@@ -127,7 +127,7 @@ NglTFNode::GetInitialRotation() const
 inline void
 NglTFNode::SetInitialPosition(const Math::vec4& pos)
 {
-	this->position = pos;
+    this->position = pos;
 }
 
 //------------------------------------------------------------------------------
@@ -136,7 +136,7 @@ NglTFNode::SetInitialPosition(const Math::vec4& pos)
 inline const Math::vec4&
 NglTFNode::GetInitialPosition() const
 {
-	return this->position;
+    return this->position;
 }
 
 //------------------------------------------------------------------------------
@@ -145,16 +145,16 @@ NglTFNode::GetInitialPosition() const
 inline void
 NglTFNode::SetInitialScale(const Math::vec4& scale)
 {
-	this->scale = scale;
+    this->scale = scale;
 }
 
 //------------------------------------------------------------------------------
 /**
 */
 inline const Math::vec4&
-	NglTFNode::GetInitialScale() const
+    NglTFNode::GetInitialScale() const
 {
-	return this->scale;
+    return this->scale;
 }
 
 //------------------------------------------------------------------------------
@@ -163,7 +163,7 @@ inline const Math::vec4&
 inline const Math::mat4&
 NglTFNode::GetTransform() const
 {
-	return this->transform;
+    return this->transform;
 }
 
 //------------------------------------------------------------------------------
@@ -172,8 +172,8 @@ NglTFNode::GetTransform() const
 inline Gltf::Node const*
 NglTFNode::GetNode() const
 {
-	n_assert(this->gltfNode);
-	return this->gltfNode;
+    n_assert(this->gltfNode);
+    return this->gltfNode;
 }
 
 //------------------------------------------------------------------------------
@@ -182,7 +182,7 @@ NglTFNode::GetNode() const
 inline const Ptr<NglTFNode>&
 NglTFNode::GetParent() const
 {
-	return this->parent;
+    return this->parent;
 }
 
 //------------------------------------------------------------------------------
@@ -191,7 +191,7 @@ NglTFNode::GetParent() const
 inline void
 NglTFNode::SetParent(const Ptr<NglTFNode>& parent)
 {
-	this->parent = parent;
+    this->parent = parent;
 }
 
 //------------------------------------------------------------------------------
@@ -200,9 +200,9 @@ NglTFNode::SetParent(const Ptr<NglTFNode>& parent)
 inline const IndexT
 NglTFNode::IndexOfChild(const Ptr<NglTFNode>& child)
 {
-	IndexT index = this->children.FindIndex(child);
-	n_assert(index != InvalidIndex);
-	return index;
+    IndexT index = this->children.FindIndex(child);
+    n_assert(index != InvalidIndex);
+    return index;
 }
 
 //------------------------------------------------------------------------------
@@ -211,8 +211,8 @@ NglTFNode::IndexOfChild(const Ptr<NglTFNode>& child)
 inline void
 NglTFNode::SetName(const Util::String& name)
 {
-	n_assert(name.IsValid());
-	this->name = name;
+    n_assert(name.IsValid());
+    this->name = name;
 }
 
 
@@ -222,7 +222,7 @@ NglTFNode::SetName(const Util::String& name)
 inline const Util::String&
 NglTFNode::GetName() const
 {
-	return this->name;
+    return this->name;
 }
 
 } // namespace ToolkitUtil

@@ -276,10 +276,10 @@ TextureBatcherApp::NeedsConversion(const String& srcPath, const String& dstPath)
         {
             attrFileTime = ioServer->GetFileWriteTime(xml);
         }
-		if(attrFileTime > dstFileTime)
-		{
-			return true;
-		}
+        if(attrFileTime > dstFileTime)
+        {
+            return true;
+        }
         if (dstFileTime > srcFileTime)
         {
             // dst file newer then src file, don't need to convert

@@ -29,123 +29,123 @@ class NFbxScene;
 class NFbxMeshNode;
 class NFbxNode : public Core::RefCounted
 {
-	__DeclareClass(NFbxNode);
+    __DeclareClass(NFbxNode);
 public:
 
-	enum NodeType
-	{
-		Mesh,			// actual mesh node
-		Joint,			// joint transform node
-		Transform,		// plain transform node
-		Light,			// light node
+    enum NodeType
+    {
+        Mesh,           // actual mesh node
+        Joint,          // joint transform node
+        Transform,      // plain transform node
+        Light,          // light node
 
-		Locator,		// locator node (unused)
-		Effector,		// effector node (unused)
+        Locator,        // locator node (unused)
+        Effector,       // effector node (unused)
 
-		UnknownType,	// unknown type, unasserted
+        UnknownType,    // unknown type, unasserted
 
-		NumNodeTypes
-	};
+        NumNodeTypes
+    };
 
-	/// constructor
-	NFbxNode();
-	/// destructor
-	virtual ~NFbxNode();
+    /// constructor
+    NFbxNode();
+    /// destructor
+    virtual ~NFbxNode();
 
-	/// sets up node
-	virtual void Setup(FbxNode* node, const Ptr<NFbxScene>& scene);
-	/// discards the node
-	virtual void Discard();
+    /// sets up node
+    virtual void Setup(FbxNode* node, const Ptr<NFbxScene>& scene);
+    /// discards the node
+    virtual void Discard();
 
-	/// extracts rotation, translation and scaling
-	virtual void ExtractTransform();
-	/// extracts rotation, translation and scaling
-	virtual void ExtractTransform(const FbxMatrix& transform);
+    /// extracts rotation, translation and scaling
+    virtual void ExtractTransform();
+    /// extracts rotation, translation and scaling
+    virtual void ExtractTransform(const FbxMatrix& transform);
 
-	/// sets the initial rotation (overrides extracted data)
-	void SetInitialRotation(const Math::quat& rot);
-	/// returns the initial rotation
-	const Math::quat& GetInitialRotation() const;
-	/// sets the initial position (overrides extracted data)
-	void SetInitialPosition(const Math::vec4& pos);
-	/// returns the initial position
-	const Math::vec4& GetInitialPosition() const;
-	/// sets the initial scale (overrides extracted data)
-	void SetInitialScale(const Math::vec4& scale);
-	/// returns the initial scale
-	const Math::vec4& GetInitialScale() const;
-	/// returns transform
-	const Math::mat4& GetTransform() const;
+    /// sets the initial rotation (overrides extracted data)
+    void SetInitialRotation(const Math::quat& rot);
+    /// returns the initial rotation
+    const Math::quat& GetInitialRotation() const;
+    /// sets the initial position (overrides extracted data)
+    void SetInitialPosition(const Math::vec4& pos);
+    /// returns the initial position
+    const Math::vec4& GetInitialPosition() const;
+    /// sets the initial scale (overrides extracted data)
+    void SetInitialScale(const Math::vec4& scale);
+    /// returns the initial scale
+    const Math::vec4& GetInitialScale() const;
+    /// returns transform
+    const Math::mat4& GetTransform() const;
 
-	/// adds a child to this node
-	void AddChild(const Ptr<NFbxNode>& child);
-	/// removes a child to this node
-	void RemoveChild(const Ptr<NFbxNode>& child);
-	/// returns a child to this node
-	const Ptr<NFbxNode>& GetChild(IndexT index) const;
-	/// returns the number of children
-	const IndexT GetChildCount() const;
-	/// return index of child
-	const IndexT IndexOfChild(const Ptr<NFbxNode>& child);
-	/// set the parent
-	void SetParent(const Ptr<NFbxNode>& parent);
-	/// returns pointer to parent
-	const Ptr<NFbxNode>& GetParent() const;
+    /// adds a child to this node
+    void AddChild(const Ptr<NFbxNode>& child);
+    /// removes a child to this node
+    void RemoveChild(const Ptr<NFbxNode>& child);
+    /// returns a child to this node
+    const Ptr<NFbxNode>& GetChild(IndexT index) const;
+    /// returns the number of children
+    const IndexT GetChildCount() const;
+    /// return index of child
+    const IndexT IndexOfChild(const Ptr<NFbxNode>& child);
+    /// set the parent
+    void SetParent(const Ptr<NFbxNode>& parent);
+    /// returns pointer to parent
+    const Ptr<NFbxNode>& GetParent() const;
 
-	/// returns true if node is a part of the physics hierarchy
-	const bool IsPhysics() const;
+    /// returns true if node is a part of the physics hierarchy
+    const bool IsPhysics() const;
 
-	/// returns the node type
-	const NodeType GetNodeType() const;
+    /// returns the node type
+    const NodeType GetNodeType() const;
 
-	/// returns FBX node pointer
-	FbxNode* GetNode() const;
+    /// returns FBX node pointer
+    FbxNode* GetNode() const;
 
-	/// sets the node name
-	void SetName(const Util::String& name);
-	/// gets the node name
-	const Util::String& GetName() const;
+    /// sets the node name
+    void SetName(const Util::String& name);
+    /// gets the node name
+    const Util::String& GetName() const;
 
-	/// generates animation clip
-	virtual void GenerateAnimationClips(const Ptr<ToolkitUtil::ModelAttributes>& attributes);
-	/// returns animation resource
-	const ToolkitUtil::AnimBuilder& GetAnimation() const;
+    /// generates animation clip
+    virtual void GenerateAnimationClips(const Ptr<ToolkitUtil::ModelAttributes>& attributes);
+    /// returns animation resource
+    const ToolkitUtil::AnimBuilder& GetAnimation() const;
 
 protected:
 
-	/// extract animation curves from node
-	virtual void ExtractAnimationCurves(FbxAnimStack* stack, Util::Array<ToolkitUtil::AnimBuilderCurve>& curves, int& postInfType, int& preInfType, int span);
-	/// finds the total keyspan
-	virtual void ExtractKeySpan(FbxAnimStack* stack, int& span);
-	/// splits animation curves, returns true if splitter has any rules for this take
-	bool SplitCurves(const Util::String& animStackName, const Ptr<ToolkitUtil::ModelAttributes>& attributes, ToolkitUtil::AnimBuilder& anim, const Util::Array<ToolkitUtil::AnimBuilderCurve>& curves, int span);
+    /// extract animation curves from node
+    virtual void ExtractAnimationCurves(FbxAnimStack* stack, Util::Array<ToolkitUtil::AnimBuilderCurve>& curves, int& postInfType, int& preInfType, int span);
+    /// finds the total keyspan
+    virtual void ExtractKeySpan(FbxAnimStack* stack, int& span);
+    /// splits animation curves, returns true if splitter has any rules for this take
+    bool SplitCurves(const Util::String& animStackName, const Ptr<ToolkitUtil::ModelAttributes>& attributes, ToolkitUtil::AnimBuilder& anim, const Util::Array<ToolkitUtil::AnimBuilderCurve>& curves, int span);
 
-	/// recursively traverses nodes and calls DoMerge
-	void MergeChildren(Util::Dictionary<Util::String, Util::Array<Ptr<NFbxMeshNode> > >& meshes);
-	/// unparents children
-	virtual void DoMerge(Util::Dictionary<Util::String, Util::Array<Ptr<NFbxMeshNode> > >& meshes);
+    /// recursively traverses nodes and calls DoMerge
+    void MergeChildren(Util::Dictionary<Util::String, Util::Array<Ptr<NFbxMeshNode> > >& meshes);
+    /// unparents children
+    virtual void DoMerge(Util::Dictionary<Util::String, Util::Array<Ptr<NFbxMeshNode> > >& meshes);
 
-	friend class NFbxScene;
+    friend class NFbxScene;
 
-	FbxScene*						fbxScene;
-	FbxNode*						fbxNode;
-	Util::Array<Ptr<NFbxNode> >		children;
-	Ptr<NFbxNode>					parent;
-	WeakPtr<NFbxScene>				scene;
+    FbxScene*                       fbxScene;
+    FbxNode*                        fbxNode;
+    Util::Array<Ptr<NFbxNode> >     children;
+    Ptr<NFbxNode>                   parent;
+    WeakPtr<NFbxScene>              scene;
 
-	Util::String					name;
+    Util::String                    name;
 
-	Math::quat						rotation;
-	Math::vec4						position;
-	Math::vec4						scale;
-	Math::mat4						transform;
+    Math::quat                      rotation;
+    Math::vec4                      position;
+    Math::vec4                      scale;
+    Math::mat4                      transform;
 
-	ToolkitUtil::AnimBuilder		anim;
-	NodeType						type;
+    ToolkitUtil::AnimBuilder        anim;
+    NodeType                        type;
 
-	bool							isPhysics;
-	bool							isAnimated;
-	bool							isRoot;
+    bool                            isPhysics;
+    bool                            isAnimated;
+    bool                            isRoot;
 }; 
 
 //------------------------------------------------------------------------------
@@ -154,7 +154,7 @@ protected:
 inline void 
 NFbxNode::SetInitialRotation( const Math::quat& rot )
 {
-	this->rotation = rot;
+    this->rotation = rot;
 }
 
 //------------------------------------------------------------------------------
@@ -163,7 +163,7 @@ NFbxNode::SetInitialRotation( const Math::quat& rot )
 inline const Math::quat& 
 NFbxNode::GetInitialRotation() const
 {
-	return this->rotation;
+    return this->rotation;
 }
 
 //------------------------------------------------------------------------------
@@ -172,7 +172,7 @@ NFbxNode::GetInitialRotation() const
 inline void 
 NFbxNode::SetInitialPosition( const Math::vec4& pos )
 {
-	this->position = pos;
+    this->position = pos;
 }
 
 //------------------------------------------------------------------------------
@@ -181,7 +181,7 @@ NFbxNode::SetInitialPosition( const Math::vec4& pos )
 inline const Math::vec4& 
 NFbxNode::GetInitialPosition() const
 {
-	return this->position;
+    return this->position;
 }
 
 //------------------------------------------------------------------------------
@@ -190,7 +190,7 @@ NFbxNode::GetInitialPosition() const
 inline void 
 NFbxNode::SetInitialScale( const Math::vec4& scale )
 {
-	this->scale = scale;
+    this->scale = scale;
 }
 
 //------------------------------------------------------------------------------
@@ -199,7 +199,7 @@ NFbxNode::SetInitialScale( const Math::vec4& scale )
 inline const Math::vec4& 
 NFbxNode::GetInitialScale() const
 {
-	return this->scale;
+    return this->scale;
 }
 
 //------------------------------------------------------------------------------
@@ -208,7 +208,7 @@ NFbxNode::GetInitialScale() const
 inline const Math::mat4& 
 NFbxNode::GetTransform() const
 {
-	return this->transform;
+    return this->transform;
 }
 
 //------------------------------------------------------------------------------
@@ -217,8 +217,8 @@ NFbxNode::GetTransform() const
 inline FbxNode* 
 NFbxNode::GetNode() const
 {
-	n_assert(this->fbxNode);
-	return this->fbxNode;
+    n_assert(this->fbxNode);
+    return this->fbxNode;
 }
 
 //------------------------------------------------------------------------------
@@ -227,7 +227,7 @@ NFbxNode::GetNode() const
 inline const Ptr<NFbxNode>&
 NFbxNode::GetParent() const
 {
-	return this->parent;
+    return this->parent;
 }
 
 //------------------------------------------------------------------------------
@@ -236,7 +236,7 @@ NFbxNode::GetParent() const
 inline void 
 NFbxNode::SetParent( const Ptr<NFbxNode>& parent )
 {
-	this->parent = parent;
+    this->parent = parent;
 }
 
 //------------------------------------------------------------------------------
@@ -245,9 +245,9 @@ NFbxNode::SetParent( const Ptr<NFbxNode>& parent )
 inline const IndexT 
 NFbxNode::IndexOfChild( const Ptr<NFbxNode>& child )
 {
-	IndexT index = this->children.FindIndex(child);
-	n_assert(index != InvalidIndex);
-	return index;
+    IndexT index = this->children.FindIndex(child);
+    n_assert(index != InvalidIndex);
+    return index;
 }
 
 //------------------------------------------------------------------------------
@@ -256,7 +256,7 @@ NFbxNode::IndexOfChild( const Ptr<NFbxNode>& child )
 inline const NFbxNode::NodeType 
 NFbxNode::GetNodeType() const
 {
-	return this->type;
+    return this->type;
 }
 
 //------------------------------------------------------------------------------
@@ -265,7 +265,7 @@ NFbxNode::GetNodeType() const
 inline const ToolkitUtil::AnimBuilder& 
 NFbxNode::GetAnimation() const
 {
-	return this->anim;
+    return this->anim;
 }
 
 //------------------------------------------------------------------------------
@@ -274,7 +274,7 @@ NFbxNode::GetAnimation() const
 inline const bool 
 NFbxNode::IsPhysics() const
 {
-	return this->isPhysics;
+    return this->isPhysics;
 }
 
 //------------------------------------------------------------------------------
@@ -283,8 +283,8 @@ NFbxNode::IsPhysics() const
 inline void 
 NFbxNode::SetName( const Util::String& name )
 {
-	n_assert(name.IsValid());
-	this->name = name;
+    n_assert(name.IsValid());
+    this->name = name;
 }
 
 
@@ -294,7 +294,7 @@ NFbxNode::SetName( const Util::String& name )
 inline const Util::String& 
 NFbxNode::GetName() const
 {
-	return this->name;
+    return this->name;
 }
 
 } // namespace ToolkitUtil

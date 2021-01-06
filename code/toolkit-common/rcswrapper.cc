@@ -168,10 +168,10 @@ RCSWrapper::UpdateDirectory(Logger& logger, const String& directory, bool commit
     }
 
     // make sure the Subversion command line tool has been set and exists
-	if (!this->IsSVNCommandLineConfigured(logger))
-	{
-		return false;
-	}
+    if (!this->IsSVNCommandLineConfigured(logger))
+    {
+        return false;
+    }
 
     // launch SVN command line tool
     AppLauncher appLauncher;
@@ -233,25 +233,25 @@ RCSWrapper::UpdateDirectory(Logger& logger, const String& directory, bool commit
 bool
 RCSWrapper::GetModifiedFiles(Logger& logger, const String& directory, Array<String>& outFiles) const
 {
-	// check if the directory is under SVN control
+    // check if the directory is under SVN control
     if (!this->IsSVNDirectory(logger, directory))
     {
         return false;
     }
 
     // make sure the Subversion command line tool has been set and exists
-	if (!this->IsSVNCommandLineConfigured(logger))
-	{
-		return false;
-	}
-	
-	// launch SVN command line tool, redirect output to memory stream
+    if (!this->IsSVNCommandLineConfigured(logger))
+    {
+        return false;
+    }
+    
+    // launch SVN command line tool, redirect output to memory stream
     AppLauncher appLauncher;
     appLauncher.SetWorkingDirectory(directory);
     const String& svnArgs = "status --xml --non-interactive";
     appLauncher.SetExecutable(this->svnToolLocation);
     appLauncher.SetArguments(svnArgs);
-	
+    
     Ptr<MemoryStream> memoryStream = MemoryStream::Create();
     appLauncher.SetStdoutCaptureStream(memoryStream.upcast<Stream>());
 
@@ -259,7 +259,7 @@ RCSWrapper::GetModifiedFiles(Logger& logger, const String& directory, Array<Stri
     if (!appLauncher.LaunchWait())
     {
         logger.Error("Failed to launch SVN tool!\n");
-		return false;
+        return false;
     }
     
     if(!this->ParseSVNStatusOutput(memoryStream.upcast<Stream>(), directory, outFiles))
@@ -267,7 +267,7 @@ RCSWrapper::GetModifiedFiles(Logger& logger, const String& directory, Array<Stri
         logger.Error("Failed to parse SVN status output!\n");
         return false;
     }
-	return true;
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -276,14 +276,14 @@ RCSWrapper::GetModifiedFiles(Logger& logger, const String& directory, Array<Stri
 bool
 RCSWrapper::IsSVNDirectory(Logger& logger, const String& directory) const
 {
-	IoServer* ioServer = IoServer::Instance();
+    IoServer* ioServer = IoServer::Instance();
 
     if (!ioServer->DirectoryExists(directory + "/.svn"))
     {
         logger.Error("Directory not under SVN or CVS control: %s\n", directory.AsCharPtr());
         return false;
     }
-	return true;
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -292,8 +292,8 @@ RCSWrapper::IsSVNDirectory(Logger& logger, const String& directory) const
 bool
 RCSWrapper::IsSVNCommandLineConfigured(Logger& logger) const
 {
-	IoServer* ioServer = IoServer::Instance();
-	
+    IoServer* ioServer = IoServer::Instance();
+    
     if (!this->svnToolLocation.IsValid())
     {
         logger.Error("SVN command line tool has not been set!\n");
@@ -304,7 +304,7 @@ RCSWrapper::IsSVNCommandLineConfigured(Logger& logger) const
         logger.Error("SVN command line tool not found: '%s'!\n", this->svnToolLocation.AsCharPtr());
         return false;
     }
-	return true;
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -314,11 +314,11 @@ bool
 RCSWrapper::ParseSVNStatusOutput(const Ptr<Stream>& stream, const String& directory, Array<String>& outFiles) const
 {
     Ptr<XmlReader> xmlReader = XmlReader::Create();
-	xmlReader->SetStream(stream);
+    xmlReader->SetStream(stream);
     // parse SVN command line tool output for modified files in working copy, append them to output array
-	if (xmlReader->Open())
-	{
-		if(xmlReader->SetToFirstChild("target"))
+    if (xmlReader->Open())
+    {
+        if(xmlReader->SetToFirstChild("target"))
         {
             if(xmlReader->SetToFirstChild("entry"))
             {
@@ -336,9 +336,9 @@ RCSWrapper::ParseSVNStatusOutput(const Ptr<Stream>& stream, const String& direct
                 } while(xmlReader->SetToNextChild("entry"));
             }
         }
-		xmlReader->Close();
+        xmlReader->Close();
         return true;
-	}
+    }
     return false;
 }
 

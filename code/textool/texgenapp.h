@@ -31,6 +31,7 @@ private:
     float BGRA[4];
     int outputWidth;
     int outputHeight;
+    int outputChannels;
 };
 
 } // namespace Toolkit

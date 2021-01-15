@@ -22,7 +22,8 @@ using namespace IO;
 TexGenApp::TexGenApp() :
     ToolkitApp(),
     outputWidth(0),
-    outputHeight(0)
+    outputHeight(0),
+    outputChannels(0)
 {
     this->BGRA[0] = -1.0f;
     this->BGRA[1] = -1.0f;
@@ -50,18 +51,33 @@ TexGenApp::Run()
     ILint imgWidth = this->outputWidth;
     ILint imgHeight = this->outputHeight;
     
-    ILint numChannels = 4;
+    ILint numChannels = this->outputChannels;
     ILenum format = 0;
+    switch (numChannels)
+    {
+    case 1:
+        format = IL_RED;
+        break;
+    case 2:
+        format = IL_RG;
+        break;
+    case 3:
+        format = IL_RGB;
+        break;
+    case 4:
+        format = IL_RGBA;
+        break;
+    }
     ILenum type = 0;
 
     bool initialized = false;
-    auto InitializeImage = [&initialized, &imgWidth, &imgHeight, &numChannels, &format, &type](ILuint outputImage, ILuint inputImage, float inputWidth, float inputHeight)
+    auto InitializeImage = [&initialized, &imgWidth, &imgHeight, &numChannels, &format, &type](ILuint outputImage, ILuint inputImage, float inputWidth, float inputHeight, int inputChannels, ILenum inputFormat)
     {
         imgWidth = imgWidth > 0 ? imgWidth : inputWidth;
         imgHeight = imgHeight > 0 ? imgHeight : inputHeight;
+        numChannels = numChannels > 0 ? numChannels : inputChannels;
+        format = format > 0 ? format : inputFormat;
 
-        numChannels = ilGetInteger(IL_IMAGE_CHANNELS); //IL_IMAGE_BYTES_PER_PIXEL
-        format = ilGetInteger(IL_IMAGE_FORMAT);
         type = ilGetInteger(IL_IMAGE_TYPE);
 
         ilBindImage(outputImage);
@@ -89,8 +105,10 @@ TexGenApp::Run()
 
         ILint inputWidth = ilGetInteger(IL_IMAGE_WIDTH);
         ILint inputHeight = ilGetInteger(IL_IMAGE_HEIGHT);
+        ILint inputChannels = ilGetInteger(IL_IMAGE_CHANNELS);
+        ILenum format = ilGetInteger(IL_IMAGE_FORMAT);
 
-        InitializeImage(outputImage, inputImage, inputWidth, inputHeight);
+        InitializeImage(outputImage, inputImage, inputWidth, inputHeight, inputChannels, format);
         ilBindImage(outputImage);
         iluImageParameter(ILU_FILTER, ILU_SCALE_BOX);
         ilCopyImage(inputImage);
@@ -150,7 +168,7 @@ TexGenApp::Run()
 
             if (!initialized)
             {
-                InitializeImage(outputImage, channelImage, channelWidth, channelHeight);
+                InitializeImage(outputImage, channelImage, imgWidth, imgHeight, numChannels, format);
             }
 
             ilBindImage(channelImage);
@@ -246,7 +264,84 @@ bool TexGenApp::ParseCmdLineArgs()
         
         if (this->args.HasArg("-i"))
         {
-            this->inputFile = this->args.GetString("-i");
+            Util::Array<Util::String> inputs = this->args.GetStrings("-i");
+
+            for (IndexT i = 0; i < inputs.Size(); i++)
+            {
+                Util::String input = inputs[i];
+                Util::Array<Util::String> swizzle = input.Tokenize("?");
+                this->inputFile = swizzle.Size() == 0 ? swizzle[0] : "";
+                if (swizzle.Size() > 0)
+                {
+                    Util::String file = swizzle[0];
+
+                    // channels are split into source:target
+                    Util::Array<Util::String> channels = swizzle[1].Tokenize(":");
+                    if (channels.Size() != 2)
+                    {
+                        this->logger.Print("If using channel swizzling, must specify (r|g|b|a):(r|g|b|a)");
+                        return false;
+                    }
+                    if (channels[0].Length() > 4 || channels[1].Length() > 4)
+                    {
+                        this->logger.Print("Too many channels specified '%s' or '%s'", channels[0].AsCharPtr(), channels[1].AsCharPtr());
+                        return false;
+                    }
+                    if (channels[0].Length() != channels[1].Length())
+                    {
+                        this->logger.Print("Swizzle arguments must be of equal size, but provided '%d';'%d'", channels[0].Length(), channels[1].Length());
+                        return false;
+                    }
+                    
+                    for (int j = 0; j < channels[0].Length(); j++)
+                    {
+                        char c = channels[1][j];
+                        switch (c)
+                        {
+                        case 'r':
+                        case 'R':
+                            if (!this->outputBGRA[2].IsEmpty())
+                            {
+                                this->logger.Print("Red channel already occupied by '%s'", this->outputBGRA[2].AsCharPtr());
+                                return false;
+                            }
+                            else
+                                this->outputBGRA[2] = Util::String::Sprintf("%s:%c", file.AsCharPtr(), channels[1][j]);
+                            break;
+                        case 'g':
+                        case 'G':
+                            if (!this->outputBGRA[1].IsEmpty())
+                            {
+                                this->logger.Print("Green channel already occupied by '%s'", this->outputBGRA[1].AsCharPtr());
+                                return false;
+                            }
+                            else
+                                this->outputBGRA[1] = Util::String::Sprintf("%s:%c", file.AsCharPtr(), channels[1][j]);
+                            break;
+                        case 'b':
+                        case 'B':
+                            if (!this->outputBGRA[0].IsEmpty())
+                            {
+                                this->logger.Print("Blue channel already occupied by '%s'", this->outputBGRA[0].AsCharPtr());
+                                return false;
+                            }
+                            else
+                                this->outputBGRA[0] = Util::String::Sprintf("%s:%c", file.AsCharPtr(), channels[1][j]);
+                            break;
+                        case 'a':
+                        case 'A':
+                            if (!this->outputBGRA[3].IsEmpty())
+                            {
+                                this->logger.Print("Alpha channel already occupied by '%s'", this->outputBGRA[3].AsCharPtr());
+                                return false;
+                            }
+                            else
+                                this->outputBGRA[3] = Util::String::Sprintf("%s:%c", file.AsCharPtr(), channels[1][j]);
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         constexpr char* bgra = "bgra";
@@ -263,20 +358,14 @@ bool TexGenApp::ParseCmdLineArgs()
                 }
                 else
                 {
-                    this->outputBGRA[i] = val;
+                    this->logger.Print("When specifying a single channel value, must be float or int");
                 }
             }
         }
 
-        for (int i = 0; i < 4; i++)
-        {
-            Util::String arg;
-            arg.Format("-%c", bgra[i]);
-            
-        }
-
         this->outputWidth = this->args.GetInt("-w", 0);
         this->outputHeight = this->args.GetInt("-h", 0);
+        this->outputChannels = this->args.GetInt("-c", 0);
 
         return true;
     }
@@ -293,13 +382,13 @@ TexGenApp::ShowHelp()
             "[Toolkit %s]\n"
             "(C) 2020 Individual Authors, see AUTHORS file.\n\n", this->GetAppVersion().AsCharPtr(), this->GetToolkitVersion().AsCharPtr());
     n_printf("Available options:"
-             "-help                        -- Print this help message\n"
-             "-o <file>                    -- Output file path and extension\n"
-             "-w [width]                   -- Output file's width. Will infer from input if not specified.\n"
-             "-h [height]                  -- Output file's height. Will infer from input if not specified.\n"
-             "-i <file>                    -- Input file path and extension\n"
-             "-(r|g|b|a) [0, 1]            -- Set a channel to a value between 0 and 1. Takes priority over '-i'\n"
-             "-(r|g|b|a) <file>:(r|g|b|a)  -- Set output's red, green, blue or alpha channel from a specific channel in an input file.\n"
+             "-help                                         -- Print this help message\n"
+             "-o <file>                                     -- Output file path and extension\n"
+             "-c [channels]                                 -- Output file's channels.\n"
+             "-w [width]                                    -- Output file's width. Will infer from input if not specified.\n"
+             "-h [height]                                   -- Output file's height. Will infer from input if not specified.\n"
+             "-i <file> [?(rR|gG|bB|aA):(rR|gG|bB|aA)]      -- Input file path and extension, optionally use ? to specify source and target channels\n"
+             "-(r|g|b|a) [0, 1]                             -- Set a channel to a value between 0 and 1. Takes priority over '-i'\n"
              "                                Can be specified multiple times.\n"
              "                                Takes priority over '-(r/g/b/a)' and '-i'\n\n"
              "Example: texgen -o foo.bmp -i bar.bmp -o:r gnyrf.bmp:b -a 0.5\n"

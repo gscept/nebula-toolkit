@@ -26,13 +26,13 @@ using namespace Math;
 bool
 MeshBuilderSaver::SaveNvx2(const URI& uri, MeshBuilder& meshBuilder, Platform::Code platform)
 {
-	// extend vertex components to maintain uniform buffer structure
-	meshBuilder.ExtendVertexComponents();
+    // extend vertex components to maintain uniform buffer structure
+    meshBuilder.ExtendVertexComponents();
 
-	// sort triangles by group id and create a group map
-	meshBuilder.SortTriangles();
-	Array<MeshBuilderGroup> groupMap;
-	meshBuilder.BuildGroupMap(groupMap);
+    // sort triangles by group id and create a group map
+    meshBuilder.SortTriangles();
+    Array<MeshBuilderGroup> groupMap;
+    meshBuilder.BuildGroupMap(groupMap);
 
     // make sure the target directory exists
     IoServer::Instance()->CreateDirectory(uri.LocalPath().ExtractDirName());
@@ -41,12 +41,12 @@ MeshBuilderSaver::SaveNvx2(const URI& uri, MeshBuilder& meshBuilder, Platform::C
     stream->SetAccessMode(Stream::WriteAccess);
     if (stream->Open())
     {
-		ByteOrder byteOrder(ByteOrder::Host, Platform::GetPlatformByteOrder(platform));
+        ByteOrder byteOrder(ByteOrder::Host, Platform::GetPlatformByteOrder(platform));
 
         MeshBuilderSaver::WriteHeaderNvx2(stream, meshBuilder, groupMap.Size(), byteOrder);
-		MeshBuilderSaver::WriteGroupsNvx2(stream, meshBuilder, groupMap, byteOrder);
-		MeshBuilderSaver::WriteVertices(stream, meshBuilder, byteOrder);
-		MeshBuilderSaver::WriteTriangles(stream, meshBuilder, byteOrder);
+        MeshBuilderSaver::WriteGroupsNvx2(stream, meshBuilder, groupMap, byteOrder);
+        MeshBuilderSaver::WriteVertices(stream, meshBuilder, byteOrder);
+        MeshBuilderSaver::WriteTriangles(stream, meshBuilder, byteOrder);
 
         stream->Close();
         stream = nullptr;
@@ -58,7 +58,7 @@ MeshBuilderSaver::SaveNvx2(const URI& uri, MeshBuilder& meshBuilder, Platform::C
         return false;
     }
 
-	return true;
+    return true;
 }
 
 
@@ -68,38 +68,38 @@ MeshBuilderSaver::SaveNvx2(const URI& uri, MeshBuilder& meshBuilder, Platform::C
 bool 
 MeshBuilderSaver::SaveNvx3( const IO::URI& uri, MeshBuilder& meshBuilder, Platform::Code platform )
 {
-	meshBuilder.ExtendVertexComponents();
+    meshBuilder.ExtendVertexComponents();
 
-	// sort triangles by group id and create a group map
-	meshBuilder.SortTriangles();
-	Array<MeshBuilderGroup> groupMap;
-	meshBuilder.BuildGroupMap(groupMap);
+    // sort triangles by group id and create a group map
+    meshBuilder.SortTriangles();
+    Array<MeshBuilderGroup> groupMap;
+    meshBuilder.BuildGroupMap(groupMap);
 
-	// make sure the target directory exists
-	IoServer::Instance()->CreateDirectory(uri.LocalPath().ExtractDirName());
+    // make sure the target directory exists
+    IoServer::Instance()->CreateDirectory(uri.LocalPath().ExtractDirName());
 
-	Ptr<Stream> stream = IoServer::Instance()->CreateStream(uri);
-	stream->SetAccessMode(Stream::WriteAccess);
-	if (stream->Open())
-	{
-		ByteOrder byteOrder(ByteOrder::Host, Platform::GetPlatformByteOrder(platform));
+    Ptr<Stream> stream = IoServer::Instance()->CreateStream(uri);
+    stream->SetAccessMode(Stream::WriteAccess);
+    if (stream->Open())
+    {
+        ByteOrder byteOrder(ByteOrder::Host, Platform::GetPlatformByteOrder(platform));
 
-		MeshBuilderSaver::WriteHeaderNvx3(stream, meshBuilder, groupMap.Size(), byteOrder);
-		MeshBuilderSaver::WriteGroupsNvx3(stream, meshBuilder, groupMap, byteOrder);
-		MeshBuilderSaver::WriteVertices(stream, meshBuilder, byteOrder);
-		MeshBuilderSaver::WriteTriangles(stream, meshBuilder, byteOrder);
+        MeshBuilderSaver::WriteHeaderNvx3(stream, meshBuilder, groupMap.Size(), byteOrder);
+        MeshBuilderSaver::WriteGroupsNvx3(stream, meshBuilder, groupMap, byteOrder);
+        MeshBuilderSaver::WriteVertices(stream, meshBuilder, byteOrder);
+        MeshBuilderSaver::WriteTriangles(stream, meshBuilder, byteOrder);
 
-		stream->Close();
-		stream = nullptr;
-		return true;
-	}
-	else
-	{
-		// failed to open write stream
-		return false;
-	}
+        stream->Close();
+        stream = nullptr;
+        return true;
+    }
+    else
+    {
+        // failed to open write stream
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -108,21 +108,21 @@ MeshBuilderSaver::SaveNvx3( const IO::URI& uri, MeshBuilder& meshBuilder, Platfo
 void 
 MeshBuilderSaver::WriteHeaderNvx3( const Ptr<IO::Stream>& stream, MeshBuilder& meshBuilder, SizeT numGroups, const System::ByteOrder& byteOrder )
 {
-	const int vertexWidth = meshBuilder.VertexAt(0).GetWidth();
-	const int numVertices = meshBuilder.GetNumVertices();
-	const int numTriangles = meshBuilder.GetNumTriangles();
+    const int vertexWidth = meshBuilder.VertexAt(0).GetWidth();
+    const int numVertices = meshBuilder.GetNumVertices();
+    const int numTriangles = meshBuilder.GetNumTriangles();
 
-	// write header
-	Nvx3Header nvx3Header;
-	nvx3Header.magic = byteOrder.Convert<uint>('NVX3');
-	nvx3Header.numGroups = byteOrder.Convert<uint>(numGroups);
-	nvx3Header.numVertices = byteOrder.Convert<uint>(numVertices);
-	nvx3Header.vertexWidth = byteOrder.Convert<uint>(vertexWidth);
-	nvx3Header.numIndices = byteOrder.Convert<uint>(numTriangles);
-	nvx3Header.vertexComponentMask = byteOrder.Convert<uint>(meshBuilder.VertexAt(0).GetComponentMask());
+    // write header
+    Nvx3Header nvx3Header;
+    nvx3Header.magic = byteOrder.Convert<uint>('NVX3');
+    nvx3Header.numGroups = byteOrder.Convert<uint>(numGroups);
+    nvx3Header.numVertices = byteOrder.Convert<uint>(numVertices);
+    nvx3Header.vertexWidth = byteOrder.Convert<uint>(vertexWidth);
+    nvx3Header.numIndices = byteOrder.Convert<uint>(numTriangles);
+    nvx3Header.vertexComponentMask = byteOrder.Convert<uint>(meshBuilder.VertexAt(0).GetComponentMask());
 
-	// write header
-	stream->Write(&nvx3Header, sizeof(nvx3Header));
+    // write header
+    stream->Write(&nvx3Header, sizeof(nvx3Header));
 }
 
 //------------------------------------------------------------------------------
@@ -131,25 +131,25 @@ MeshBuilderSaver::WriteHeaderNvx3( const Ptr<IO::Stream>& stream, MeshBuilder& m
 void 
 MeshBuilderSaver::WriteGroupsNvx3( const Ptr<IO::Stream>& stream, MeshBuilder& meshBuilder, Util::Array<MeshBuilderGroup>& groupMap, const System::ByteOrder& byteOrder )
 {
-	int curGroupIndex;
-	for (curGroupIndex = 0; curGroupIndex < groupMap.Size(); curGroupIndex++)
-	{
-		const MeshBuilderGroup& curGroup = groupMap[curGroupIndex];
-		int firstTriangle = curGroup.GetFirstTriangleIndex();
-		int numTriangles  = curGroup.GetNumTriangles();
-		int minVertexIndex, maxVertexIndex;
-		meshBuilder.FindGroupVertexRange(curGroup.GetGroupId(), minVertexIndex, maxVertexIndex);
-		
-		Nvx3Group nvx3Group;
-		nvx3Group.firstVertex = byteOrder.Convert<uint>(minVertexIndex);
-		nvx3Group.numVertices = byteOrder.Convert<uint>((maxVertexIndex - minVertexIndex) + 1);
-		nvx3Group.firstTriangle = byteOrder.Convert<uint>(firstTriangle);
-		nvx3Group.numTriangles = byteOrder.Convert<uint>(numTriangles);
-		nvx3Group.primType = PrimitiveTopology::TriangleList;
+    int curGroupIndex;
+    for (curGroupIndex = 0; curGroupIndex < groupMap.Size(); curGroupIndex++)
+    {
+        const MeshBuilderGroup& curGroup = groupMap[curGroupIndex];
+        int firstTriangle = curGroup.GetFirstTriangleIndex();
+        int numTriangles  = curGroup.GetNumTriangles();
+        int minVertexIndex, maxVertexIndex;
+        meshBuilder.FindGroupVertexRange(curGroup.GetGroupId(), minVertexIndex, maxVertexIndex);
+        
+        Nvx3Group nvx3Group;
+        nvx3Group.firstVertex = byteOrder.Convert<uint>(minVertexIndex);
+        nvx3Group.numVertices = byteOrder.Convert<uint>((maxVertexIndex - minVertexIndex) + 1);
+        nvx3Group.firstTriangle = byteOrder.Convert<uint>(firstTriangle);
+        nvx3Group.numTriangles = byteOrder.Convert<uint>(numTriangles);
+        nvx3Group.primType = PrimitiveTopology::TriangleList;
 
-		// write group to stream
-		stream->Write(&nvx3Group, sizeof(nvx3Group));
-	}
+        // write group to stream
+        stream->Write(&nvx3Group, sizeof(nvx3Group));
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -158,21 +158,21 @@ MeshBuilderSaver::WriteGroupsNvx3( const Ptr<IO::Stream>& stream, MeshBuilder& m
 void
 MeshBuilderSaver::WriteHeaderNvx2(const Ptr<Stream>& stream, MeshBuilder& meshBuilder, SizeT numGroups, const ByteOrder& byteOrder)
 {
-	const int vertexWidth = meshBuilder.VertexAt(0).GetWidth();
-	const int numVertices = meshBuilder.GetNumVertices();
-	const int numTriangles = meshBuilder.GetNumTriangles();
-	const int numEdges = 0; // Test-haXX
+    const int vertexWidth = meshBuilder.VertexAt(0).GetWidth();
+    const int numVertices = meshBuilder.GetNumVertices();
+    const int numTriangles = meshBuilder.GetNumTriangles();
+    const int numEdges = 0; // Test-haXX
 
-	// write header
+    // write header
 
-	Nvx2Header nvx2Header;
-	nvx2Header.magic = byteOrder.Convert<uint>('NVX2');
-	nvx2Header.numGroups = byteOrder.Convert<uint>(numGroups);
-	nvx2Header.numVertices = byteOrder.Convert<uint>(numVertices);
-	nvx2Header.vertexWidth = byteOrder.Convert<uint>(vertexWidth);
-	nvx2Header.numIndices = byteOrder.Convert<uint>(numTriangles);
-	nvx2Header.numEdges = byteOrder.Convert<uint>(numEdges);
-	nvx2Header.vertexComponentMask = byteOrder.Convert<uint>(meshBuilder.VertexAt(0).GetComponentMask());
+    Nvx2Header nvx2Header;
+    nvx2Header.magic = byteOrder.Convert<uint>('NVX2');
+    nvx2Header.numGroups = byteOrder.Convert<uint>(numGroups);
+    nvx2Header.numVertices = byteOrder.Convert<uint>(numVertices);
+    nvx2Header.vertexWidth = byteOrder.Convert<uint>(vertexWidth);
+    nvx2Header.numIndices = byteOrder.Convert<uint>(numTriangles);
+    nvx2Header.numEdges = byteOrder.Convert<uint>(numEdges);
+    nvx2Header.vertexComponentMask = byteOrder.Convert<uint>(meshBuilder.VertexAt(0).GetComponentMask());
 
     // write header
     stream->Write(&nvx2Header, sizeof(nvx2Header));
@@ -184,28 +184,28 @@ MeshBuilderSaver::WriteHeaderNvx2(const Ptr<Stream>& stream, MeshBuilder& meshBu
 void
 MeshBuilderSaver::WriteGroupsNvx2(const Ptr<Stream>& stream, MeshBuilder& meshBuilder, Util::Array<MeshBuilderGroup>& groupMap, const ByteOrder& byteOrder)
 {
-	int curGroupIndex;
-	for (curGroupIndex = 0; curGroupIndex < groupMap.Size(); curGroupIndex++)
-	{
-		const MeshBuilderGroup& curGroup = groupMap[curGroupIndex];
-		int firstTriangle = curGroup.GetFirstTriangleIndex();
-		int numTriangles  = curGroup.GetNumTriangles();
-		int minVertexIndex, maxVertexIndex;
-		meshBuilder.FindGroupVertexRange(curGroup.GetGroupId(), minVertexIndex, maxVertexIndex);
-		int minEdgeIndex, maxEdgeIndex;
-		minEdgeIndex = maxEdgeIndex = 0;
-		
-		Nvx2Group nvx2Group;
-		nvx2Group.firstVertex = byteOrder.Convert<uint>(minVertexIndex);
-		nvx2Group.numVertices = byteOrder.Convert<uint>((maxVertexIndex - minVertexIndex) + 1);
-		nvx2Group.firstTriangle = byteOrder.Convert<uint>(firstTriangle);
-		nvx2Group.numTriangles = byteOrder.Convert<uint>(numTriangles);
-		nvx2Group.firstEdge = byteOrder.Convert<uint>(minEdgeIndex);
-		nvx2Group.numEdges = byteOrder.Convert<uint>((maxEdgeIndex - minEdgeIndex) + 1);
+    int curGroupIndex;
+    for (curGroupIndex = 0; curGroupIndex < groupMap.Size(); curGroupIndex++)
+    {
+        const MeshBuilderGroup& curGroup = groupMap[curGroupIndex];
+        int firstTriangle = curGroup.GetFirstTriangleIndex();
+        int numTriangles  = curGroup.GetNumTriangles();
+        int minVertexIndex, maxVertexIndex;
+        meshBuilder.FindGroupVertexRange(curGroup.GetGroupId(), minVertexIndex, maxVertexIndex);
+        int minEdgeIndex, maxEdgeIndex;
+        minEdgeIndex = maxEdgeIndex = 0;
+        
+        Nvx2Group nvx2Group;
+        nvx2Group.firstVertex = byteOrder.Convert<uint>(minVertexIndex);
+        nvx2Group.numVertices = byteOrder.Convert<uint>((maxVertexIndex - minVertexIndex) + 1);
+        nvx2Group.firstTriangle = byteOrder.Convert<uint>(firstTriangle);
+        nvx2Group.numTriangles = byteOrder.Convert<uint>(numTriangles);
+        nvx2Group.firstEdge = byteOrder.Convert<uint>(minEdgeIndex);
+        nvx2Group.numEdges = byteOrder.Convert<uint>((maxEdgeIndex - minEdgeIndex) + 1);
 
-		// write group to stream
-		stream->Write(&nvx2Group, sizeof(nvx2Group));
-	}
+        // write group to stream
+        stream->Write(&nvx2Group, sizeof(nvx2Group));
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -414,24 +414,24 @@ MeshBuilderSaver::WriteVertices(const Ptr<Stream>& stream, MeshBuilder& meshBuil
 void
 MeshBuilderSaver::WriteTriangles(const Ptr<Stream>& stream, MeshBuilder& meshBuilder, const ByteOrder& byteOrder)
 {
-	int numTriangles = meshBuilder.GetNumTriangles();
-	uint* uintBuffer = n_new_array(uint, numTriangles * 3);
-	uint* uintPtr = uintBuffer;
-	int curTriangleIndex;
-	for (curTriangleIndex = 0; curTriangleIndex < numTriangles; curTriangleIndex++)
-	{
-		const MeshBuilderTriangle& curTriangle = meshBuilder.TriangleAt(curTriangleIndex);
-		int i0, i1, i2;
-		curTriangle.GetVertexIndices(i0, i1, i2);
-		*uintPtr++ = (uint) i0;
-		*uintPtr++ = (uint) i1;
-		*uintPtr++ = (uint) i2;
-	}
-	// write triangle to stream
-	stream->Write(uintBuffer, numTriangles * 3 * sizeof(uint));
-	n_delete_array(uintBuffer);
-	uintBuffer = 0;
-		
+    int numTriangles = meshBuilder.GetNumTriangles();
+    uint* uintBuffer = n_new_array(uint, numTriangles * 3);
+    uint* uintPtr = uintBuffer;
+    int curTriangleIndex;
+    for (curTriangleIndex = 0; curTriangleIndex < numTriangles; curTriangleIndex++)
+    {
+        const MeshBuilderTriangle& curTriangle = meshBuilder.TriangleAt(curTriangleIndex);
+        int i0, i1, i2;
+        curTriangle.GetVertexIndices(i0, i1, i2);
+        *uintPtr++ = (uint) i0;
+        *uintPtr++ = (uint) i1;
+        *uintPtr++ = (uint) i2;
+    }
+    // write triangle to stream
+    stream->Write(uintBuffer, numTriangles * 3 * sizeof(uint));
+    n_delete_array(uintBuffer);
+    uintBuffer = 0;
+        
 
 }
 

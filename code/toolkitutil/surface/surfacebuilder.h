@@ -15,9 +15,9 @@ class SurfaceBuilder
 {
 public:
     ///
-	SurfaceBuilder();
+    SurfaceBuilder();
     ///
-	~SurfaceBuilder();
+    ~SurfaceBuilder();
 
     void SetDstDir(Util::String const& dir);
     void SetMaterial(Util::String const& name);

@@ -18,7 +18,7 @@ __ImplementAbstractClass(ToolkitUtil::LevelParser, 'LVPR', Core::RefCounted);
 */
 LevelParser::LevelParser()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ LevelParser::LevelParser()
 */
 LevelParser::~LevelParser()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ LevelParser::LoadXmlLevel(const Ptr<IO::XmlReader> & reader)
         reader->SetToFirstChild();
 
         String levelName = reader->GetString("name");
-        String levelId = reader->GetString("id");		
+        String levelId = reader->GetString("id");       
         int levelversion = reader->GetInt("Version");
         if (levelversion < 1)
         {
@@ -50,16 +50,16 @@ LevelParser::LoadXmlLevel(const Ptr<IO::XmlReader> & reader)
             return false;
         }
 
-		if (reader->HasStream())
-		{
-			Util::String fileName = reader->GetStream()->GetURI().LocalPath().ExtractFileName();
-			fileName.StripFileExtension();
-			if (fileName != levelName)
-			{
-				// someone changed the filename outside of the leveleditor, use the external one instead
-				levelName = fileName;
-			}
-		}
+        if (reader->HasStream())
+        {
+            Util::String fileName = reader->GetStream()->GetURI().LocalPath().ExtractFileName();
+            fileName.StripFileExtension();
+            if (fileName != levelName)
+            {
+                // someone changed the filename outside of the leveleditor, use the external one instead
+                levelName = fileName;
+            }
+        }
 
 
         this->SetName(levelName);
@@ -72,10 +72,10 @@ LevelParser::LoadXmlLevel(const Ptr<IO::XmlReader> & reader)
                 {
                     Util::String name = reader->GetString("name");
                     bool autoload= reader->GetBool("autoload");
-                    bool visible = reader->GetBool("visible");					
-                    bool locked = reader->GetBool("locked");						
+                    bool visible = reader->GetBool("visible");                  
+                    bool locked = reader->GetBool("locked");                        
                     this->AddLayer(name, visible, autoload, locked);                    
-                }while (reader->SetToNextChild());								
+                }while (reader->SetToNextChild());                              
             }
             reader->SetToNextChild("Entities");
         }
@@ -84,14 +84,14 @@ LevelParser::LoadXmlLevel(const Ptr<IO::XmlReader> & reader)
             reader->SetToFirstChild("Entities");
         }
         
-		this->invalidAttrs.Clear();
+        this->invalidAttrs.Clear();
 
         reader->SetToFirstChild();
         do 
         {
-			this->LoadEntity(reader);            
+            this->LoadEntity(reader);            
         }
-		while(reader->SetToNextChild("Object"));
+        while(reader->SetToNextChild("Object"));
 
         if (!this->invalidAttrs.IsEmpty())
         {
@@ -112,7 +112,7 @@ LevelParser::LoadXmlLevel(const Ptr<IO::XmlReader> & reader)
             
             if (levelversion == 2)
             {
-                Util::String preset = reader->GetOptString("PostEffectPreset", "Default");				
+                Util::String preset = reader->GetOptString("PostEffectPreset", "Default");              
                 Math::matrix44 trans;
                 if (reader->HasAttr("GlobalLightTransform"))
                 {
@@ -120,7 +120,7 @@ LevelParser::LoadXmlLevel(const Ptr<IO::XmlReader> & reader)
                     trans = transString.AsMatrix44();
                 }
                 this->SetPosteffect(preset, trans);                
-            }	
+            }   
             Math::float4 center(0);
             Math::float4 extends(1);
             if(reader->HasAttr("WorldCenter"))
@@ -154,73 +154,73 @@ LevelParser::LoadXmlLevel(const Ptr<IO::XmlReader> & reader)
 bool
 LevelParser::LoadEntity(const Ptr<IO::XmlReader> & reader)
 {
-	Util::String name = reader->GetCurrentNodeName();
-	if (name == "Object")
-	{
-		AttributeContainer entAttrs;
-		String category = reader->GetString("category");
-		if (reader->SetToFirstChild("Attributes"))
-		{
+    Util::String name = reader->GetCurrentNodeName();
+    if (name == "Object")
+    {
+        AttributeContainer entAttrs;
+        String category = reader->GetString("category");
+        if (reader->SetToFirstChild("Attributes"))
+        {
 
-			reader->SetToFirstChild();
-			do
-			{
-				String name = reader->GetCurrentNodeName();
-				String val;
-				if (reader->HasContent())
-				{
-					val = reader->GetContent();
-				}
+            reader->SetToFirstChild();
+            do
+            {
+                String name = reader->GetCurrentNodeName();
+                String val;
+                if (reader->HasContent())
+                {
+                    val = reader->GetContent();
+                }
 
-				Attr::AttrId id(Attr::AttributeDefinitionBase::FindByName(name));
+                Attr::AttrId id(Attr::AttributeDefinitionBase::FindByName(name));
 
-				if (!id.IsValid())
-				{
+                if (!id.IsValid())
+                {
 
-					if (InvalidIndex == this->invalidAttrs.FindIndex(name))
-					{
-						this->invalidAttrs.Append(name);
-					}
+                    if (InvalidIndex == this->invalidAttrs.FindIndex(name))
+                    {
+                        this->invalidAttrs.Append(name);
+                    }
 
-					continue;
-				}
+                    continue;
+                }
 
-				switch (id.GetValueType())
-				{
-				case IntType:
-					entAttrs.SetAttr(Attribute(id, val.AsInt()));
-					break;
-				case FloatType:
-					entAttrs.SetAttr(Attribute(id, val.AsFloat()));
-					break;
-				case BoolType:
-					entAttrs.SetAttr(Attribute(id, val.AsBool()));
-					break;
-				case Float4Type:
-					entAttrs.SetAttr(Attribute(id, val.AsFloat4()));
-					break;
-				case StringType:
-					entAttrs.SetAttr(Attribute(id, val));
-					break;
-				case Matrix44Type:
-					entAttrs.SetAttr(Attribute(id, val.AsMatrix44()));
-					break;
-				case GuidType:
-					entAttrs.SetAttr(Attribute(id, Util::Guid::FromString(val)));
-					break;
-				case BlobType:
-					entAttrs.SetAttr(Attribute(id, val.AsBlob()));
-					break;
-				default:
-					break;
-				}
-			} while (reader->SetToNextChild());
-			reader->SetToParent();
-		}
-		this->AddEntity(category, entAttrs);
-		return true;
-	}
-	return false;
+                switch (id.GetValueType())
+                {
+                case IntType:
+                    entAttrs.SetAttr(Attribute(id, val.AsInt()));
+                    break;
+                case FloatType:
+                    entAttrs.SetAttr(Attribute(id, val.AsFloat()));
+                    break;
+                case BoolType:
+                    entAttrs.SetAttr(Attribute(id, val.AsBool()));
+                    break;
+                case Float4Type:
+                    entAttrs.SetAttr(Attribute(id, val.AsFloat4()));
+                    break;
+                case StringType:
+                    entAttrs.SetAttr(Attribute(id, val));
+                    break;
+                case Matrix44Type:
+                    entAttrs.SetAttr(Attribute(id, val.AsMatrix44()));
+                    break;
+                case GuidType:
+                    entAttrs.SetAttr(Attribute(id, Util::Guid::FromString(val)));
+                    break;
+                case BlobType:
+                    entAttrs.SetAttr(Attribute(id, val.AsBlob()));
+                    break;
+                default:
+                    break;
+                }
+            } while (reader->SetToNextChild());
+            reader->SetToParent();
+        }
+        this->AddEntity(category, entAttrs);
+        return true;
+    }
+    return false;
 }
 
 } // namespace ToolkitUtil

@@ -32,7 +32,7 @@ public:
     void SetProjectFile(const Util::String& projectFile);
     /// set destination path
     void SetDstDir(const Util::String& dstDir);
-	/// set source path
+    /// set source path
     void SetSrcDir(const Util::String& srcDir);
 
     /// perform export
@@ -41,14 +41,14 @@ public:
 private:
     /// export for Win32 or Xbox360 platform
     bool ExportXact();
-	/// export for Wii platform
+    /// export for Wii platform
     bool ExportWii();
-	/// export fmod
-    bool ExportFmod();	
+    /// export fmod
+    bool ExportFmod();  
     /// recursively parse for Wii Rspj files
     void FindRspjFiles(Util::String folder);
     /// recurively copy directories
-	void CopyDirectory(Util::String src, Util::String dst);
+    void CopyDirectory(Util::String src, Util::String dst);
     /// collect all fmod project filenames in src/audio
     void FmodFindProjectFiles(const Util::String &folder, Util::Array<Util::String> &projectFiles, const Util::String & pattern) const;
 
@@ -56,9 +56,9 @@ private:
     Util::String toolPath;
     Util::String projectFile;
     Util::String dstDir;
-	Util::String srcDir;
-	Util::Array<Util::String> srcFolders;
-	Util::Array<Util::String> rspjFiles;
+    Util::String srcDir;
+    Util::Array<Util::String> srcFolders;
+    Util::Array<Util::String> rspjFiles;
     bool force;
 };
 

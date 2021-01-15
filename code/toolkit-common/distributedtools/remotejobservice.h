@@ -1,7 +1,7 @@
 #pragma once
 //------------------------------------------------------------------------------
 /**
-	@class DistributedTools::RemoteJobService
+    @class DistributedTools::RemoteJobService
 
     A remote job service is able to connect to a distributed job service
     on another machine over TCP. If a connection was sucessfull, it's possible
@@ -144,7 +144,7 @@ private:
 };
 //------------------------------------------------------------------------------
 /**
-    Is service active	
+    Is service active   
 */
 inline
 bool
@@ -154,7 +154,7 @@ RemoteJobService::IsOpen()
 }
 //------------------------------------------------------------------------------
 /**
-    Gets the state of the service    	
+    Gets the state of the service       
 */
 inline
 RemoteJobService::ServiceState
@@ -174,7 +174,7 @@ RemoteJobService::GetSentJobGuids()
 }
 //------------------------------------------------------------------------------
 /**
-    Get guids of finished jobs	
+    Get guids of finished jobs  
 */
 inline
 const Util::Array<Util::Guid> &
@@ -194,7 +194,7 @@ RemoteJobService::GetFailedJobGuids()
 }
 //------------------------------------------------------------------------------
 /**
-    remove job from failed job list	
+    remove job from failed job list 
 */
 inline
 void
@@ -209,7 +209,7 @@ RemoteJobService::RemoveFromFailedJobList(Util::Guid guid)
 
 //------------------------------------------------------------------------------
 /**
-    Set ip address of service	
+    Set ip address of service   
 */
 inline
 void
@@ -220,7 +220,7 @@ RemoteJobService::SetIpAddress(const Net::IpAddress & ip)
 
 //------------------------------------------------------------------------------
 /**
-Get ip address of service	
+Get ip address of service   
 */
 inline
 const Net::IpAddress &
@@ -231,7 +231,7 @@ RemoteJobService::GetIpAddress()
 
 //------------------------------------------------------------------------------
 /**
-    Get processor count of service	
+    Get processor count of service  
 */
 inline
 SizeT
@@ -242,7 +242,7 @@ RemoteJobService::GetProcessorCount()
 
 //------------------------------------------------------------------------------
 /**
-    Get the error message that is valid when service is in error state	
+    Get the error message that is valid when service is in error state  
 */
 inline
 Util::String
@@ -253,7 +253,7 @@ RemoteJobService::GetErrorMessage()
 }
 //------------------------------------------------------------------------------
 /**
-    Set the initialize jobs	
+    Set the initialize jobs 
 */
 inline
 void
@@ -264,7 +264,7 @@ RemoteJobService::SetInitializeJobs(const Util::Array<Ptr<DistributedJob>> & job
 
 //------------------------------------------------------------------------------
 /**
-    Get the initialize jobs	
+    Get the initialize jobs 
 */
 inline
 const Util::Array<Ptr<DistributedJob>> &
@@ -275,7 +275,7 @@ RemoteJobService::GetInitializeJobs()
 
 //------------------------------------------------------------------------------
 /**
-    Set the finalize jobs	
+    Set the finalize jobs   
 */
 inline
 void
@@ -286,7 +286,7 @@ RemoteJobService::SetFinalizeJobs(const Util::Array<Ptr<DistributedJob>> & jobs 
 
 //------------------------------------------------------------------------------
 /**
-    Get the finalize jobs	
+    Get the finalize jobs   
 */
 inline
 const Util::Array<Ptr<DistributedJob>> &
@@ -297,7 +297,7 @@ RemoteJobService::GetFinalizeJobs()
 
 //------------------------------------------------------------------------------
 /**
-    Get the uncomplete jobs	
+    Get the uncomplete jobs 
 */
 inline
 const Util::Array<Ptr<DistributedJob>> &
@@ -308,7 +308,7 @@ RemoteJobService::GetUncompleteJobs()
 
 //------------------------------------------------------------------------------
 /**
-    set verbose flag	
+    set verbose flag    
 */
 inline
 void
@@ -319,7 +319,7 @@ RemoteJobService::SetVerboseFlag(bool val)
 
 //------------------------------------------------------------------------------
 /**
-    set dirty flag	
+    set dirty flag  
 */
 inline
 void

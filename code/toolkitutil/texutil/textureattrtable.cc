@@ -49,11 +49,11 @@ TextureAttrTable::Setup(const String& path)
     n_assert(this->texAttrs.IsEmpty());
     n_assert(this->indexMap.IsEmpty());
 
-	IoServer* ioServer = IoServer::Instance();
+    IoServer* ioServer = IoServer::Instance();
 
 #ifdef NEBULA3_TEXTURE_ATTRIBUTES
     // read the batchattributes.xml file
-	Ptr<Stream> stream = ioServer->CreateStream(path + "/batchattributes.xml");
+    Ptr<Stream> stream = ioServer->CreateStream(path + "/batchattributes.xml");
     Ptr<XmlReader> xmlReader = XmlReader::Create();
     xmlReader->SetStream(stream);
     if (xmlReader->Open())
@@ -101,82 +101,82 @@ TextureAttrTable::Setup(const String& path)
         return false;
     }
 #else
-	// load all texture XML-files into attribute table
-	Util::Array<String> dirs, files;
-	dirs = ioServer->ListDirectories(path, "*");
+    // load all texture XML-files into attribute table
+    Util::Array<String> dirs, files;
+    dirs = ioServer->ListDirectories(path, "*");
 
-	IndexT i, j;
-	for (i = 0; i < dirs.Size(); i++)
-	{
-		// get texture directory files
-		files = ioServer->ListFiles(path + "/" + dirs[i], "*.xml");
+    IndexT i, j;
+    for (i = 0; i < dirs.Size(); i++)
+    {
+        // get texture directory files
+        files = ioServer->ListFiles(path + "/" + dirs[i], "*.xml");
 
-		for (j = 0; j < files.Size(); j++)
-		{
-			Ptr<Stream> stream = ioServer->CreateStream(path + "/" + dirs[i] + "/" + files[j]);
-			Ptr<XmlReader> xmlReader = XmlReader::Create();
-			xmlReader->SetStream(stream);
-			if (xmlReader->Open())
-			{
-				xmlReader->SetToNode("/Nebula");
-				xmlReader->SetToNode("Texture");
+        for (j = 0; j < files.Size(); j++)
+        {
+            Ptr<Stream> stream = ioServer->CreateStream(path + "/" + dirs[i] + "/" + files[j]);
+            Ptr<XmlReader> xmlReader = XmlReader::Create();
+            xmlReader->SetStream(stream);
+            if (xmlReader->Open())
+            {
+                xmlReader->SetToNode("/Nebula");
+                xmlReader->SetToNode("Texture");
 
-				// read current attributes
-				String file = files[j];
-				file.StripFileExtension();
-				String pattern  = dirs[i] + "/" + file;
-				SizeT maxHeight = xmlReader->GetInt("maxHeight");
-				SizeT maxWidth  = xmlReader->GetInt("maxWidth");
-				TextureAttrs::Filter mipFilter = TextureAttrs::StringToFilter(xmlReader->GetString("mipFilter"));
-				bool genMipMaps = xmlReader->GetString("mipMaps") == "Yes";
+                // read current attributes
+                String file = files[j];
+                file.StripFileExtension();
+                String pattern  = dirs[i] + "/" + file;
+                SizeT maxHeight = xmlReader->GetInt("maxHeight");
+                SizeT maxWidth  = xmlReader->GetInt("maxWidth");
+                TextureAttrs::Filter mipFilter = TextureAttrs::StringToFilter(xmlReader->GetString("mipFilter"));
+                bool genMipMaps = xmlReader->GetString("mipMaps") == "Yes";
                 bool flipNormalY = false;
                 if (xmlReader->HasAttr("flipNormalY"))
                 {
-				    flipNormalY = xmlReader->GetString("flipNormalY") == "Yes";
+                    flipNormalY = xmlReader->GetString("flipNormalY") == "Yes";
                 }
-				TextureAttrs::PixelFormat rgbFormat = TextureAttrs::StringToPixelFormat(xmlReader->GetOptString("rgb","bc7"));
-				TextureAttrs::PixelFormat rgbaFormat = TextureAttrs::StringToPixelFormat(xmlReader->GetOptString("rgba", "bc7"));
-				Util::String pixelFormatString = xmlReader->GetOptString("format", "");
-				Util::String dxgiFormat = xmlReader->GetOptString("dxgiFormat", "");
-				if (!pixelFormatString.IsEmpty())
-				{
-					rgbaFormat = TextureAttrs::StringToPixelFormat(pixelFormatString);
-				}
-				TextureAttrs::Filter scaleFilter = TextureAttrs::StringToFilter(xmlReader->GetString("scaleFilter"));
-				TextureAttrs::Quality quality = TextureAttrs::StringToQuality(xmlReader->GetString("quality"));
-				TextureAttrs::ColorSpace colorSpace = TextureAttrs::StringToColorSpace(xmlReader->GetOptString("colorSpace", "sRGB"));
+                TextureAttrs::PixelFormat rgbFormat = TextureAttrs::StringToPixelFormat(xmlReader->GetOptString("rgb","bc7"));
+                TextureAttrs::PixelFormat rgbaFormat = TextureAttrs::StringToPixelFormat(xmlReader->GetOptString("rgba", "bc7"));
+                Util::String pixelFormatString = xmlReader->GetOptString("format", "");
+                Util::String dxgiFormat = xmlReader->GetOptString("dxgiFormat", "");
+                if (!pixelFormatString.IsEmpty())
+                {
+                    rgbaFormat = TextureAttrs::StringToPixelFormat(pixelFormatString);
+                }
+                TextureAttrs::Filter scaleFilter = TextureAttrs::StringToFilter(xmlReader->GetString("scaleFilter"));
+                TextureAttrs::Quality quality = TextureAttrs::StringToQuality(xmlReader->GetString("quality"));
+                TextureAttrs::ColorSpace colorSpace = TextureAttrs::StringToColorSpace(xmlReader->GetOptString("colorSpace", "sRGB"));
 
-				// create a new TextureAttrs object and add it to the dictionary
-				TextureAttrs attrs;
-				attrs.SetMaxWidth(maxWidth);
-				attrs.SetMaxHeight(maxHeight);
-				attrs.SetGenMipMaps(genMipMaps);
-				attrs.SetFlipNormalY(flipNormalY);
-				attrs.SetPixelFormat(rgbaFormat);
-				attrs.SetDxgi(dxgiFormat);
-				attrs.SetMipMapFilter(mipFilter);
-				attrs.SetScaleFilter(scaleFilter);
-				attrs.SetQuality(quality);
-				attrs.SetColorSpace(colorSpace);
+                // create a new TextureAttrs object and add it to the dictionary
+                TextureAttrs attrs;
+                attrs.SetMaxWidth(maxWidth);
+                attrs.SetMaxHeight(maxHeight);
+                attrs.SetGenMipMaps(genMipMaps);
+                attrs.SetFlipNormalY(flipNormalY);
+                attrs.SetPixelFormat(rgbaFormat);
+                attrs.SetDxgi(dxgiFormat);
+                attrs.SetMipMapFilter(mipFilter);
+                attrs.SetScaleFilter(scaleFilter);
+                attrs.SetQuality(quality);
+                attrs.SetColorSpace(colorSpace);
                 attrs.SetTime(ioServer->GetFileWriteTime(stream->GetURI()));
 
-				this->texAttrs.Append(attrs);
-				this->indexMap.Add(pattern, this->texAttrs.Size() - 1);
-			}
-		}
-	}
+                this->texAttrs.Append(attrs);
+                this->indexMap.Add(pattern, this->texAttrs.Size() - 1);
+            }
+        }
+    }
 
-	this->defaultAttrs.SetMaxHeight(2048);
-	this->defaultAttrs.SetMaxWidth(2048);
-	this->defaultAttrs.SetGenMipMaps(true);
-	this->defaultAttrs.SetPixelFormat(TextureAttrs::BC7);	
-	this->defaultAttrs.SetMipMapFilter(TextureAttrs::Kaiser);
-	this->defaultAttrs.SetScaleFilter(TextureAttrs::Kaiser);
-	this->defaultAttrs.SetQuality(TextureAttrs::Low);
-	this->defaultAttrs.SetColorSpace(TextureAttrs::sRGB);
+    this->defaultAttrs.SetMaxHeight(2048);
+    this->defaultAttrs.SetMaxWidth(2048);
+    this->defaultAttrs.SetGenMipMaps(true);
+    this->defaultAttrs.SetPixelFormat(TextureAttrs::BC7);   
+    this->defaultAttrs.SetMipMapFilter(TextureAttrs::Kaiser);
+    this->defaultAttrs.SetScaleFilter(TextureAttrs::Kaiser);
+    this->defaultAttrs.SetQuality(TextureAttrs::Low);
+    this->defaultAttrs.SetColorSpace(TextureAttrs::sRGB);
 
-	this->valid = true;
-	return true;
+    this->valid = true;
+    return true;
 #endif
 }
 
@@ -186,82 +186,82 @@ TextureAttrTable::Setup(const String& path)
 bool 
 TextureAttrTable::Save( const Util::String& path )
 {
-	n_assert(this->IsValid());
-	n_assert(!this->texAttrs.IsEmpty());
-	n_assert(!this->indexMap.IsEmpty());
+    n_assert(this->IsValid());
+    n_assert(!this->texAttrs.IsEmpty());
+    n_assert(!this->indexMap.IsEmpty());
 
-	IoServer* ioServer = IoServer::Instance();
+    IoServer* ioServer = IoServer::Instance();
 
 #ifdef NEBULA3_TEXTURE_ATTRIBUTES
-	// read the batchattributes.xml file
-	Ptr<Stream> stream = ioServer->CreateStream(path);
-	Ptr<XmlWriter> xmlWriter = XmlWriter::Create();
-	xmlWriter->SetStream(stream);
-	if (xmlWriter->Open())
+    // read the batchattributes.xml file
+    Ptr<Stream> stream = ioServer->CreateStream(path);
+    Ptr<XmlWriter> xmlWriter = XmlWriter::Create();
+    xmlWriter->SetStream(stream);
+    if (xmlWriter->Open())
     {
-		// write Textures node
+        // write Textures node
         xmlWriter->BeginNode("Textures");
 
-		// go through attributes and write them
-		IndexT i;
-		for (i = 0; i < this->texAttrs.Size(); i++)
-		{
-			// get attributes
-			const TextureAttrs& attrs = this->texAttrs[i];
+        // go through attributes and write them
+        IndexT i;
+        for (i = 0; i < this->texAttrs.Size(); i++)
+        {
+            // get attributes
+            const TextureAttrs& attrs = this->texAttrs[i];
 
-			// get name of attributes
-			IndexT mapIndex = this->indexMap.ValuesAsArray().FindIndex(i);
-			StringAtom name = this->indexMap.KeyAtIndex(mapIndex);
+            // get name of attributes
+            IndexT mapIndex = this->indexMap.ValuesAsArray().FindIndex(i);
+            StringAtom name = this->indexMap.KeyAtIndex(mapIndex);
 
-			// begin texture node
-			xmlWriter->BeginNode("Texture");
+            // begin texture node
+            xmlWriter->BeginNode("Texture");
 
-			// write data
-			xmlWriter->SetString("pattern", name.AsString());
-			xmlWriter->SetString("comment", "");
-			xmlWriter->SetInt("maxHeight", attrs.GetMaxHeight());
-			xmlWriter->SetInt("maxWidth", attrs.GetMaxWidth());
-			xmlWriter->SetString("mipFilter", TextureAttrs::FilterToString(attrs.GetMipMapFilter()));
-			xmlWriter->SetString("mipMaps", attrs.GetGenMipMaps() ? "Yes" : "No");
-			xmlWriter->SetString("mipSharpen", "None");
-			xmlWriter->SetString("quality", TextureAttrs::QualityToString(attrs.GetQuality()));
-			xmlWriter->SetString("rgb", TextureAttrs::PixelFormatToString(attrs.GetRGBPixelFormat()));
-			xmlWriter->SetString("rgba", TextureAttrs::PixelFormatToString(attrs.GetRGBAPixelFormat()));
-			xmlWriter->SetString("scaleFilter", TextureAttrs::FilterToString(attrs.GetScaleFilter()));			
-			xmlWriter->SetFloat("scaleX", 1.0f);
-			xmlWriter->SetFloat("scaleY", 1.0f);
+            // write data
+            xmlWriter->SetString("pattern", name.AsString());
+            xmlWriter->SetString("comment", "");
+            xmlWriter->SetInt("maxHeight", attrs.GetMaxHeight());
+            xmlWriter->SetInt("maxWidth", attrs.GetMaxWidth());
+            xmlWriter->SetString("mipFilter", TextureAttrs::FilterToString(attrs.GetMipMapFilter()));
+            xmlWriter->SetString("mipMaps", attrs.GetGenMipMaps() ? "Yes" : "No");
+            xmlWriter->SetString("mipSharpen", "None");
+            xmlWriter->SetString("quality", TextureAttrs::QualityToString(attrs.GetQuality()));
+            xmlWriter->SetString("rgb", TextureAttrs::PixelFormatToString(attrs.GetRGBPixelFormat()));
+            xmlWriter->SetString("rgba", TextureAttrs::PixelFormatToString(attrs.GetRGBAPixelFormat()));
+            xmlWriter->SetString("scaleFilter", TextureAttrs::FilterToString(attrs.GetScaleFilter()));          
+            xmlWriter->SetFloat("scaleX", 1.0f);
+            xmlWriter->SetFloat("scaleY", 1.0f);
 
-			// end texture node
-			xmlWriter->EndNode();
-		}
+            // end texture node
+            xmlWriter->EndNode();
+        }
 
-		// now add default
-		const TextureAttrs& defaultAttrs = this->defaultAttrs;
+        // now add default
+        const TextureAttrs& defaultAttrs = this->defaultAttrs;
 
-		// begin texture node
-		xmlWriter->BeginNode("Texture");
+        // begin texture node
+        xmlWriter->BeginNode("Texture");
 
-		// write data
-		xmlWriter->SetString("pattern", "*/*");
-		xmlWriter->SetString("comment", "Default attribute");
-		xmlWriter->SetInt("maxHeight", defaultAttrs.GetMaxHeight());
-		xmlWriter->SetInt("maxWidth", defaultAttrs.GetMaxWidth());
-		xmlWriter->SetString("mipFilter", TextureAttrs::FilterToString(defaultAttrs.GetMipMapFilter()));
-		xmlWriter->SetString("mipMaps", defaultAttrs.GetGenMipMaps() ? "Yes" : "No");
-		xmlWriter->SetString("mipSharpen", "None");
-		xmlWriter->SetString("quality", TextureAttrs::QualityToString(defaultAttrs.GetQuality()));
-		xmlWriter->SetString("rgb", TextureAttrs::PixelFormatToString(defaultAttrs.GetRGBPixelFormat()));
-		xmlWriter->SetString("rgba", TextureAttrs::PixelFormatToString(defaultAttrs.GetRGBAPixelFormat()));
-		xmlWriter->SetString("scaleFilter", TextureAttrs::FilterToString(defaultAttrs.GetScaleFilter()));
-		xmlWriter->SetFloat("scaleX", 1.0f);
-		xmlWriter->SetFloat("scaleY", 1.0f);
+        // write data
+        xmlWriter->SetString("pattern", "*/*");
+        xmlWriter->SetString("comment", "Default attribute");
+        xmlWriter->SetInt("maxHeight", defaultAttrs.GetMaxHeight());
+        xmlWriter->SetInt("maxWidth", defaultAttrs.GetMaxWidth());
+        xmlWriter->SetString("mipFilter", TextureAttrs::FilterToString(defaultAttrs.GetMipMapFilter()));
+        xmlWriter->SetString("mipMaps", defaultAttrs.GetGenMipMaps() ? "Yes" : "No");
+        xmlWriter->SetString("mipSharpen", "None");
+        xmlWriter->SetString("quality", TextureAttrs::QualityToString(defaultAttrs.GetQuality()));
+        xmlWriter->SetString("rgb", TextureAttrs::PixelFormatToString(defaultAttrs.GetRGBPixelFormat()));
+        xmlWriter->SetString("rgba", TextureAttrs::PixelFormatToString(defaultAttrs.GetRGBAPixelFormat()));
+        xmlWriter->SetString("scaleFilter", TextureAttrs::FilterToString(defaultAttrs.GetScaleFilter()));
+        xmlWriter->SetFloat("scaleX", 1.0f);
+        xmlWriter->SetFloat("scaleY", 1.0f);
 
 
-		// end texture node
-		xmlWriter->EndNode();
+        // end texture node
+        xmlWriter->EndNode();
 
-		// end Textures node
-		xmlWriter->EndNode();
+        // end Textures node
+        xmlWriter->EndNode();
         return true;
     }
     else
@@ -270,51 +270,51 @@ TextureAttrTable::Save( const Util::String& path )
     }
 #else
 
-	IndexT mapIndex = this->indexMap[path];
-	StringAtom name = this->indexMap.KeyAtIndex(mapIndex);
+    IndexT mapIndex = this->indexMap[path];
+    StringAtom name = this->indexMap.KeyAtIndex(mapIndex);
 
-	String nameString = name.AsString();
-	nameString.StripFileExtension();
+    String nameString = name.AsString();
+    nameString.StripFileExtension();
 
-	// get attributes
-	const TextureAttrs& attrs = this->texAttrs[mapIndex];
+    // get attributes
+    const TextureAttrs& attrs = this->texAttrs[mapIndex];
 
-	String tablePath = "src:assets/" + path + ".xml";
-	Ptr<Stream> stream = ioServer->CreateStream(tablePath);
-	Ptr<XmlWriter> xmlWriter = XmlWriter::Create();
-	xmlWriter->SetStream(stream);
-	if (xmlWriter->Open())
-	{
-		// write main nodes
-		xmlWriter->BeginNode("Nebula");
-		xmlWriter->BeginNode("Texture");
+    String tablePath = "src:assets/" + path + ".xml";
+    Ptr<Stream> stream = ioServer->CreateStream(tablePath);
+    Ptr<XmlWriter> xmlWriter = XmlWriter::Create();
+    xmlWriter->SetStream(stream);
+    if (xmlWriter->Open())
+    {
+        // write main nodes
+        xmlWriter->BeginNode("Nebula");
+        xmlWriter->BeginNode("Texture");
 
-		// write data
-		xmlWriter->SetString("comment", "");
-		xmlWriter->SetInt("maxHeight", attrs.GetMaxHeight());
-		xmlWriter->SetInt("maxWidth", attrs.GetMaxWidth());
-		xmlWriter->SetString("mipFilter", TextureAttrs::FilterToString(attrs.GetMipMapFilter()));
-		xmlWriter->SetString("mipMaps", attrs.GetGenMipMaps() ? "Yes" : "No");
-		xmlWriter->SetString("mipSharpen", "None");
-		xmlWriter->SetString("quality", TextureAttrs::QualityToString(attrs.GetQuality()));
-		xmlWriter->SetString("format", TextureAttrs::PixelFormatToString(attrs.GetPixelFormat()));
-		if (!attrs.GetDxgi().IsEmpty())
-		{
-			xmlWriter->SetString("dxgiFormat", attrs.GetDxgi());
-		}
-		xmlWriter->SetString("scaleFilter", TextureAttrs::FilterToString(attrs.GetScaleFilter()));			
-		xmlWriter->SetString("colorSpace", TextureAttrs::ColorSpaceToString(attrs.GetColorSpace()));
-		xmlWriter->SetFloat("scaleX", 1.0f);
-		xmlWriter->SetFloat("scaleY", 1.0f);
+        // write data
+        xmlWriter->SetString("comment", "");
+        xmlWriter->SetInt("maxHeight", attrs.GetMaxHeight());
+        xmlWriter->SetInt("maxWidth", attrs.GetMaxWidth());
+        xmlWriter->SetString("mipFilter", TextureAttrs::FilterToString(attrs.GetMipMapFilter()));
+        xmlWriter->SetString("mipMaps", attrs.GetGenMipMaps() ? "Yes" : "No");
+        xmlWriter->SetString("mipSharpen", "None");
+        xmlWriter->SetString("quality", TextureAttrs::QualityToString(attrs.GetQuality()));
+        xmlWriter->SetString("format", TextureAttrs::PixelFormatToString(attrs.GetPixelFormat()));
+        if (!attrs.GetDxgi().IsEmpty())
+        {
+            xmlWriter->SetString("dxgiFormat", attrs.GetDxgi());
+        }
+        xmlWriter->SetString("scaleFilter", TextureAttrs::FilterToString(attrs.GetScaleFilter()));          
+        xmlWriter->SetString("colorSpace", TextureAttrs::ColorSpaceToString(attrs.GetColorSpace()));
+        xmlWriter->SetFloat("scaleX", 1.0f);
+        xmlWriter->SetFloat("scaleY", 1.0f);
 
-		// end nodes
-		xmlWriter->EndNode();
-		xmlWriter->EndNode();
-		xmlWriter->Close();
-	}
+        // end nodes
+        xmlWriter->EndNode();
+        xmlWriter->EndNode();
+        xmlWriter->Close();
+    }
 
 
-	return true;
+    return true;
 #endif
 }
 
@@ -381,16 +381,16 @@ TextureAttrTable::GetDefaultEntry() const
 void 
 TextureAttrTable::SetEntry( const Util::String& texName, const TextureAttrs& attrs )
 {
-	n_assert(this->IsValid());
-	IndexT i = this->indexMap.FindIndex(texName);
-	if (InvalidIndex == i)
-	{
-		this->indexMap.Add(texName, this->texAttrs.Size());
-		this->texAttrs.Append(attrs);		
-	}
-	else
-	{
-		this->texAttrs[i] = attrs;
-	}
+    n_assert(this->IsValid());
+    IndexT i = this->indexMap.FindIndex(texName);
+    if (InvalidIndex == i)
+    {
+        this->indexMap.Add(texName, this->texAttrs.Size());
+        this->texAttrs.Append(attrs);       
+    }
+    else
+    {
+        this->texAttrs[i] = attrs;
+    }
 }
 } // namespace ToolkitUtil

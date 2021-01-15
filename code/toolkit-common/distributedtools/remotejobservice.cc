@@ -21,7 +21,7 @@ namespace DistributedTools
     __ImplementClass(DistributedTools::RemoteJobService,'DRJS',Core::RefCounted)
 //------------------------------------------------------------------------------
 /**
-    Constructor	
+    Constructor 
 */
 RemoteJobService::RemoteJobService() :
     isOpen(false),
@@ -34,7 +34,7 @@ RemoteJobService::RemoteJobService() :
 
 //------------------------------------------------------------------------------
 /**
-    Etablish a connection to a remote service	
+    Etablish a connection to a remote service   
 */
 bool
 RemoteJobService::Open()
@@ -66,7 +66,7 @@ RemoteJobService::Open()
 
 //------------------------------------------------------------------------------
 /**
-    Close connection to service	
+    Close connection to service 
 */
 void
 RemoteJobService::Close()
@@ -99,7 +99,7 @@ RemoteJobService::Close()
 
 //------------------------------------------------------------------------------
 /**
-	Send a job to the service
+    Send a job to the service
 */
 bool
 RemoteJobService::SendJob(const Ptr<DistributedJob> & job)
@@ -150,7 +150,7 @@ RemoteJobService::SendJob(const Ptr<DistributedJob> & job)
 
 //------------------------------------------------------------------------------
 /**
-	Run all sent jobs
+    Run all sent jobs
 */
 void
 RemoteJobService::RunJobs()
@@ -174,10 +174,10 @@ RemoteJobService::RunJobs()
             IndexT job;
             for (job = 0; job < this->initializeJobs.Size(); job++)
             {
-            	if (this->initializeJobs[job]->IsA('DTAJ'))
-            	{
+                if (this->initializeJobs[job]->IsA('DTAJ'))
+                {
                     writer->BeginNode("AppJob");
-            	}
+                }
                 else if (this->initializeJobs[job]->IsA('DDCJ'))
                 {
                     writer->BeginNode("DeleteDirectoryContentJob");
@@ -494,7 +494,7 @@ RemoteJobService::HandleStateNode(const Ptr<IO::XmlReader> & reader, const Net::
 
 //------------------------------------------------------------------------------
 /**
-    Send a state request, to get the state of the remote service	
+    Send a state request, to get the state of the remote service    
 */
 bool
 RemoteJobService::SendStateRequest()
@@ -596,7 +596,7 @@ RemoteJobService::WriteClientHeader(const Ptr<IO::XmlWriter> & writer)
 
 //------------------------------------------------------------------------------
 /**
-	Tries to send a message to the service, that it was banned
+    Tries to send a message to the service, that it was banned
 */
 void
 RemoteJobService::SendBannedInfo()
@@ -634,7 +634,7 @@ RemoteJobService::SendBannedInfo()
 
 //------------------------------------------------------------------------------
 /**
-	Returns true if a message from the service was received previously,
+    Returns true if a message from the service was received previously,
     that declares the service as cleaned up.
 */
 bool
@@ -645,7 +645,7 @@ RemoteJobService::HasCleanedUp()
 
 //------------------------------------------------------------------------------
 /**
-	Reset all internal parameters of this service. After reset was called,
+    Reset all internal parameters of this service. After reset was called,
     the service is in the closed state.
 */
 void

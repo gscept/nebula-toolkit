@@ -27,9 +27,9 @@ public:
 
 private:
     /// print help text
-	void ShowHelp();
+    void ShowHelp();
 
-    Ptr<ToolkitUtil::ModelDatabase> modelDatabase;	
+    Ptr<ToolkitUtil::ModelDatabase> modelDatabase;
 }; 
 } // namespace Tookit
 //------------------------------------------------------------------------------

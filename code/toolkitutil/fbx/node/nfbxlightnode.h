@@ -13,31 +13,31 @@ namespace ToolkitUtil
 {
 class NFbxLightNode : public NFbxNode
 {
-	__DeclareClass(NFbxLightNode);
+    __DeclareClass(NFbxLightNode);
 public:
 
-	enum LightType
-	{
-		Spotlight,
-		Pointlight,
-		AreaLight,
-		InvalidLight,
+    enum LightType
+    {
+        Spotlight,
+        Pointlight,
+        AreaLight,
+        InvalidLight,
 
-		NumLights
-	};
+        NumLights
+    };
 
-	/// constructor
-	NFbxLightNode();
-	/// destructor
-	virtual ~NFbxLightNode();
+    /// constructor
+    NFbxLightNode();
+    /// destructor
+    virtual ~NFbxLightNode();
 
-	/// setup the node
-	void Setup(FbxNode* node, const Ptr<NFbxScene>& scene);
+    /// setup the node
+    void Setup(FbxNode* node, const Ptr<NFbxScene>& scene);
 
 private:
 
-	FbxLight*					light;
-	LightType					lightType;
+    FbxLight*                   light;
+    LightType                   lightType;
 }; 
 } // namespace ToolkitUtil
 //------------------------------------------------------------------------------

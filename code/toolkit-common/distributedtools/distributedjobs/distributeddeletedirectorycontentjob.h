@@ -1,7 +1,7 @@
 #pragma once
 //------------------------------------------------------------------------------
 /**
-	@class DistributedTools::DistributedDeleteDirectoryContentJob
+    @class DistributedTools::DistributedDeleteDirectoryContentJob
 
     @TODO comment
 

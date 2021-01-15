@@ -8,16 +8,16 @@
 
 namespace LevelViewer
 {
-	__ImplementClass(LevelViewer::LevelViewerFactoryManager, 'LVFM', BaseGameFeature::FactoryManager);
-	__ImplementSingleton(LevelViewerFactoryManager);
+    __ImplementClass(LevelViewer::LevelViewerFactoryManager, 'LVFM', BaseGameFeature::FactoryManager);
+    __ImplementSingleton(LevelViewerFactoryManager);
 
 //------------------------------------------------------------------------------
 /**
 */
 LevelViewerFactoryManager::LevelViewerFactoryManager()
 {
-	__ConstructSingleton;
-	
+    __ConstructSingleton;
+    
 }
  
 //------------------------------------------------------------------------------
@@ -25,7 +25,7 @@ LevelViewerFactoryManager::LevelViewerFactoryManager()
 */
 LevelViewerFactoryManager::~LevelViewerFactoryManager()
 {
-	__DestructSingleton;
+    __DestructSingleton;
 }
 
 //------------------------------------------------------------------------------

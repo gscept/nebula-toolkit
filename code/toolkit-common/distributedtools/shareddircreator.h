@@ -1,7 +1,7 @@
 #pragma once
 //------------------------------------------------------------------------------
 /**
-	@class DistributedTools::SharedDirCreator
+    @class DistributedTools::SharedDirCreator
 
     Small factory which creates SharedDirControl objects.
 

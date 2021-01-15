@@ -14,7 +14,7 @@ __ImplementClass(ToolkitUtil::ClipEvent, 'CLEV', Core::RefCounted);
 */
 ClipEvent::ClipEvent()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ ClipEvent::ClipEvent()
 */
 ClipEvent::~ClipEvent()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------

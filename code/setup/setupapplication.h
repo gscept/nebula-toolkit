@@ -15,22 +15,22 @@ namespace Tools
 class SetupApplication : public ToolkitUtil::ToolkitApp
 {
 public:
-	/// constructor
-	SetupApplication();
-	/// destructor
-	virtual ~SetupApplication();
+    /// constructor
+    SetupApplication();
+    /// destructor
+    virtual ~SetupApplication();
 
-	/// opens the application
-	bool Open();
-	/// runs the application
-	void DoWork();
+    /// opens the application
+    bool Open();
+    /// runs the application
+    void DoWork();
 private:
-	/// parse command line arguments
-	bool ParseCmdLineArgs();
-	/// setup project info object
-	bool SetupProjectInfo();
-	/// print help text
-	void ShowHelp();
+    /// parse command line arguments
+    bool ParseCmdLineArgs();
+    /// setup project info object
+    bool SetupProjectInfo();
+    /// print help text
+    void ShowHelp();
 }; 
 } // namespace Tools
 //------------------------------------------------------------------------------

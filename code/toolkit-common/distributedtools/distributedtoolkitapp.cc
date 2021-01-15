@@ -23,7 +23,7 @@ namespace DistributedTools
 {
 //------------------------------------------------------------------------------
 /**
-    Constructor	
+    Constructor 
 */
 DistributedToolkitApp::DistributedToolkitApp() :
     masterMode(false),
@@ -32,16 +32,16 @@ DistributedToolkitApp::DistributedToolkitApp() :
     slaveArg(false),
     forceArg(false)
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
 /**
-    Destructor	
+    Destructor  
 */
 DistributedToolkitApp::~DistributedToolkitApp()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -83,7 +83,7 @@ DistributedToolkitApp::Close()
 
 //------------------------------------------------------------------------------
 /**
-	Parse the commandline args and setup application parameters
+    Parse the commandline args and setup application parameters
 */
 bool
 DistributedToolkitApp::ParseCmdLineArgs()
@@ -284,7 +284,7 @@ DistributedToolkitApp::Run()
 
         // actual processing
         if (this->masterMode)
-        {			
+        {           
             // handle distribution and process newly created jobs
             this->CreateAndProcessJobs();
         }
@@ -350,7 +350,7 @@ DistributedToolkitApp::CreateAndProcessJobs()
     
     // Create a string list of all files
     Array<String> fileList = this->CreateFileList();
-	    
+        
 #if 0
     n_printf("Get current revision...\n");
     // Get current svn revision of project dir
@@ -449,7 +449,7 @@ DistributedToolkitApp::CreateAndProcessJobs()
             argString.Append(this->sharedDirControl->GetPath().AsString());
         }
         // The filelists are absolute. Force the export in any case.
-		argString.Append(this->forceArg ? " -force" : "");
+        argString.Append(this->forceArg ? " -force" : "");
         // Append additional arguments, that are unrelated to distributed tools
         argString.Append(this->GetAdditionalArguments());
         
@@ -517,7 +517,7 @@ DistributedToolkitApp::CreateAndProcessJobs()
         IndexT j;
         for (j = 0; j < initJobs.Size(); j++)
         {
-        	scheduler.AppendInitializeJob(initJobs[j]);
+            scheduler.AppendInitializeJob(initJobs[j]);
         }
         Array<Ptr<DistributedJob>> finJobs = this->GenerateFinalizeJobList();
         for (j = 0; j < finJobs.Size(); j++)
@@ -612,7 +612,7 @@ DistributedToolkitApp::CreateFileList()
 }
 //------------------------------------------------------------------------------
 /**
-	gets svn info of the current project dir and returns revision id
+    gets svn info of the current project dir and returns revision id
 */
 String
 DistributedToolkitApp::GetCurrentRevision()
@@ -676,7 +676,7 @@ DistributedToolkitApp::GetCurrentRevision()
 
 //------------------------------------------------------------------------------
 /**
-    Do the work of the application (override in subclasses!)	
+    Do the work of the application (override in subclasses!)    
 */
 void
 DistributedToolkitApp::DoWork()
@@ -806,7 +806,7 @@ DistributedToolkitApp::OnAfterRunDistMaster()
 
 //------------------------------------------------------------------------------
 /**
-    Actions that are done at local machine before any work (override in subclasses)	
+    Actions that are done at local machine before any work (override in subclasses) 
 */
 void
 DistributedToolkitApp::OnBeforeRunLocal()
@@ -814,7 +814,7 @@ DistributedToolkitApp::OnBeforeRunLocal()
 }
 //------------------------------------------------------------------------------
 /**
-    Actions that are done at local machine after any work (override in subclasses)	
+    Actions that are done at local machine after any work (override in subclasses)  
 */
 void
 DistributedToolkitApp::OnAfterRunLocal()
@@ -832,7 +832,7 @@ DistributedToolkitApp::GenerateInitializeJobList()
 }
 //------------------------------------------------------------------------------
 /**
-	Generate a list of jobs that are added to the scheduler as jobs which are
+    Generate a list of jobs that are added to the scheduler as jobs which are
     processed after a group of parallel jobs has finished
 */
 Array<Ptr<DistributedJob>>
@@ -843,7 +843,7 @@ DistributedToolkitApp::GenerateFinalizeJobList()
 
 //------------------------------------------------------------------------------
 /**
-	removes all content of given directory recursively 
+    removes all content of given directory recursively 
 */
 void
 DistributedToolkitApp::DeleteDirectoryContent(const IO::URI & path)

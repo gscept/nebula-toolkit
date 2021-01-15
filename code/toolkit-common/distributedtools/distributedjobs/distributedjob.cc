@@ -24,7 +24,7 @@ __ImplementClass(DistributedTools::DistributedJob,'DTJB',Core::RefCounted);
 
 //------------------------------------------------------------------------------
 /**
-    Constructor	
+    Constructor 
 */
 DistributedJob::DistributedJob() :
     jobState(Ready),
@@ -37,7 +37,7 @@ DistributedJob::DistributedJob() :
 
 //------------------------------------------------------------------------------
 /**
-    Destructor	
+    Destructor  
 */
 DistributedJob::~DistributedJob()
 {
@@ -149,8 +149,8 @@ DistributedJob::GetCurrentRevision()
 void
 DistributedJob::UpdateProjectDirectory()
 {
-	this->jobState = UpToDate;
-	return;
+    this->jobState = UpToDate;
+    return;
     n_assert(JobError != this->jobState);
     n_assert(ValidProjectPath == this->jobState);
     n_assert(this->requiredRevision.IsValid());
@@ -228,7 +228,7 @@ DistributedJob::Update()
 }
 //------------------------------------------------------------------------------
 /**
-    Generate a xml command from this job	
+    Generate a xml command from this job    
 */
 void
 DistributedJob::GenerateJobCommand(const Ptr<IO::XmlWriter> & writer)
@@ -240,7 +240,7 @@ DistributedJob::GenerateJobCommand(const Ptr<IO::XmlWriter> & writer)
 
 //------------------------------------------------------------------------------
 /**
-    reads xmlnode from given reader	and setup itself
+    reads xmlnode from given reader and setup itself
 */
 void
 DistributedJob::SetupFromXml(const Ptr<IO::XmlReader> & reader)
@@ -377,8 +377,8 @@ DistributedJob::IsAbleToRun()
 void
 DistributedJob::UpdateSVN()
 {
-	this->jobState = UpToDate;
-	return;
+    this->jobState = UpToDate;
+    return;
     n_assert(JobError != this->jobState);
     n_assert(Updating == this->jobState);
     if(!this->svnApplication.IsRunning())
@@ -442,7 +442,7 @@ DistributedJob::WriteOutput(Util::String text)
 
 //------------------------------------------------------------------------------
 /**
-    Returns true, if the job has some output	
+    Returns true, if the job has some output    
 */
 bool
 DistributedJob::HasOutputContent()
@@ -462,7 +462,7 @@ DistributedJob::HasOutputContent()
 
 //------------------------------------------------------------------------------
 /**
-    Returns the content of the jobs output	
+    Returns the content of the jobs output  
 */
 Util::String
 DistributedJob::DequeueOutputContent()
@@ -513,7 +513,7 @@ DistributedJob::Clone()
 }
 //------------------------------------------------------------------------------
 /**
-    Copy the attributes from another job to itself, except the guid	
+    Copy the attributes from another job to itself, except the guid 
 */
 void
 DistributedJob::CopyFrom(const Ptr<DistributedJob> & job)
@@ -534,7 +534,7 @@ DistributedJob::CopyFrom(const Ptr<DistributedJob> & job)
 
 //------------------------------------------------------------------------------
 /**
-    returns a string representation of teh current job state	
+    returns a string representation of teh current job state    
 */
 String
 DistributedJob::GetStateString()
@@ -569,7 +569,7 @@ DistributedJob::GetStateString()
 
 //------------------------------------------------------------------------------
 /**
-    Sets the jobs state from a given string	
+    Sets the jobs state from a given string 
 */
 void
 DistributedJob::SetStateFromString(const Util::String & str)

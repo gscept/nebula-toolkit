@@ -12,6 +12,6 @@ fips_begin_app(shaderc cmdline)
             shadercompilerapp.cc
             shadercompilerapp.h
             singleshadercompiler.cc
-	        singleshadercompiler.h
+            singleshadercompiler.h
         )
 fips_end_app()

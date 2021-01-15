@@ -48,9 +48,9 @@ ImageConverter::Convert()
 
     // initialize DevIL
     ilInit();
-	ilEnable(IL_ORIGIN_SET);
-	ilOriginFunc(IL_ORIGIN_UPPER_LEFT);
-	
+    ilEnable(IL_ORIGIN_SET);
+    ilOriginFunc(IL_ORIGIN_UPPER_LEFT);
+    
 
     // need to convert file paths to absolute paths, since IL doesn't
     // know Nebula assigns of course

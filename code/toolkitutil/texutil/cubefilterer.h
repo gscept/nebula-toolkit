@@ -1,11 +1,11 @@
 #pragma once
 //------------------------------------------------------------------------------
 /**
-	@class ToolkitUtil::CubeFilterer
-	
-	Takes an input CoreGraphics::Texture and filters it if it's a cubemap.
-	
-	(C) 2015-2016 Individual contributors, see AUTHORS file
+    @class ToolkitUtil::CubeFilterer
+    
+    Takes an input CoreGraphics::Texture and filters it if it's a cubemap.
+    
+    (C) 2015-2016 Individual contributors, see AUTHORS file
 */
 //------------------------------------------------------------------------------
 #include "core/refcounted.h"
@@ -17,38 +17,38 @@ namespace ToolkitUtil
 
 class CubeFilterer : public Core::RefCounted
 {
-	__DeclareClass(CubeFilterer);
+    __DeclareClass(CubeFilterer);
 public:
-	/// constructor
-	CubeFilterer();
-	/// destructor
-	virtual ~CubeFilterer();
+    /// constructor
+    CubeFilterer();
+    /// destructor
+    virtual ~CubeFilterer();
 
-	/// set cube faces to be used for the pass
-	void SetCubeFaces(const Util::FixedArray<Ptr<CoreGraphics::Texture>>& cubefaces);
-	/// set the output texture name
-	void SetOutputFile(const IO::URI& output);
-	/// set the output size (squared size)
-	void SetOutputSize(uint size);
+    /// set cube faces to be used for the pass
+    void SetCubeFaces(const Util::FixedArray<Ptr<CoreGraphics::Texture>>& cubefaces);
+    /// set the output texture name
+    void SetOutputFile(const IO::URI& output);
+    /// set the output size (squared size)
+    void SetOutputSize(uint size);
 
-	/// set specular power
-	void SetSpecularPower(uint power);
-	/// set if we should generate mips
-	void SetGenerateMips(bool b);
+    /// set specular power
+    void SetSpecularPower(uint power);
+    /// set if we should generate mips
+    void SetGenerateMips(bool b);
 
-	/// generates sampled cube map and saves into output, the third argument is a function pointer to a function which handles progress
-	void Filter(bool irradiance, void* messageHandler, void(*CubeFilterer_Progress)(const Util::String&, void*));
-	/// generate cube map for depth
-	void DepthCube(bool genConeMap, void* messageHandler, void(*CubeFilterer_Progress)(const Util::String&, void*));
+    /// generates sampled cube map and saves into output, the third argument is a function pointer to a function which handles progress
+    void Filter(bool irradiance, void* messageHandler, void(*CubeFilterer_Progress)(const Util::String&, void*));
+    /// generate cube map for depth
+    void DepthCube(bool genConeMap, void* messageHandler, void(*CubeFilterer_Progress)(const Util::String&, void*));
 
 private:
-	Util::FixedArray<Ptr<CoreGraphics::Texture>> cubefaces;
-	IO::URI output;
-	bool generateMips;
-	uint power;
-	uint size;
+    Util::FixedArray<Ptr<CoreGraphics::Texture>> cubefaces;
+    IO::URI output;
+    bool generateMips;
+    uint power;
+    uint size;
 
-	//CCubeMapProcessor processor;
+    //CCubeMapProcessor processor;
 };
 
 //------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ private:
 inline void
 CubeFilterer::SetCubeFaces(const Util::FixedArray<Ptr<CoreGraphics::Texture>>& cubefaces)
 {
-	this->cubefaces = cubefaces;
+    this->cubefaces = cubefaces;
 }
 
 //------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ CubeFilterer::SetCubeFaces(const Util::FixedArray<Ptr<CoreGraphics::Texture>>& c
 inline void
 CubeFilterer::SetOutputFile(const IO::URI& output)
 {
-	this->output = output;
+    this->output = output;
 }
 
 //------------------------------------------------------------------------------
@@ -75,7 +75,7 @@ CubeFilterer::SetOutputFile(const IO::URI& output)
 inline void
 CubeFilterer::SetOutputSize(uint size)
 {
-	this->size = size;
+    this->size = size;
 }
 
 //------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ CubeFilterer::SetOutputSize(uint size)
 inline void
 CubeFilterer::SetSpecularPower(uint power)
 {
-	this->power = power;
+    this->power = power;
 }
 
 //------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ CubeFilterer::SetSpecularPower(uint power)
 inline void
 CubeFilterer::SetGenerateMips(bool b)
 {
-	this->generateMips = b;
+    this->generateMips = b;
 }
 
 } // namespace ToolkitUtil

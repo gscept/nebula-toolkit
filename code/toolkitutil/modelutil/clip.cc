@@ -15,7 +15,7 @@ __ImplementClass(ToolkitUtil::Clip, 'CLIP', Core::RefCounted);
 Clip::Clip() :
     take(nullptr)
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ Clip::Cleanup()
 void 
 Clip::SetStart( int start )
 {
-	this->start = start;
+    this->start = start;
 }
 
 //------------------------------------------------------------------------------
@@ -50,7 +50,7 @@ Clip::SetStart( int start )
 const int 
 Clip::GetStart() const
 {
-	return this->start;
+    return this->start;
 }
 
 //------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ Clip::GetStart() const
 void 
 Clip::SetEnd( int end )
 {
-	this->end = end;
+    this->end = end;
 }
 
 //------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ Clip::SetEnd( int end )
 const int 
 Clip::GetEnd() const
 {
-	return this->end;
+    return this->end;
 }
 
 //------------------------------------------------------------------------------

@@ -20,7 +20,7 @@ __ImplementClass(DistributedDeleteDirectoryContentJob,'DDCJ',DistributedJob);
 
 //------------------------------------------------------------------------------
 /**
-    Constructor	
+    Constructor 
 */
 DistributedDeleteDirectoryContentJob::DistributedDeleteDirectoryContentJob()
 {
@@ -29,7 +29,7 @@ DistributedDeleteDirectoryContentJob::DistributedDeleteDirectoryContentJob()
 
 //------------------------------------------------------------------------------
 /**
-    Destructor	
+    Destructor  
 */
 DistributedDeleteDirectoryContentJob::~DistributedDeleteDirectoryContentJob()
 {
@@ -140,7 +140,7 @@ DistributedDeleteDirectoryContentJob::Clone()
 }
 //------------------------------------------------------------------------------
 /**
-    copy the attributes of another job to itself, except the guid	
+    copy the attributes of another job to itself, except the guid   
 */
 void
 DistributedDeleteDirectoryContentJob::CopyFrom(const Ptr<DistributedDeleteDirectoryContentJob> & job)

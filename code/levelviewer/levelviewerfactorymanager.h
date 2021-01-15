@@ -16,13 +16,13 @@ namespace LevelViewer
 {
 class LevelViewerFactoryManager : public BaseGameFeature::FactoryManager
 {
-	__DeclareClass(LevelViewerFactoryManager);
-	__DeclareSingleton(LevelViewerFactoryManager);
+    __DeclareClass(LevelViewerFactoryManager);
+    __DeclareSingleton(LevelViewerFactoryManager);
 public:
-	/// constructor
-	LevelViewerFactoryManager();
-	/// destructor
-	virtual ~LevelViewerFactoryManager();
+    /// constructor
+    LevelViewerFactoryManager();
+    /// destructor
+    virtual ~LevelViewerFactoryManager();
     /// add properties to entity according to blue print but ignore unknowns
     virtual void AddProperties(const Ptr<Game::Entity>& entity, const Util::String& categoryName, bool isMaster) const;
 };

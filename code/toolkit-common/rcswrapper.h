@@ -38,8 +38,8 @@ public:
     const Util::Array<Util::String>& GetUpdateTimeStampDirectories() const;
     /// perform update operation
     bool Update(Logger& logger);
-	/// get modified files in local working copy
-	bool GetModifiedFiles(Logger& logger, const Util::String& directory, Util::Array<Util::String>& outFiles) const;
+    /// get modified files in local working copy
+    bool GetModifiedFiles(Logger& logger, const Util::String& directory, Util::Array<Util::String>& outFiles) const;
 
 private:
     /// write a temporary config file for SVN
@@ -48,10 +48,10 @@ private:
     void CopyDirectory(const Util::String& fromDir, const Util::String& toDir);
     /// update one directory
     bool UpdateDirectory(Logger& logger, const Util::String& directory, bool commitTimeStampMode);
-	/// returns true, if the given directory is under SVN control
-	bool IsSVNDirectory(Logger& logger, const Util::String& directory) const;
-	/// returns true, if the SVN command line tool has been set and exits
-	bool IsSVNCommandLineConfigured(Logger& logger) const;
+    /// returns true, if the given directory is under SVN control
+    bool IsSVNDirectory(Logger& logger, const Util::String& directory) const;
+    /// returns true, if the SVN command line tool has been set and exits
+    bool IsSVNCommandLineConfigured(Logger& logger) const;
     /// parse SVN status output for modified files
     bool ParseSVNStatusOutput(const Ptr<IO::Stream>& stream, const Util::String& directory, Util::Array<Util::String>& outFiles) const;
 

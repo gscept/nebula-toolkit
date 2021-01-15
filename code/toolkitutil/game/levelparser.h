@@ -16,18 +16,18 @@ namespace ToolkitUtil
 {
 class LevelParser : public Core::RefCounted
 {
-	__DeclareClass(LevelParser);
+    __DeclareClass(LevelParser);
 public:
-	/// constructor
-	LevelParser();
-	/// destructor
-	virtual ~LevelParser();
+    /// constructor
+    LevelParser();
+    /// destructor
+    virtual ~LevelParser();
 
     /// Loads a level from an xml file in work:levels. 
     bool LoadXmlLevel(const Ptr<IO::XmlReader> & reader);
 protected:
-	/// parse a single object
-	bool LoadEntity(const Ptr<IO::XmlReader> & reader);
+    /// parse a single object
+    bool LoadEntity(const Ptr<IO::XmlReader> & reader);
     /// set level name
     virtual void SetName(const Util::String & name) = 0;
     /// parse layer information
@@ -43,7 +43,7 @@ protected:
     /// parsing done
     virtual void CommitLevel(){}
 private:
-	Util::Array<Util::String> invalidAttrs;
+    Util::Array<Util::String> invalidAttrs;
 
 }; 
 } // namespace ToolkitUtil

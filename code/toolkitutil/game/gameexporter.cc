@@ -28,7 +28,7 @@ __ImplementClass(ToolkitUtil::GameExporter, 'GAEX', Core::RefCounted);
 */
 GameExporter::GameExporter()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ GameExporter::GameExporter()
 */
 GameExporter::~GameExporter()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ GameExporter::~GameExporter()
 void 
 GameExporter::Open()
 {
-	ExporterBase::Open();
+    ExporterBase::Open();
 
 }
 
@@ -55,21 +55,21 @@ GameExporter::Open()
 void 
 GameExporter::Close()
 {
-	ExporterBase::Close();
+    ExporterBase::Close();
 }
 
 //------------------------------------------------------------------------------
 /**
-	Exports both templates and levels with a clean database (removes and creates backup of previous)
+    Exports both templates and levels with a clean database (removes and creates backup of previous)
 */
 void 
 GameExporter::ExportAll()
 {
-	
+    
     String projectFolder = "proj:";
-	
-	Ptr<ToolkitUtil::ToolkitConsoleHandler> console = ToolkitUtil::ToolkitConsoleHandler::Instance();
-	console->Clear();
+    
+    Ptr<ToolkitUtil::ToolkitConsoleHandler> console = ToolkitUtil::ToolkitConsoleHandler::Instance();
+    console->Clear();
     IO::AssignRegistry::Instance()->SetAssign(Assign("home","proj:"));
 
     Ptr<Db::DbFactory> sqlite3Factory;
@@ -81,33 +81,33 @@ GameExporter::ExportAll()
     {
         sqlite3Factory = Db::Sqlite3Factory::Create();
     }
-	
-	if (!IoServer::Instance()->DirectoryExists("export:data/tables"))
-	{
-		IoServer::Instance()->CreateDirectory("export:data/tables");
-	}
+    
+    if (!IoServer::Instance()->DirectoryExists("export:data/tables"))
+    {
+        IoServer::Instance()->CreateDirectory("export:data/tables");
+    }
 
-	IO::IoServer * ioServer = IO::IoServer::Instance();
-	Util::Array<Util::String> xmlfiles = ioServer->ListFiles("proj:data/tables/", "*.xml", false);
+    IO::IoServer * ioServer = IO::IoServer::Instance();
+    Util::Array<Util::String> xmlfiles = ioServer->ListFiles("proj:data/tables/", "*.xml", false);
 
-	ToolLog log("Tables");
-	for (Util::Array<Util::String>::Iterator iter = xmlfiles.Begin(); iter != xmlfiles.End(); iter++)
-	{
-		if (*iter != "blueprints.xml")
-		{
-			Util::String from("proj:data/tables/" + *iter);
-			Util::String to("export:data/tables/" + *iter);			
-			ioServer->CopyFile(from, to);
-			IO::URI fromUri(from);
-			IO::URI toUri(to);
-			n_printf("Copying table %s to %s\n", fromUri.LocalPath().AsCharPtr(), toUri.LocalPath().AsCharPtr());
-		}		
-	}
-	log.AddEntry(console, "Game Batcher", "data/tables");
-	console->Clear();
-	this->logs.Append(log);
+    ToolLog log("Tables");
+    for (Util::Array<Util::String>::Iterator iter = xmlfiles.Begin(); iter != xmlfiles.End(); iter++)
+    {
+        if (*iter != "blueprints.xml")
+        {
+            Util::String from("proj:data/tables/" + *iter);
+            Util::String to("export:data/tables/" + *iter);         
+            ioServer->CopyFile(from, to);
+            IO::URI fromUri(from);
+            IO::URI toUri(to);
+            n_printf("Copying table %s to %s\n", fromUri.LocalPath().AsCharPtr(), toUri.LocalPath().AsCharPtr());
+        }       
+    }
+    log.AddEntry(console, "Game Batcher", "data/tables");
+    console->Clear();
+    this->logs.Append(log);
 
-	ToolLog blog("Blueprints");
+    ToolLog blog("Blueprints");
 
     Ptr<Toolkit::EditorBlueprintManager> bm;
     if(Toolkit::EditorBlueprintManager::HasInstance())
@@ -134,18 +134,18 @@ GameExporter::ExportAll()
     }
     
    
-	if (!bm->CreateDatabases("export:/db/"))
-	{
-		n_warning("Aborting export of game data as databases are in use\n");
-		return;
-	}
-	bm->SaveBlueprint("export:data/tables/blueprints.xml");
+    if (!bm->CreateDatabases("export:/db/"))
+    {
+        n_warning("Aborting export of game data as databases are in use\n");
+        return;
+    }
+    bm->SaveBlueprint("export:data/tables/blueprints.xml");
 
-	blog.AddEntry(console, "Blueprint Manager", "data/tables");
-	console->Clear();
-	this->logs.Append(blog);
+    blog.AddEntry(console, "Blueprint Manager", "data/tables");
+    console->Clear();
+    this->logs.Append(blog);
 
-	ToolLog llog("Levels");
+    ToolLog llog("Levels");
 
     Ptr<Db::Database> gamedb = Db::DbFactory::Instance()->CreateDatabase();
     gamedb->SetURI("export:db/game.db4");
@@ -155,17 +155,17 @@ GameExporter::ExportAll()
     staticdb->SetURI("export:db/static.db4");
     staticdb->SetAccessMode(Db::Database::ReadWriteExisting);
     staticdb->Open();
-	
-	llog.AddEntry(console, "Blueprint Manager", "Databases");
-	console->Clear();
-	this->logs.Append(llog);
+    
+    llog.AddEntry(console, "Blueprint Manager", "Databases");
+    console->Clear();
+    this->logs.Append(llog);
 
     Ptr<ToolkitUtil::LevelDbWriter> dbwriter = ToolkitUtil::LevelDbWriter::Create();
     dbwriter->Open(gamedb,staticdb);
     String levelDir = "proj:work/levels";
     Array<String> files = IoServer::Instance()->ListFiles(IO::URI(levelDir), "*.xml", true);
     for (int fileIndex = 0; fileIndex < files.Size(); fileIndex++)
-    {        		
+    {               
         Ptr<IO::Stream> levelStream = IoServer::Instance()->CreateStream(files[fileIndex]);
         Ptr<XmlReader> xmlReader = XmlReader::Create();
         levelStream->Open();
@@ -174,31 +174,31 @@ GameExporter::ExportAll()
         dbwriter->LoadXmlLevel(xmlReader);
         xmlReader->Close();
         levelStream->Close();        
-		llog.AddEntry(console, "Level Writer", files[fileIndex]);
-		console->Clear();
-		this->logs.Append(llog);
-		if (!dbwriter->GetReferences().IsEmpty())
-		{
-			dbwriter->SetReferenceMode(true);
-			const Util::Array<Util::String> refs = dbwriter->GetReferences();
-			for (int refIndex = 0; refIndex < refs.Size();refIndex++)
-			{
-				IO::URI path("proj:work/levels/" + refs[refIndex] + ".xml");
-				Ptr<IO::Stream> levelStream = IoServer::Instance()->CreateStream(path);
-				Ptr<XmlReader> xmlReader = XmlReader::Create();
-				levelStream->Open();
-				xmlReader->SetStream(levelStream);
-				xmlReader->Open();
-				dbwriter->LoadXmlLevel(xmlReader);
-				xmlReader->Close();
-				levelStream->Close();
-				llog.AddEntry(console, "Level Writer", refs[refIndex]);
-				console->Clear();
-				this->logs.Append(llog);
-			}
-			dbwriter->SetReferenceMode(false);
-			dbwriter->ClearReferences();
-		}
+        llog.AddEntry(console, "Level Writer", files[fileIndex]);
+        console->Clear();
+        this->logs.Append(llog);
+        if (!dbwriter->GetReferences().IsEmpty())
+        {
+            dbwriter->SetReferenceMode(true);
+            const Util::Array<Util::String> refs = dbwriter->GetReferences();
+            for (int refIndex = 0; refIndex < refs.Size();refIndex++)
+            {
+                IO::URI path("proj:work/levels/" + refs[refIndex] + ".xml");
+                Ptr<IO::Stream> levelStream = IoServer::Instance()->CreateStream(path);
+                Ptr<XmlReader> xmlReader = XmlReader::Create();
+                levelStream->Open();
+                xmlReader->SetStream(levelStream);
+                xmlReader->Open();
+                dbwriter->LoadXmlLevel(xmlReader);
+                xmlReader->Close();
+                levelStream->Close();
+                llog.AddEntry(console, "Level Writer", refs[refIndex]);
+                console->Clear();
+                this->logs.Append(llog);
+            }
+            dbwriter->SetReferenceMode(false);
+            dbwriter->ClearReferences();
+        }
     }
     dbwriter->Close();    
     gamedb->Close();

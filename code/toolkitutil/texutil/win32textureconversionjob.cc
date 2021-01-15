@@ -24,7 +24,7 @@ Win32TextureConversionJob::Win32TextureConversionJob()
 
 //------------------------------------------------------------------------------
 /**
-    Start the conversion process. Returns false, if the job finished immediately.	
+    Start the conversion process. Returns false, if the job finished immediately.   
 */
 bool
 Win32TextureConversionJob::Convert()
@@ -43,9 +43,9 @@ Win32TextureConversionJob::Convert()
         const TextureAttrs& attrs = this->textureAttrs;
         if ((attrs.GetRGBPixelFormat() == TextureAttrs::DXT5NM) ||
             (attrs.GetRGBAPixelFormat() == TextureAttrs::DXT5NM) ||
-			(String::MatchPattern(this->srcPath, "*norm.*")) ||
-			(String::MatchPattern(this->srcPath, "*normal.*")) ||
-			(String::MatchPattern(this->srcPath, "*bump.*")))
+            (String::MatchPattern(this->srcPath, "*norm.*")) ||
+            (String::MatchPattern(this->srcPath, "*normal.*")) ||
+            (String::MatchPattern(this->srcPath, "*bump.*")))
         {
             args.Append(" -dxt5nm ");
             isDXT5NormalMap = true;

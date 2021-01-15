@@ -1,4 +1,4 @@
-//------------------------------------------------------------------------------
+﻿//------------------------------------------------------------------------------
 //  meshbuilder.cc
 //  (C) 2009 Radon Labs GmbH
 //  (C) 2013-2016 Individual contributors, see AUTHORS file
@@ -15,7 +15,7 @@ using namespace Math;
 /**
 */
 MeshBuilder::MeshBuilder() :
-	topology(CoreGraphics::PrimitiveTopology::TriangleList)
+    topology(CoreGraphics::PrimitiveTopology::TriangleList)
 {
     this->Reserve(10000, 10000);
 }
@@ -115,7 +115,7 @@ MeshBuilder::FindGroupVertexRange(IndexT groupId, IndexT& outMinVertexIndex, Ind
     initialized with InvalidIndex!! The copy method will record any copied vertices
     into the index map, so that it can find out at a later iteration if
     the vertex has already been copied. This method makes an extra cleanup
-    pass unnecessary, since not redundant vertex data will be generated 
+    pass unnecessary, since not redundant vertex data will be generated
     during the copy.
 */
 void
@@ -201,7 +201,7 @@ MeshBuilder::ComputeBoundingBox() const
     created which contains the group id, the first triangle and
     the number of triangles in the group.
 */
-void 
+void
 MeshBuilder::BuildGroupMap(Array<MeshBuilderGroup>& outGroupMap)
 {
     IndexT triIndex = 0;
@@ -358,9 +358,9 @@ MeshBuilder::Deflate(FixedArray<Array<IndexT>>* collapsMap)
 
     // generate a index remapping table and sorted vertex array
     SizeT numVertices = this->GetNumVertices();
-    IndexT* indexMap = (IndexT*) Memory::Alloc(Memory::ScratchHeap, numVertices * sizeof(IndexT));
-    IndexT* sortMap  = (IndexT*) Memory::Alloc(Memory::ScratchHeap, numVertices * sizeof(IndexT));
-    IndexT* shiftMap = (IndexT*) Memory::Alloc(Memory::ScratchHeap, numVertices * sizeof(IndexT));
+    IndexT* indexMap = (IndexT*)Memory::Alloc(Memory::ScratchHeap, numVertices * sizeof(IndexT));
+    IndexT* sortMap = (IndexT*)Memory::Alloc(Memory::ScratchHeap, numVertices * sizeof(IndexT));
+    IndexT* shiftMap = (IndexT*)Memory::Alloc(Memory::ScratchHeap, numVertices * sizeof(IndexT));
     IndexT i;
     for (i = 0; i < numVertices; i++)
     {
@@ -370,15 +370,15 @@ MeshBuilder::Deflate(FixedArray<Array<IndexT>>* collapsMap)
 
     // generate a sorted index map (sort by X coordinate)
     qsortData = this;
-    qsort(sortMap, numVertices, sizeof(IndexT), MeshBuilder::VertexSorter);    
+    qsort(sortMap, numVertices, sizeof(IndexT), MeshBuilder::VertexSorter);
 
     // search sorted array for redundant vertices
     IndexT baseIndex = 0;
     for (baseIndex = 0; baseIndex < (numVertices - 1);)
     {
         IndexT nextIndex = baseIndex + 1;
-        while ((nextIndex < numVertices) && 
-               (this->vertexArray[sortMap[baseIndex]] == this->vertexArray[sortMap[nextIndex]]))
+        while ((nextIndex < numVertices) &&
+            (this->vertexArray[sortMap[baseIndex]] == this->vertexArray[sortMap[nextIndex]]))
         {
             // mark the vertex as invalid
             this->vertexArray[sortMap[nextIndex]].SetFlag(MeshBuilderVertex::Redundant);
@@ -434,7 +434,7 @@ MeshBuilder::Deflate(FixedArray<Array<IndexT>>* collapsMap)
         }
     }
 
-	// finally, remove the redundant vertices
+    // finally, remove the redundant vertices
     numVertices = this->vertexArray.Size();
     Array<MeshBuilderVertex> newArray;
     newArray.Reserve(numVertices);
@@ -473,7 +473,7 @@ MeshBuilder::Inflate()
         IndexT i;
         for (i = 0; i < 3; i++)
         {
-			MeshBuilderVertex vert = this->VertexAt(tri.GetVertexIndex(i));
+            MeshBuilderVertex vert = this->VertexAt(tri.GetVertexIndex(i));
             newVertexArray.Append(vert);
             tri.vertexIndex[i] = triangleIndex * 3 + i;
         }
@@ -499,7 +499,7 @@ MeshBuilder::FlipUvs()
         for (uvLayer = 0; uvLayer < 4; uvLayer++)
         {
             IndexT compIndex = MeshBuilderVertex::Uv0Index + uvLayer;
-            if (v.HasComponents(1<<compIndex))
+            if (v.HasComponents(1 << compIndex))
             {
                 vec4 uv = v.GetComponent(MeshBuilderVertex::ComponentIndex(compIndex));
                 uv.y = 1.0f - uv.y;
@@ -621,103 +621,103 @@ MeshBuilder::MoveTriangleUvsIntoRange(IndexT triIndex, float minUv, float maxUv)
 //
 //  30-Jan-03 Floh Optimizations
 
-void MeshBuilder::Cleanup(Array<Array<int> > *collapseMap)
+void MeshBuilder::Cleanup(Array<Array<int> >* collapseMap)
 {
-	int numVertices=this->vertexArray.Size();
+    int numVertices = this->vertexArray.Size();
 
-	// generate a index remapping table and sorted vertex array
-	int *indexMap=n_new_array(int, numVertices);
-	int *sortMap=n_new_array(int, numVertices);
-	int *shiftMap=n_new_array(int, numVertices);
+    // generate a index remapping table and sorted vertex array
+    int* indexMap = n_new_array(int, numVertices);
+    int* sortMap = n_new_array(int, numVertices);
+    int* shiftMap = n_new_array(int, numVertices);
 
-	int i;
-	for(i=0;i < numVertices;i++)
-	{
-		indexMap[i]=i;
-		sortMap[i]=i;
-	}
+    int i;
+    for (i = 0; i < numVertices; i++)
+    {
+        indexMap[i] = i;
+        sortMap[i] = i;
+    }
 
-	// generate a sorted index map (sort by X coordinate)
-	qsortData=this;
-	qsort(sortMap, numVertices, sizeof(int), MeshBuilder::VertexSorter);    
+    // generate a sorted index map (sort by X coordinate)
+    qsortData = this;
+    qsort(sortMap, numVertices, sizeof(int), MeshBuilder::VertexSorter);
 
-	// search sorted array for redundant vertices
-	int baseIndex=0;
-	for(baseIndex=0;baseIndex < (numVertices-1);)
-	{
-		int nextIndex=baseIndex+1;
-		while(nextIndex < numVertices &&
-			this->vertexArray[sortMap[baseIndex]] == this->vertexArray[sortMap[nextIndex]])
-		{
-			// mark the vertex as invalid
-			this->vertexArray[sortMap[nextIndex]].SetFlag(MeshBuilderVertex::Redundant);
+    // search sorted array for redundant vertices
+    int baseIndex = 0;
+    for (baseIndex = 0; baseIndex < (numVertices - 1);)
+    {
+        int nextIndex = baseIndex + 1;
+        while (nextIndex < numVertices &&
+            this->vertexArray[sortMap[baseIndex]] == this->vertexArray[sortMap[nextIndex]])
+        {
+            // mark the vertex as invalid
+            this->vertexArray[sortMap[nextIndex]].SetFlag(MeshBuilderVertex::Redundant);
 
-			// put the new valid index into the index remapping table
-			indexMap[sortMap[nextIndex]] = sortMap[baseIndex];
-			nextIndex++;
-		}
+            // put the new valid index into the index remapping table
+            indexMap[sortMap[nextIndex]] = sortMap[baseIndex];
+            nextIndex++;
+        }
 
-		baseIndex=nextIndex;
-	}
+        baseIndex = nextIndex;
+    }
 
-	// fill the shiftMap, this contains for each vertex index the number of invalid vertices in front of it
-	int numInvalid=0;
+    // fill the shiftMap, this contains for each vertex index the number of invalid vertices in front of it
+    int numInvalid = 0;
 
-	int vertexIndex;
-	for(vertexIndex=0;vertexIndex < numVertices;vertexIndex++)
-	{
-		if(this->vertexArray[vertexIndex].CheckFlag(MeshBuilderVertex::Redundant))
-			numInvalid++;
+    int vertexIndex;
+    for (vertexIndex = 0; vertexIndex < numVertices; vertexIndex++)
+    {
+        if (this->vertexArray[vertexIndex].CheckFlag(MeshBuilderVertex::Redundant))
+            numInvalid++;
 
-		shiftMap[vertexIndex]=numInvalid;
-	}
+        shiftMap[vertexIndex] = numInvalid;
+    }
 
-	// fix the triangle's vertex indices, first, remap the old index to a valid index from the indexMap,
-	//  then decrement by the shiftMap entry at that index, which contains the number of invalid vertices
-	//  in front of that index
-	//	fix vertex indices in triangles
-	int numTriangles=this->triangleArray.Size();
+    // fix the triangle's vertex indices, first, remap the old index to a valid index from the indexMap,
+    //  then decrement by the shiftMap entry at that index, which contains the number of invalid vertices
+    //  in front of that index
+    //  fix vertex indices in triangles
+    int numTriangles = this->triangleArray.Size();
 
-	int curTriangle;
-	for(curTriangle=0;curTriangle < numTriangles;curTriangle++)
-	{
-		MeshBuilderTriangle &t=this->triangleArray[curTriangle];
-		for(i=0;i < 3;i++)
-		{
-			int newIndex=indexMap[t.vertexIndex[i]];
-			t.vertexIndex[i]=newIndex-shiftMap[newIndex];
-		}
-	}
+    int curTriangle;
+    for (curTriangle = 0; curTriangle < numTriangles; curTriangle++)
+    {
+        MeshBuilderTriangle& t = this->triangleArray[curTriangle];
+        for (i = 0; i < 3; i++)
+        {
+            int newIndex = indexMap[t.vertexIndex[i]];
+            t.vertexIndex[i] = newIndex - shiftMap[newIndex];
+        }
+    }
 
-	// initialize the collaps map so that for each new (collapsed) index it contains a list of old vertex indices
-	//  which have been collapsed into the new vertex
-	if(collapseMap)
-	{
-		for(i=0;i < numVertices;i++)
-		{
-			int newIndex=indexMap[i];
-			int collapsedIndex = newIndex - shiftMap[newIndex];
-			
-			(*collapseMap)[collapsedIndex].Append(i);
-		}
-	}
+    // initialize the collaps map so that for each new (collapsed) index it contains a list of old vertex indices
+    //  which have been collapsed into the new vertex
+    if (collapseMap)
+    {
+        for (i = 0; i < numVertices; i++)
+        {
+            int newIndex = indexMap[i];
+            int collapsedIndex = newIndex - shiftMap[newIndex];
 
-	// finally, remove the redundant vertices
-	numVertices=this->vertexArray.Size();
+            (*collapseMap)[collapsedIndex].Append(i);
+        }
+    }
 
-	Array<MeshBuilderVertex> newArray(numVertices, numVertices);
-	for(vertexIndex=0;vertexIndex < numVertices;vertexIndex++)
-	{
-		if(!this->vertexArray[vertexIndex].CheckFlag(MeshBuilderVertex::Redundant))
-			newArray.Append(vertexArray[vertexIndex]);
-	}
+    // finally, remove the redundant vertices
+    numVertices = this->vertexArray.Size();
 
-	this->vertexArray=newArray;
+    Array<MeshBuilderVertex> newArray(numVertices, numVertices);
+    for (vertexIndex = 0; vertexIndex < numVertices; vertexIndex++)
+    {
+        if (!this->vertexArray[vertexIndex].CheckFlag(MeshBuilderVertex::Redundant))
+            newArray.Append(vertexArray[vertexIndex]);
+    }
 
-	// cleanup
-	n_delete_array(indexMap);
-	n_delete_array(sortMap);
-	n_delete_array(shiftMap);
+    this->vertexArray = newArray;
+
+    // cleanup
+    n_delete_array(indexMap);
+    n_delete_array(sortMap);
+    n_delete_array(shiftMap);
 }
 
 //------------------------------------------------------------------------------
@@ -728,7 +728,7 @@ void
 MeshBuilder::Merge(MeshBuilder const& sourceMesh)
 {
     uint primitiveGroup = 0;
-        
+
     SizeT vertOffset = this->GetNumVertices();
 
     SizeT vertCount = sourceMesh.GetNumVertices();
@@ -881,13 +881,13 @@ MeshBuilder::CalculateTangentsAndBinormals()
     {
         MeshBuilderVertex& vertex = this->VertexAt(vertexIndex);
         const MeshBuilderVertex::ComponentIndex normalComponent = vertex.HasComponent(MeshBuilderVertex::ComponentBit::NormalBit) ? MeshBuilderVertex::NormalIndex : MeshBuilderVertex::NormalB4NIndex;
-        vec4 n = normalize(vertex.GetComponent(normalComponent));
+        vec4 n = normalize3(vertex.GetComponent(normalComponent));
         vec4 t = tangents1[vertexIndex];
         vec4 b = tangents2[vertexIndex];
 
-        vec4 tangent = normalize(t - n * dot3(n, t));
+        vec4 tangent = normalize3(t - n * dot3(n, t));
         float handedNess = (dot3(cross3(n, t), tangents2[vertexIndex]) < 0.0f ? 1.0f : -1.0f);
-        vec4 bitangent = normalize(cross3(n, tangent) * handedNess);
+        vec4 bitangent = normalize3(cross3(n, tangent) * handedNess);
 
         if (vertex.HasComponent(MeshBuilderVertex::TangentB4NBit))
         {

@@ -14,7 +14,7 @@ namespace DistributedTools
     __ImplementClass(DistributedTools::SharedDirControl,'DSDC',Core::RefCounted)
 //------------------------------------------------------------------------------
 /**
-    Constructor	
+    Constructor 
 */
 SharedDirControl::SharedDirControl()
 {
@@ -22,7 +22,7 @@ SharedDirControl::SharedDirControl()
 
 //------------------------------------------------------------------------------
 /**
-    Destructor	
+    Destructor  
 */
 SharedDirControl::~SharedDirControl()
 {

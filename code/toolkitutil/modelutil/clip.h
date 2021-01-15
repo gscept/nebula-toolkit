@@ -17,47 +17,47 @@ namespace ToolkitUtil
 class Take;
 class Clip : public Core::RefCounted
 {
-	__DeclareClass(Clip);
+    __DeclareClass(Clip);
 public:
 
-	enum InfinityType
-	{
-		Constant,
-		Cycle
-	};
+    enum InfinityType
+    {
+        Constant,
+        Cycle
+    };
 
-	/// constructor
-	Clip();
-	/// destructor
-	virtual ~Clip();
+    /// constructor
+    Clip();
+    /// destructor
+    virtual ~Clip();
 
     /// cleans up clip
     void Cleanup();
 
-	/// sets the name
-	void SetName(const Util::String& name);
-	/// gets the name
-	const Util::String& GetName() const;
+    /// sets the name
+    void SetName(const Util::String& name);
+    /// gets the name
+    const Util::String& GetName() const;
     /// sets the take
     void SetTake(const Ptr<Take>& take);
     /// gets the take
     const Ptr<Take>& GetTake() const;
-	/// sets the start time
-	void SetStart(int start);
-	/// gets the start value
-	const int GetStart() const;
-	/// sets the end time
-	void SetEnd(int end);
-	/// gets the end time
-	const int GetEnd() const;
-	/// sets the pre infinity type
-	void SetPreInfinity(InfinityType infinityType);
-	/// gets the pre infinity type
-	const InfinityType GetPreInfinity() const;
-	/// sets the post infinity type
-	void SetPostInfinity(InfinityType infinityType);
-	/// gets the post infinity type
-	const InfinityType GetPostInfinity() const;
+    /// sets the start time
+    void SetStart(int start);
+    /// gets the start value
+    const int GetStart() const;
+    /// sets the end time
+    void SetEnd(int end);
+    /// gets the end time
+    const int GetEnd() const;
+    /// sets the pre infinity type
+    void SetPreInfinity(InfinityType infinityType);
+    /// gets the pre infinity type
+    const InfinityType GetPreInfinity() const;
+    /// sets the post infinity type
+    void SetPostInfinity(InfinityType infinityType);
+    /// gets the post infinity type
+    const InfinityType GetPostInfinity() const;
 
     /// gets list of events
     const Util::Array<Ptr<ClipEvent>>& GetEvents() const;
@@ -68,11 +68,11 @@ public:
     /// removes event from clip
     void RemoveEvent(const Ptr<ClipEvent>& event);
 private:
-	Util::String name;
-	int start;
-	int end;
-	InfinityType preInfinity;
-	InfinityType postInfinity;
+    Util::String name;
+    int start;
+    int end;
+    InfinityType preInfinity;
+    InfinityType postInfinity;
     Ptr<Take> take;
     Util::Array<Ptr<ClipEvent>> events;
 

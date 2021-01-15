@@ -56,15 +56,15 @@ ResourceDictionaryBuilder::ReadTextureData(Ptr<Stream>& stream, TextureInfo& for
     uint srcDataSize = stream->GetSize();
 
 #if __DX11__
-	HRESULT hr;
-	D3DX11_IMAGE_INFO imageInfo = {0};
-	hr = D3DX11GetImageInfoFromMemory(srcData, srcDataSize, NULL, &imageInfo, NULL);
+    HRESULT hr;
+    D3DX11_IMAGE_INFO imageInfo = {0};
+    hr = D3DX11GetImageInfoFromMemory(srcData, srcDataSize, NULL, &imageInfo, NULL);
 #elif (__OGL4__ || __VULKAN__)
-	ILint imageInfo = ilGenImage();
-	ilBindImage(imageInfo);
-	ILboolean success = ilLoadL(IL_DDS, srcData, srcDataSize);
+    ILint imageInfo = ilGenImage();
+    ilBindImage(imageInfo);
+    ILboolean success = ilLoadL(IL_DDS, srcData, srcDataSize);
 #elif __DX9__
-	HRESULT hr;
+    HRESULT hr;
     D3DXIMAGE_INFO imageInfo = {0};
     hr = D3DXGetImageInfoFromFileInMemory(srcData, srcDataSize, &imageInfo);
 #endif
@@ -75,10 +75,10 @@ ResourceDictionaryBuilder::ReadTextureData(Ptr<Stream>& stream, TextureInfo& for
         n_error("ResourceDictionaryBuilder: failed to obtain image info from file '%s'!", stream->GetURI().AsString());
     }
 #elif __OGL4__
-	if (!success)
-	{
-		n_error("ResourceDictionaryBuilder: failed to obtain image info from file '%s'!", stream->GetURI().AsString().AsCharPtr());
-	}
+    if (!success)
+    {
+        n_error("ResourceDictionaryBuilder: failed to obtain image info from file '%s'!", stream->GetURI().AsString().AsCharPtr());
+    }
 #endif
     format.SetInfo(imageInfo);
     format.SetSize(stream->GetSize());
@@ -104,7 +104,7 @@ ResourceDictionaryBuilder::ReadTextureData(Ptr<Stream>& stream, TextureInfo& for
     }
 
 #if __OGL4__
-	ilDeleteImage(imageInfo);
+    ilDeleteImage(imageInfo);
 #endif
     stream->Unmap();
     
@@ -149,7 +149,7 @@ ResourceDictionaryBuilder::AddTexturesToDictionary()
             String catDir;
             catDir.Format("%s/%s", this->texDir.AsCharPtr(), categories[catIndex].AsCharPtr());
             String pattern;
-			pattern = "*.dds";
+            pattern = "*.dds";
             Array<String> files = IoServer::Instance()->ListFiles(catDir, pattern);
             IndexT fileIndex;
             for (fileIndex = 0; fileIndex < files.Size(); fileIndex++)

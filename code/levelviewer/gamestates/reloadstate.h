@@ -16,22 +16,22 @@ namespace Tools
 {
 class ReloadState : public BaseGameFeature::GameStateHandler
 {
-	__DeclareClass(ReloadState);
+    __DeclareClass(ReloadState);
 public:
-	/// constructor
-	ReloadState();
-	/// destructor
-	virtual ~ReloadState();
-	
-	/// called when the state represented by this state handler is entered
-	virtual void OnStateEnter(const Util::String& prevState);
-	/// called each frame as long as state is current, return new state
-	virtual Util::String OnFrame();
+    /// constructor
+    ReloadState();
+    /// destructor
+    virtual ~ReloadState();
+    
+    /// called when the state represented by this state handler is entered
+    virtual void OnStateEnter(const Util::String& prevState);
+    /// called each frame as long as state is current, return new state
+    virtual Util::String OnFrame();
 
 private:
-	Util::String nextLevelName;
+    Util::String nextLevelName;
 
-	
+    
 }; 
 } // namespace Tools
 //------------------------------------------------------------------------------

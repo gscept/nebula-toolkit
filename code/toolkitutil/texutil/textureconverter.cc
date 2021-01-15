@@ -129,9 +129,9 @@ TextureConverter::ConvertFiles(const Util::Array<Util::String>& files)
         if (files[index].CheckFileExtension("tga") ||
             files[index].CheckFileExtension("bmp") ||
             files[index].CheckFileExtension("dds") ||
-			files[index].CheckFileExtension("png") ||
+            files[index].CheckFileExtension("png") ||
             files[index].CheckFileExtension("exr") ||
-			files[index].CheckFileExtension("jpg"))
+            files[index].CheckFileExtension("jpg"))
         {
             success = this->ConvertTexture(files[index], tmpDir);
         }
@@ -173,21 +173,21 @@ TextureConverter::ConvertTexture(const String& srcTexPath, const String& tmpDir)
     dstTexPath.Format("%s/%s/%s", this->dstDir.AsCharPtr(), texCategory.AsCharPtr(), texFilename.AsCharPtr());
     dstTexPath.StripFileExtension();
 
-	n_printf("Converting texture: %s\n", URI(srcTexPath).LocalPath().AsCharPtr());
+    n_printf("Converting texture: %s\n", URI(srcTexPath).LocalPath().AsCharPtr());
 
     // select conversion method based on target platform
 
-	DirectXTexConversionJob job;
-	job.SetLogger(this->logger);
-	job.SetSrcPath(srcTexPath);
-	job.SetDstPath(dstTexPath);
-	job.SetTmpDir(tmpDir);
-	job.SetTexAttrTable(this->textureAttrTable);
-	job.SetForceFlag(this->force);
-	job.SetQuietFlag(this->quiet);
-	job.Convert();
-	
-	if (this->platform != Platform::Win32 && this->platform != Platform::Linux) return false;
+    DirectXTexConversionJob job;
+    job.SetLogger(this->logger);
+    job.SetSrcPath(srcTexPath);
+    job.SetDstPath(dstTexPath);
+    job.SetTmpDir(tmpDir);
+    job.SetTexAttrTable(this->textureAttrTable);
+    job.SetForceFlag(this->force);
+    job.SetQuietFlag(this->quiet);
+    job.Convert();
+    
+    if (this->platform != Platform::Win32 && this->platform != Platform::Linux) return false;
     else return true;
 }
 

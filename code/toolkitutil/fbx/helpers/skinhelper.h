@@ -15,23 +15,23 @@ namespace ToolkitUtil
 {
 class SkinHelper : public Core::RefCounted
 {
-	__DeclareClass(SkinHelper);
+    __DeclareClass(SkinHelper);
 public:
-	/// constructor
-	SkinHelper();
-	/// destructor
-	virtual ~SkinHelper();
+    /// constructor
+    SkinHelper();
+    /// destructor
+    virtual ~SkinHelper();
 
-	/// sets up the skin helper
-	void Setup(const Ptr<IO::XmlReader>& reader);
+    /// sets up the skin helper
+    void Setup(const Ptr<IO::XmlReader>& reader);
 
-	/// gets skin by name
-	const Util::Array<Util::String>& GetSkins() const;
-	/// returns true if skin exists
-	bool HasSkin(const Util::String& skin);
-	
+    /// gets skin by name
+    const Util::Array<Util::String>& GetSkins() const;
+    /// returns true if skin exists
+    bool HasSkin(const Util::String& skin);
+    
 private:
-	Util::Array<Util::String> skins;
+    Util::Array<Util::String> skins;
 }; 
 
 
@@ -41,7 +41,7 @@ private:
 inline bool 
 SkinHelper::HasSkin( const Util::String& skin )
 {
-	return this->skins.FindIndex(skin) != InvalidIndex;
+    return this->skins.FindIndex(skin) != InvalidIndex;
 }
 
 
@@ -51,7 +51,7 @@ SkinHelper::HasSkin( const Util::String& skin )
 inline const Util::Array<Util::String>& 
 SkinHelper::GetSkins() const
 {
-	return this->skins;
+    return this->skins;
 }
 
 } // namespace ToolkitUtil

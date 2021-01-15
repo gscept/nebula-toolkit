@@ -1,4 +1,4 @@
-//------------------------------------------------------------------------------
+﻿//------------------------------------------------------------------------------
 // win32textureconversionjob.cc
 // (C) 2009 Radon Labs GmbH
 //  (C) 2013-2020 Individual contributors, see AUTHORS file
@@ -29,7 +29,7 @@ DirectXTexConversionJob::DirectXTexConversionJob()
 //------------------------------------------------------------------------------
 /**
 */
-static const char* 
+static const char*
 GetTexConvFormat(TextureAttrs const& attrs)
 {
     switch (attrs.GetPixelFormat())
@@ -58,7 +58,7 @@ GetTexConvFormat(TextureAttrs const& attrs)
 
 //------------------------------------------------------------------------------
 /**
-    Start the conversion process. Returns false, if the job finished immediately.	
+    Start the conversion process. Returns false, if the job finished immediately.
 */
 bool
 DirectXTexConversionJob::Convert()
@@ -66,21 +66,21 @@ DirectXTexConversionJob::Convert()
     n_assert(this->toolPath.IsValid());
     n_assert(0 != this->logger);
     if (TextureConversionJob::Convert())
-    {  
+    {
 
         URI srcPathUri(this->srcPath);
         URI dstPathUri(this->dstPath);
         URI tmpDirUri(this->tmpDir);
-        
+
         // build command line args for TexConv
         String args = " -y -sepalpha -dx10 -nologo -timing ";
         bool isNormalMap = false;
         const TextureAttrs& attrs = this->textureAttrs;
         if ((attrs.GetPixelFormat() == TextureAttrs::DXT5NM) ||
             (attrs.GetPixelFormat() == TextureAttrs::BC5) ||
-			(String::MatchPattern(this->srcPath, "*norm.*")) ||
-			(String::MatchPattern(this->srcPath, "*normal.*")) ||
-			(String::MatchPattern(this->srcPath, "*bump.*")))
+            (String::MatchPattern(this->srcPath, "*norm.*")) ||
+            (String::MatchPattern(this->srcPath, "*normal.*")) ||
+            (String::MatchPattern(this->srcPath, "*bump.*")))
         {
             isNormalMap = true;
             if (attrs.GetFlipNormalY())
@@ -88,12 +88,12 @@ DirectXTexConversionJob::Convert()
                 args.Append(" -inverty ");
             }
         }
-/*
-        args.Append(" -w ");
-        args.AppendInt(attrs.GetMaxWidth());
-        args.Append(" -h ");
-        args.AppendInt(attrs.GetMaxHeight());*/
-        
+        /*
+                args.Append(" -w ");
+                args.AppendInt(attrs.GetMaxWidth());
+                args.Append(" -h ");
+                args.AppendInt(attrs.GetMaxHeight());*/
+
         if (attrs.GetQuality() == TextureAttrs::High)
         {
             args.Append(" -bc x ");
@@ -125,8 +125,8 @@ DirectXTexConversionJob::Convert()
             // force normalmaps to bc5 and dont perform any gamma handling
             args.Append(" -f BC5_UNORM ");
         }
-        
-        
+
+
         args.Append(" \"");
         Util::String srcPath = IO::IoServer::NativePath(srcPathUri.LocalPath());
         //srcPath.ReplaceChars("/", '\\');
@@ -196,7 +196,7 @@ DirectXTexConversionJob::ConvertCube()
         args.Append(tmpPath);
         args.Append("\"");
 
-        for (int i = 0, n = files.Size(); i < n;  i++)
+        for (int i = 0, n = files.Size(); i < n; i++)
         {
             args.Append(" ");
             args.Append(files[i].AsCharPtr());

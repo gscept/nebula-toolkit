@@ -89,7 +89,7 @@ TextureConversionJob::SetTexAttrTable(const TextureAttrTable* table)
 
 //------------------------------------------------------------------------------
 /**
-	Set conversion tool path
+    Set conversion tool path
 */
 inline void
 TextureConversionJob::SetToolPath(const Util::String & path)

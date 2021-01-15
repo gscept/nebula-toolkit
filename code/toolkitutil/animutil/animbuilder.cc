@@ -276,17 +276,17 @@ AnimBuilder::TrimEnd(SizeT numTrimKeys)
 void 
 AnimBuilder::FixInvalidKeyValues()
 {
-	IndexT clipIndex;
-	for (clipIndex = 0; clipIndex < this->clipArray.Size(); clipIndex++)
-	{
-		AnimBuilderClip& clip = this->clipArray[clipIndex];
-		IndexT curveIndex;
-		for (curveIndex = 0; curveIndex < clip.GetNumCurves(); curveIndex++)
-		{
-			AnimBuilderCurve& curve = clip.GetCurveAtIndex(curveIndex);
-			curve.FixInvalidKeys();
-		}
-	}
+    IndexT clipIndex;
+    for (clipIndex = 0; clipIndex < this->clipArray.Size(); clipIndex++)
+    {
+        AnimBuilderClip& clip = this->clipArray[clipIndex];
+        IndexT curveIndex;
+        for (curveIndex = 0; curveIndex < clip.GetNumCurves(); curveIndex++)
+        {
+            AnimBuilderCurve& curve = clip.GetCurveAtIndex(curveIndex);
+            curve.FixInvalidKeys();
+        }
+    }
 }
 
 } // namespace ToolkitUtil

@@ -22,12 +22,12 @@ namespace ToolkitUtil
 /**
 */
 SingleShaderCompiler::SingleShaderCompiler() :
-	language("SPIRV"),        	
-	platform(Platform::Win32),	
-	debug(false),
-	quiet(false)
+    language("SPIRV"),          
+    platform(Platform::Win32),  
+    debug(false),
+    quiet(false)
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ SingleShaderCompiler::SingleShaderCompiler() :
 */
 SingleShaderCompiler::~SingleShaderCompiler()
 {
-	// empty
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -44,43 +44,43 @@ SingleShaderCompiler::~SingleShaderCompiler()
 bool 
 SingleShaderCompiler::CompileShader(const Util::String& src)
 {
-	if (!this->dstDir.IsValid())
-	{
-		n_printf("shaderc error: No destination for shader compile");
-		return false;
-	}
+    if (!this->dstDir.IsValid())
+    {
+        n_printf("shaderc error: No destination for shader compile");
+        return false;
+    }
 
-	if (!this->headerDir.IsValid())
-	{
-		n_printf("shaderc error: No header output folder for shader compile");
-		return false;
-	}
-	
-	const Ptr<IoServer>& ioServer = IoServer::Instance();
-	
-	// check if source 
-	if (!ioServer->FileExists(src))
-	{
-		n_printf("[shaderc] error: shader source '%s' not found!\n", src.AsCharPtr());
-		return false;
-	}
-
-	// make sure the target directory exists
-	ioServer->CreateDirectory(this->dstDir + "/shaders");
-	ioServer->CreateDirectory(this->headerDir);
-
-	// attempt compile base shaders
-	bool retval = false;
-	if (this->language == "GLSL")
-	{
-		retval = this->CompileGLSL(src);
-	}
-	else if (this->language == "SPIRV")
-	{
-		retval = this->CompileSPIRV(src);
-	}
+    if (!this->headerDir.IsValid())
+    {
+        n_printf("shaderc error: No header output folder for shader compile");
+        return false;
+    }
     
-	return retval;
+    const Ptr<IoServer>& ioServer = IoServer::Instance();
+    
+    // check if source 
+    if (!ioServer->FileExists(src))
+    {
+        n_printf("[shaderc] error: shader source '%s' not found!\n", src.AsCharPtr());
+        return false;
+    }
+
+    // make sure the target directory exists
+    ioServer->CreateDirectory(this->dstDir + "/shaders");
+    ioServer->CreateDirectory(this->headerDir);
+
+    // attempt compile base shaders
+    bool retval = false;
+    if (this->language == "GLSL")
+    {
+        retval = this->CompileGLSL(src);
+    }
+    else if (this->language == "SPIRV")
+    {
+        retval = this->CompileSPIRV(src);
+    }
+    
+    return retval;
 }
 
 //------------------------------------------------------------------------------
@@ -89,23 +89,23 @@ SingleShaderCompiler::CompileShader(const Util::String& src)
 bool
 SingleShaderCompiler::CompileFrameShader(const Util::String& srcf)
 {
-	const Ptr<IoServer>& ioServer = IoServer::Instance();
+    const Ptr<IoServer>& ioServer = IoServer::Instance();
 
-	// check if source dir exists
-	if (!ioServer->FileExists(URI(srcf)))
-	{
-		n_printf("[shaderc] error: frame shader source  '%s' not found!\n", srcf.AsCharPtr());
-		return false;
-	}
+    // check if source dir exists
+    if (!ioServer->FileExists(URI(srcf)))
+    {
+        n_printf("[shaderc] error: frame shader source  '%s' not found!\n", srcf.AsCharPtr());
+        return false;
+    }
 
-	// make sure target dir exists
+    // make sure target dir exists
     Util::String frameDest = this->dstDir + "/frame/";
-	ioServer->CreateDirectory(frameDest);
+    ioServer->CreateDirectory(frameDest);
     frameDest.Append(srcf.ExtractFileName());
     ioServer->CopyFile(srcf, frameDest);
-	n_printf("[shaderc] Converted base frame script:\n   %s ---> %s \n", srcf.AsCharPtr(), frameDest.AsCharPtr());
-	
-	return true;
+    n_printf("[shaderc] Converted base frame script:\n   %s ---> %s \n", srcf.AsCharPtr(), frameDest.AsCharPtr());
+    
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -113,7 +113,7 @@ SingleShaderCompiler::CompileFrameShader(const Util::String& srcf)
 */
 bool 
 SingleShaderCompiler::CompileMaterial(const Util::String & srcf)
-{	
+{   
     const Ptr<IoServer>& ioServer = IoServer::Instance();
 
     // create converter
@@ -133,12 +133,12 @@ SingleShaderCompiler::CompileMaterial(const Util::String & srcf)
     Logger dummy;
     // convert to binary xml
     n_printf("[shaderc] Converting base material template table:\n   %s ---> %s \n", src.LocalPath().AsCharPtr(), dst.LocalPath().AsCharPtr());
-	return converter.ConvertFile(srcf, dest, dummy);
+    return converter.ConvertFile(srcf, dest, dummy);
 }
 
 //------------------------------------------------------------------------------
 /**
-	Implemented using AnyFX
+    Implemented using AnyFX
 */
 bool 
 SingleShaderCompiler::CompileGLSL(const Util::String& srcf)
@@ -182,8 +182,8 @@ SingleShaderCompiler::CompileGLSL(const Util::String& srcf)
     }
 
     // set flags
-    flags.push_back("/NOSUB");		// deactivate subroutine usage
-    flags.push_back("/GBLOCK");		// put all shader variables outside of explicit buffers in one global block
+    flags.push_back("/NOSUB");      // deactivate subroutine usage
+    flags.push_back("/GBLOCK");     // put all shader variables outside of explicit buffers in one global block
 
     // if using debug, output raw shader code
     if (!this->debug)
@@ -235,33 +235,33 @@ SingleShaderCompiler::CompileGLSL(const Util::String& srcf)
 bool
 SingleShaderCompiler::CompileSPIRV(const Util::String& srcf)
 {
-	const Ptr<IoServer>& ioServer = IoServer::Instance();
+    const Ptr<IoServer>& ioServer = IoServer::Instance();
 
 #ifndef __ANYFX__
-	n_printf("Error: Cannot compile DX11 shaders without DX11 support\n");
-	return false;
+    n_printf("Error: Cannot compile DX11 shaders without DX11 support\n");
+    return false;
 #endif
 
 #if __ANYFX__
-	// start AnyFX compilation
-	AnyFXBeginCompile();
+    // start AnyFX compilation
+    AnyFXBeginCompile();
 
-	
+    
     Util::String file = srcf.ExtractFileName();
     Util::String folder = srcf.ExtractDirName();
     file.StripFileExtension();
 
     // format destination
     String destFile = this->dstDir + "/shaders/" + file + ".fxb";
-	String destHeader = this->headerDir + "/" + file + ".h";
+    String destHeader = this->headerDir + "/" + file + ".h";
 
     URI src(srcf);
     URI dst(destFile);
-	URI dstH(destHeader);
+    URI dstH(destHeader);
 
     // compile
     n_printf("[shaderc] \n Compiling:\n   %s -> %s", src.LocalPath().AsCharPtr(), dst.LocalPath().AsCharPtr());
-	n_printf("          \n Generating:\n   %s -> %s\n", src.LocalPath().AsCharPtr(), dstH.LocalPath().AsCharPtr());
+    n_printf("          \n Generating:\n   %s -> %s\n", src.LocalPath().AsCharPtr(), dstH.LocalPath().AsCharPtr());
 
     
     std::vector<std::string> defines;
@@ -281,9 +281,9 @@ SingleShaderCompiler::CompileSPIRV(const Util::String& srcf)
     }
 
     // set flags
-    flags.push_back("/NOSUB");			// deactivate subroutine usage, effectively expands all subroutines as functions
-    flags.push_back("/GBLOCK");			// put all shader variables outside of an explicit block in one global block
-    flags.push_back(Util::String::Sprintf("/DEFAULTSET %d", NEBULA_BATCH_GROUP).AsCharPtr());	// since we want the most frequently switched set as high as possible, we send the default set to 8, must match the NEBULAT_DEFAULT_GROUP in std.fxh and DEFAULT_GROUP in coregraphics/config.h
+    flags.push_back("/NOSUB");          // deactivate subroutine usage, effectively expands all subroutines as functions
+    flags.push_back("/GBLOCK");         // put all shader variables outside of an explicit block in one global block
+    flags.push_back(Util::String::Sprintf("/DEFAULTSET %d", NEBULA_BATCH_GROUP).AsCharPtr());   // since we want the most frequently switched set as high as possible, we send the default set to 8, must match the NEBULAT_DEFAULT_GROUP in std.fxh and DEFAULT_GROUP in coregraphics/config.h
 
     // if using debug, output raw shader code
     if (!this->debug)
@@ -301,7 +301,7 @@ SingleShaderCompiler::CompileSPIRV(const Util::String& srcf)
     target.Format("spv%d%d", major, minor);
     Util::String escapedSrc = src.LocalPath();
     Util::String escapedDst = dst.LocalPath();
-	Util::String escapedHeader = dstH.LocalPath();
+    Util::String escapedHeader = dstH.LocalPath();
 
     bool res = AnyFXCompile(escapedSrc.AsCharPtr(), escapedDst.AsCharPtr(), escapedHeader.AsCharPtr(), target.AsCharPtr(), "Khronos", defines, flags, &errors);
     if (!res)
@@ -339,14 +339,14 @@ SingleShaderCompiler::CreateDependencies(const Util::String& srcf)
 const Ptr<IoServer>& ioServer = IoServer::Instance();
 
 #ifndef __ANYFX__
-	n_printf("Error: Cannot compile DX11 shaders without DX11 support\n");
-	return false;
+    n_printf("Error: Cannot compile DX11 shaders without DX11 support\n");
+    return false;
 #endif
 
-	// start AnyFX compilation
-	//AnyFXBeginCompile();
+    // start AnyFX compilation
+    //AnyFXBeginCompile();
 
-	
+    
     Util::String file = srcf.ExtractFileName();
     Util::String folder = srcf.ExtractDirName();
     file.StripFileExtension();

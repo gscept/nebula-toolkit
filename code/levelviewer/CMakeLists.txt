@@ -12,7 +12,7 @@ FILE(GLOB HEAD "*.h")
 LIST(APPEND SRCSBASE ${SRC} ${HEAD})
 SOURCE_GROUP("levelviewer" FILES ${SRCSBASE})
 
-set(PCH_files	
+set(PCH_files   
     ../stdneb.cc
 )
 SOURCE_GROUP("Precompiled" FILES ${PCH_files})
@@ -29,15 +29,15 @@ N_SET_COMPILER_DEFAULTS()
 N_SET_EXE_LINKER_DEFAULTS(levelviewer)
 N_SET_EXE_SUBSYSTEM(levelviewer Windows)
 IF(N_USE_PRECOMPILED_HEADERS)
-	N_SET_PCH(levelviewer stdneb.h stdneb.cc ../)
+    N_SET_PCH(levelviewer stdneb.h stdneb.cc ../)
 ENDIF()
 ADD_DEPENDENCIES(levelviewer
-	graphicsfeature physicsfeature scriptingfeature stateobjectfeature ui
-	remoteinterface
-	dynui	
-	)
-TARGET_LINK_LIBRARIES(levelviewer 	
-	remoteinterface
-	graphicsfeature physicsfeature scriptingfeature stateobjectfeature ui	inputfeature
-	dynui	
+    graphicsfeature physicsfeature scriptingfeature stateobjectfeature ui
+    remoteinterface
+    dynui   
+    )
+TARGET_LINK_LIBRARIES(levelviewer   
+    remoteinterface
+    graphicsfeature physicsfeature scriptingfeature stateobjectfeature ui   inputfeature
+    dynui   
 )

@@ -278,25 +278,6 @@ MeshBuilderSaver::WriteVertices(const Ptr<Stream>& stream, MeshBuilder& meshBuil
 				}
 			}
 		}
-		if (curVertex.HasComponent(MeshBuilderVertex::ColorBit))
-		{
-			const vec4& v = curVertex.GetComponent(MeshBuilderVertex::ColorIndex);
-			*floatPtr++ = v.x;
-			*floatPtr++ = v.y;
-			*floatPtr++ = v.z;
-			*floatPtr++ = v.w;
-		}
-		//check for UB4NBits
-		if (curVertex.HasComponent(MeshBuilderVertex::ColorUB4NBit))
-		{
-			const vec4& v = curVertex.GetComponent(MeshBuilderVertex::ColorUB4NIndex);
-			unsigned int xBits = (unsigned int)(v.x * (255.0f));
-			unsigned int yBits = (unsigned int)(v.y * (255.0f));
-			unsigned int zBits = (unsigned int)(v.z * (255.0f));
-			unsigned int wBits = (unsigned int)(v.w * (255.0f));
-			int xyzwBits = ((wBits << 24) & 0xFF000000) | ((zBits << 16) & 0x00FF0000) | ((yBits << 8) & 0x0000FF00) | (xBits & 0x000000FF);
-			*(int*)floatPtr++ = xyzwBits;	
-		}
 		if (curVertex.HasComponent(MeshBuilderVertex::TangentBit))
 		{
 			const vec4& v = curVertex.GetComponent(MeshBuilderVertex::TangentIndex);
@@ -340,6 +321,25 @@ MeshBuilderSaver::WriteVertices(const Ptr<Stream>& stream, MeshBuilder& meshBuil
 			int wBits = (int)w;
 			int xyzwBits = ((wBits << 24) & 0xFF000000) | ((zBits << 16) & 0x00FF0000) | ((yBits << 8) & 0x0000FF00) | (xBits & 0x000000FF);
 			*(int*)floatPtr++ = xyzwBits;		
+		}
+		if (curVertex.HasComponent(MeshBuilderVertex::ColorBit))
+		{
+			const vec4& v = curVertex.GetComponent(MeshBuilderVertex::ColorIndex);
+			*floatPtr++ = v.x;
+			*floatPtr++ = v.y;
+			*floatPtr++ = v.z;
+			*floatPtr++ = v.w;
+		}
+		//check for UB4NBits
+		if (curVertex.HasComponent(MeshBuilderVertex::ColorUB4NBit))
+		{
+			const vec4& v = curVertex.GetComponent(MeshBuilderVertex::ColorUB4NIndex);
+			unsigned int xBits = (unsigned int)(v.x * (255.0f));
+			unsigned int yBits = (unsigned int)(v.y * (255.0f));
+			unsigned int zBits = (unsigned int)(v.z * (255.0f));
+			unsigned int wBits = (unsigned int)(v.w * (255.0f));
+			int xyzwBits = ((wBits << 24) & 0xFF000000) | ((zBits << 16) & 0x00FF0000) | ((yBits << 8) & 0x0000FF00) | (xBits & 0x000000FF);
+			*(int*)floatPtr++ = xyzwBits;
 		}
 		if (curVertex.HasComponent(MeshBuilderVertex::WeightsBit))
 		{

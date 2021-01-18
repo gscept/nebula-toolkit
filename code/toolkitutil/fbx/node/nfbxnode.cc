@@ -153,7 +153,7 @@ NFbxNode::GenerateAnimationClips( const Ptr<ModelAttributes>& attributes )
                 for (int curveIndex = 0; curveIndex < numCurves; curveIndex++)
                 {
                     clip.AddCurve(curves[curveIndex]);
-                    keyCount = Math::n_max(keyCount, curves[curveIndex].GetNumKeys());
+                    keyCount = Math::max(keyCount, curves[curveIndex].GetNumKeys());
                 }
 
                 clip.SetName(name);
@@ -291,10 +291,10 @@ NFbxNode::SplitCurves( const Util::String& animStackName, const Ptr<ModelAttribu
                 switch (type)
                 {
                 case ClipEvent::Ticks:
-                    animEvent.SetTime(n_max(marker - 1 ,0) / clip.GetKeyDuration());
+                    animEvent.SetTime(max(marker - 1 ,0) / clip.GetKeyDuration());
                     break;
                 case ClipEvent::Frames:
-                    animEvent.SetTime(n_max(marker - 1 ,0));
+                    animEvent.SetTime(max(marker - 1 ,0));
                     break;
                 }
                 clip.AddEvent(animEvent);
@@ -554,18 +554,18 @@ NFbxNode::ExtractKeySpan( FbxAnimStack* stack, int& span )
 
     if (translationCurveX && translationCurveY && translationCurveZ)
     {
-        int numKeys = Math::n_max(Math::n_max(translationCurveX->KeyGetCount(), translationCurveY->KeyGetCount()), translationCurveZ->KeyGetCount());
-        span = Math::n_max(span, numKeys);
+        int numKeys = Math::max(Math::max(translationCurveX->KeyGetCount(), translationCurveY->KeyGetCount()), translationCurveZ->KeyGetCount());
+        span = Math::max(span, numKeys);
     }
     if (rotationCurveX && rotationCurveY && rotationCurveZ)
     {
-        int numKeys = Math::n_max(Math::n_max(rotationCurveX->KeyGetCount(), rotationCurveY->KeyGetCount()), rotationCurveZ->KeyGetCount());
-        span = Math::n_max(span, numKeys);
+        int numKeys = Math::max(Math::max(rotationCurveX->KeyGetCount(), rotationCurveY->KeyGetCount()), rotationCurveZ->KeyGetCount());
+        span = Math::max(span, numKeys);
     }
     if (scaleCurveX && scaleCurveY && scaleCurveZ)
     {
-        int numKeys = Math::n_max(Math::n_max(scaleCurveX->KeyGetCount(), scaleCurveY->KeyGetCount()), scaleCurveZ->KeyGetCount());
-        span = Math::n_max(span, numKeys);
+        int numKeys = Math::max(Math::max(scaleCurveX->KeyGetCount(), scaleCurveY->KeyGetCount()), scaleCurveZ->KeyGetCount());
+        span = Math::max(span, numKeys);
     }
 }
 

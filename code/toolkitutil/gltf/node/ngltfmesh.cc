@@ -73,7 +73,7 @@ NglTFMesh::ExtractMesh()
 
     Jobs::CreateJobPortInfo portInfo;
     portInfo.name = "meshJobPort"_atm;
-    portInfo.numThreads = Math::n_min(8, this->gltfMesh->primitives.Size());
+    portInfo.numThreads = Math::min(8, this->gltfMesh->primitives.Size());
     portInfo.priority = Threading::Thread::Priority::High; // UINT_MAX
     portInfo.affinity = System::Cpu::Core0 | System::Cpu::Core1 | System::Cpu::Core2 | System::Cpu::Core3 | System::Cpu::Core4 | System::Cpu::Core5 | System::Cpu::Core6 | System::Cpu::Core7;
 

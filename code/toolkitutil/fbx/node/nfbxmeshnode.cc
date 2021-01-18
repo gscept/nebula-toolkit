@@ -955,7 +955,7 @@ NFbxMeshNode::ExtractSkin()
 
                     jointData[stride] = jointNode->GetJointIndex();
                     weightData[stride] = weight;
-                    maxIndex = Math::n_max(jointData[stride], maxIndex);
+                    maxIndex = Math::max(jointData[stride], maxIndex);
                     slotArray[vertex]++;
                 }
             }

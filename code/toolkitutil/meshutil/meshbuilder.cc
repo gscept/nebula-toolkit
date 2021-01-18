@@ -543,10 +543,10 @@ MeshBuilder::MoveTriangleUvsIntoRange(IndexT triIndex, float minUv, float maxUv)
             const vec4& uv = vertex.GetComponent(uvCompIndex);
             int xQuadrant = int(uv.x);
             int yQuadrant = int(uv.y);
-            maxQuadrantX = Math::n_max(xQuadrant, maxQuadrantX);
-            minQuadrantX = Math::n_min(xQuadrant, minQuadrantX);
-            maxQuadrantY = Math::n_max(yQuadrant, maxQuadrantY);
-            minQuadrantY = Math::n_min(yQuadrant, minQuadrantY);
+            maxQuadrantX = Math::max(xQuadrant, maxQuadrantX);
+            minQuadrantX = Math::min(xQuadrant, minQuadrantX);
+            maxQuadrantY = Math::max(yQuadrant, maxQuadrantY);
+            minQuadrantY = Math::min(yQuadrant, minQuadrantY);
         }
         if (((maxQuadrantX - minQuadrantX) > (maxQuadrant - minQuadrant)) ||
             ((maxQuadrantY - minQuadrantY) > (maxQuadrant - minQuadrant)))

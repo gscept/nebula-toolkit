@@ -203,7 +203,7 @@ ModelBuilder::WritePhysics( const Ptr<N3Writer>& writer )
                     {
                         col.type = Physics::ColliderSphere;
                         Math::vector v = colBox.size();
-                        col.sphere.radius = 0.5f * Math::n_min(v.x, Math::n_min(v.y, v.z));
+                        col.sphere.radius = 0.5f * Math::min(v.x, Math::min(v.y, v.z));
                     }
                     break;
                     case UseBoundingCapsule:
@@ -211,7 +211,7 @@ ModelBuilder::WritePhysics( const Ptr<N3Writer>& writer )
                         col.type = Physics::ColliderCapsule;
                         Math::vector v = colBox.size();
                         col.capsule.height = v.y;
-                        col.capsule.radius = Math::n_min(v.z, v.x);                     
+                        col.capsule.radius = Math::min(v.z, v.x);                     
                     }
                     break;
                     default:

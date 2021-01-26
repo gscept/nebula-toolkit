@@ -40,7 +40,10 @@ EditorFeatureUnit::OnActivate()
     if (this->args.GetBoolFlag("-editor"))
     {
         this->AttachManager(Editor::UIManager::Create());
+
         Editor::Create();
+        //if (!Editor::ConnectToBackend(...))
+        //    Editor::SpawnLocalBackend();
     }
 }
 

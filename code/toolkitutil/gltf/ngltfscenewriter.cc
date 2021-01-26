@@ -1,4 +1,4 @@
-//------------------------------------------------------------------------------
+﻿//------------------------------------------------------------------------------
 //  ngltfscenewriter.cc
 //  (C) 2020 Individual contributors, see AUTHORS file
 //------------------------------------------------------------------------------
@@ -60,6 +60,7 @@ NglTFSceneWriter::GenerateModels(const String& basePath, const ExportFlags& flag
     }
     else
     {
+        n_warning("ERROR: Animated and skinned GLTF models are not yet supported!\n");
         // create skeletal model
         //this->CreateSkeletalModel(n3Writer, meshes, basePath + this->scene->GetName() + ".xml");
     }
@@ -94,7 +95,7 @@ NglTFSceneWriter::CreateStaticModel(const Ptr<ToolkitUtil::N3Writer>& modelWrite
         Util::String phname;
         phname.Format("phymsh:%s_ph.nvx2", fileCat.AsCharPtr());
         physics->SetPhysicsMesh(phname);
-    }
+}
 #endif
     // clear constants
     constants->Clear();
@@ -354,7 +355,7 @@ NglTFSceneWriter::UpdateAttributes(const Util::String& file, const Ptr<ModelAttr
 /**
 */
 void
-    NFbxSceneWriter::UpdatePhysics(const Util::String& file, const Ptr<ModelPhysics>& physics)
+NFbxSceneWriter::UpdatePhysics(const Util::String& file, const Ptr<ModelPhysics>& physics)
 {
     // create stream
     Ptr<Stream> stream = IoServer::Instance()->CreateStream(file);

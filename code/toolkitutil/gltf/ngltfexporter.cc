@@ -108,6 +108,7 @@ bool NglTFExporter::StartExport(const IO::URI & file)
 	String subDir = fileName + "_" + fileExtension;
 	{
 		// Extract materials into .sur files
+		// Always do this before exporting textures, since the texture names may be changed in the extractor.
 		NglTFMaterialExtractor extractor;
 		extractor.SetCategoryName(catName);
 		extractor.SetDocument(&this->gltfScene);

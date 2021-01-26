@@ -1,4 +1,4 @@
-//------------------------------------------------------------------------------
+﻿//------------------------------------------------------------------------------
 //  assetexporter.cc
 //  (C) 2015-2016 Individual contributors, see AUTHORS file
 //------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ AssetExporter::UpdateSource()
 void
 AssetExporter::ExportDir(const Util::String& category)
 {
-    
+
     String assetPath = String::Sprintf("src:assets/%s/", category.AsCharPtr());
     this->ExportFolder(assetPath, category);
 }
@@ -90,15 +90,23 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
 {
     n_printf("Exporting asset directory '%s'\n", category.AsCharPtr());
 
-    
+
     IndexT fileIndex;
     ToolLog log(category);
     Ptr<ToolkitUtil::ToolkitConsoleHandler> console = ToolkitUtil::ToolkitConsoleHandler::Instance();
-    
+
     if (this->mode & ExportModes::GLTF)
     {
         console->Clear();
         // export GLTF sources
+
+        // TEMP
+        {
+            Array<String> glbs = IoServer::Instance()->ListFiles(assetPath, "*.glb");
+            if (!glbs.IsEmpty())
+                n_warning("Warning: .GLB files are not yet supported!\n");
+        }
+
         Array<String> files = IoServer::Instance()->ListFiles(assetPath, "*.gltf");
         //files.AppendArray(IoServer::Instance()->ListFiles(assetPath, "*.glb"));
         this->gltfExporter = ToolkitUtil::NglTFExporter::Create();
@@ -166,9 +174,9 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
             String physicsPath = String::Sprintf("phys:%s.np3", modelName.AsCharPtr());
             this->modelBuilder->SaveN3Physics(physicsPath, this->platform);
 #endif            
-            log.AddEntry(console, "Model", files[fileIndex]);           
-        }
+            log.AddEntry(console, "Model", files[fileIndex]);
     }
+}
 
     if (this->mode & ExportModes::Textures)
     {
@@ -187,7 +195,7 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
             console->Clear();
             this->textureExporter.SetDstDir("tex:");
             this->textureExporter.ConvertTexture(assetPath + files[fileIndex], "temp:textureconverter");
-            log.AddEntry(console, "Texture", files[fileIndex]);         
+            log.AddEntry(console, "Texture", files[fileIndex]);
         }
         // export cubemaps
         Array<String> Cubes = IoServer::Instance()->ListDirectories(assetPath, "*.cube");
@@ -208,10 +216,10 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
         {
             console->Clear();
             this->surfaceExporter->ExportFile(assetPath + files[fileIndex]);
-            log.AddEntry(console, "Surface", files[fileIndex]);         
+            log.AddEntry(console, "Surface", files[fileIndex]);
         }
     }
-    this->messages.Append(log); 
+    this->messages.Append(log);
 }
 
 //------------------------------------------------------------------------------
@@ -236,7 +244,7 @@ AssetExporter::ExportList(const Util::Array<Util::String>& files)
 {
     for (Array<String>::Iterator iter = files.Begin(); iter != files.End(); iter++)
     {
-        const Util::String & str = *iter;
+        const Util::String& str = *iter;
         this->ExportDir(str.ExtractFileName());
     }
 }

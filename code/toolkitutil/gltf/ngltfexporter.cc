@@ -184,17 +184,19 @@ bool NglTFExporter::StartExport(const IO::URI & file)
 				if (!image.embedded)
 					continue;
 
-				Util::Blob const* data;
+				void const* data;
+                size_t dataSize = 0;
 
 				if (!image.uri.IsEmpty())
 				{
-					data = &image.data;
+					data = image.data.GetPtr();
+                    dataSize = image.data.Size();
 				}
 				else
 				{
-					// TODO: Untested!
 					auto const& bufferView = gltfScene.bufferViews[image.bufferView];
-					data = &gltfScene.buffers[bufferView.buffer].data;
+					data = (const char*)gltfScene.buffers[bufferView.buffer].data.GetPtr() + bufferView.byteOffset;
+                    dataSize = bufferView.byteLength;
 				}
 
 				// create temp directory from guid. so that other jobs won't interfere
@@ -217,7 +219,7 @@ bool NglTFExporter::StartExport(const IO::URI & file)
 					n_warning("Warning: NglTFExporter: Could not open filestream to write intermediate image format.\n");
 					return false;
 				}
-				writer->GetStream()->Write(data->GetPtr(), data->Size());
+				writer->GetStream()->Write(data, dataSize);
 				writer->Close();
 
 				this->texConverter->SetDstDir("tex:" + catName + "/");

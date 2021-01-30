@@ -133,6 +133,8 @@ NglTFMesh::ExtractMesh()
     Jobs::JobSyncSignal(jobInternalSync, jobPort);
     Jobs::JobSyncHostWait(jobInternalSync);
     Jobs::DestroyJob(primitiveJobId);
+    
+    Jobs::DestroyJobPort(jobPort);
 
     // Merge all primitive groups into one mesh
     this->boundingBox.begin_extend();

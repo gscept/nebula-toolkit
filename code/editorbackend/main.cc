@@ -12,6 +12,7 @@
 #include "db/dbserver.h"
 #include "db/sqlite3/sqlite3factory.h"
 #include "attributes.h"
+#include "memdb/database.h"
 
 using namespace Universe;
 
@@ -50,7 +51,7 @@ main(int argc, const char** argv)
 
     n_printf("Project is: %s\n", projectName.AsCharPtr());
     
-    // --- World Database ---
+    // --- Database ---
 
     Ptr<Db::DbServer> dbServer = Db::DbServer::Create();
     Util::String dbPath;
@@ -84,6 +85,10 @@ main(int argc, const char** argv)
 
     dbServer->OpenGameDatabase(dbPath);
     
+    // --- MemDB ---
+
+    Ptr<MemDb::Database> worldDatabase = MemDb::Database::Create();
+
     // --- TCP Server ---
 
     if (AppSettings::GetString("ip").IsEmpty())

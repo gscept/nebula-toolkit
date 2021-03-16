@@ -23,7 +23,11 @@ Console::Console()
     // Default to false until we have user profiles implemented
     this->open = false;
 
-    this->console = Dynui::ImguiConsole::Create();
+    if (!Dynui::ImguiConsole::HasInstance())
+        this->console = Dynui::ImguiConsole::Create();
+    else
+        this->console = Dynui::ImguiConsole::Instance();
+
     this->consoleHandler = Dynui::ImguiConsoleHandler::Create();
     this->console->Setup();
     this->consoleHandler->Setup();

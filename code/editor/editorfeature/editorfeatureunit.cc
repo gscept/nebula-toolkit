@@ -4,7 +4,6 @@
 //------------------------------------------------------------------------------
 #include "foundation/stdneb.h"
 #include "editorfeatureunit.h"
-#include "basegamefeature/managers/entitymanager.h"
 #include "editor/editor.h"
 #include "editor/ui/uimanager.h"
 

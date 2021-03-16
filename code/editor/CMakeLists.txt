@@ -33,6 +33,12 @@ fips_dir(editor)
     fips_files(
         editor.cc
         editor.h
+        entityfactory.h
+        entityfactory.cc
+        command.h
+        command.cc
+        commandmanager.h
+        commandmanager.cc
     )
     fips_dir(editor/bindings)
         fips_files(
@@ -59,6 +65,24 @@ fips_dir(editor)
                 console.h
                 scriptedwindow.cc
                 scriptedwindow.h
+                scene.cc
+                scene.h
+                outline.cc
+                outline.h
+                styleeditor.cc
+                styleeditor.h
+                toolbar.cc
+                toolbar.h
             )
+        fips_dir(editor/ui/modules)
+            fips_files(
+                viewport.cc
+                viewport.h
+            )
+    fips_dir(editor/tools)
+        fips_files(
+            camera.cc
+            camera.h
+        )
 fips_deps(foundation application audio)
 fips_end_lib()

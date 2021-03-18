@@ -7,6 +7,7 @@
 #include "editor/editor.h"
 #include "editor/commandmanager.h"
 #include "editor/ui/uimanager.h"
+#include "editor/cmds.h"
 
 using namespace Editor;
 
@@ -49,7 +50,10 @@ Toolbar::Run()
     
     IMGUI_VERTICAL_SEPARATOR;
     
-    if (ImGui::ImageButton(&UIManager::Icons::game, buttonSize, {0,0}, {1,1}, 0, ImVec4(0,0,0,0), ImVec4(1,1,1,1))) { CmdCreateEntity("MovingEntity/cube"); }
+    if (ImGui::ImageButton(&UIManager::Icons::game, buttonSize, {0,0}, {1,1}, 0, ImVec4(0,0,0,0), ImVec4(1,1,1,1)))
+    {
+        Edit::CreateEntity("MovingEntity/cube");
+    }
     
     IMGUI_VERTICAL_SEPARATOR;
     

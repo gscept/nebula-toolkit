@@ -38,7 +38,10 @@ Viewport::~Viewport()
 void
 Viewport::Init(Util::String const & viewName)
 {
-    this->view = Graphics::GraphicsServer::Instance()->CreateView(viewName, "frame:vkdefault.json");
+    static int unique = 0;
+    Util::String name = viewName;
+    name.AppendInt(unique++);
+    this->view = Graphics::GraphicsServer::Instance()->CreateView(name, "frame:vkdefault.json");
     
     this->camera.Setup(1280, 900);
 	this->camera.AttachToView(this->view);
@@ -101,11 +104,11 @@ Viewport::Render()
             {
                 static const float min = 1.0f;
                 static const float max = 100.0f;
-                if (ImGui::SliderScalar("Width", ImGuiDataType_Float, &this->camera.orthoWidth, &min, &max, 0, 2.0f))
+                if (ImGui::SliderScalar("Width", ImGuiDataType_Float, &this->camera.orthoWidth, &min, &max, "%.3f", ImGuiSliderFlags_None))
                 {
                     this->camera.SetProjectionMode(Editor::Camera::ProjectionMode::ORTHOGRAPHIC);
                 }
-                if (ImGui::SliderScalar("Height", ImGuiDataType_Float, &this->camera.orthoHeight, &min, &max, 0, 2.0f))
+                if (ImGui::SliderScalar("Height", ImGuiDataType_Float, &this->camera.orthoHeight, &min, &max, "%.3f", ImGuiSliderFlags_None))
                 {
                     this->camera.SetProjectionMode(Editor::Camera::ProjectionMode::ORTHOGRAPHIC);
                 }

@@ -11,9 +11,11 @@
 #include "windows/styleeditor.h"
 #include "windows/toolbar.h"
 #include "windows/scene.h"
+#include "windows/history.h"
 #include "coregraphics/texture.h"
 #include "resources/resourceserver.h"
 #include "editor/commandmanager.h"
+#include "dynui/imguicontext.h"
 
 namespace Editor
 {
@@ -51,6 +53,7 @@ OnActivate()
     windowServer->RegisterWindow("Presentation::StyleEditor", "Style Editor", "Editor");
     windowServer->RegisterWindow("Presentation::Toolbar", "Toolbar");
     windowServer->RegisterWindow("Presentation::Scene", "Scene View");
+    windowServer->RegisterWindow("Presentation::History", "History");
     
     Icons::play          = LoadIcon("tex:system/icon_play.dds");
     Icons::pause         = LoadIcon("tex:system/icon_pause.dds");
@@ -61,6 +64,8 @@ OnActivate()
     
     windowServer->RegisterCommand([](){ Edit::CommandManager::Undo(); }, "Undo", "Ctrl+Z", "Edit");
     windowServer->RegisterCommand([](){ Edit::CommandManager::Redo(); }, "Redo", "Ctrl+Y", "Edit");
+
+    Dynui::ImguiContext::state.dockOverViewport = true;
 
     GraphicsFeature::GraphicsFeatureUnit::Instance()->AddRenderUICallback([]()
     {

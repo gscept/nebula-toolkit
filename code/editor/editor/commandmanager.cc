@@ -112,12 +112,31 @@ CommandManager::GetLastRedoCommand()
 //------------------------------------------------------------------------------
 /**
 */
+CommandManager::CommandList const&
+CommandManager::GetUndoList()
+{
+    return undoList;
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+CommandManager::CommandList const&
+CommandManager::GetRedoList()
+{
+    return redoList;
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
 bool
-CommandManager::Execute(const Command& command)
+CommandManager::Execute(Command* command)
 {
     // Execute the command and add it to undo list if succeeded
-    if (command.Execute())
+    if (command->Execute())
     {
+        command->executed = true;
         ClearRedoList();
         AddUndo(command);
         return true;
@@ -140,6 +159,7 @@ CommandManager::BeginMacro()
 
     macroMode = true;
     undoList.AddBack({});
+    undoListSize++;
 }
 
 //------------------------------------------------------------------------------
@@ -170,14 +190,16 @@ void CommandManager::Undo()
             // Enable macro mode since the cmd is a macro
             macroMode = true;
             redoList.AddBack({});
+            redoListSize++;
         }
 
         // Execute commands in reverse order.
         for (IndexT i = stack.Size() - 1; i >= 0; i--)
         {
-            Command command = stack[i];
-            if (command.Unexecute())
+            Command* command = stack[i];
+            if (command->Unexecute())
             {
+                command->executed = false;
                 AddRedo(command);
             }
         }
@@ -208,9 +230,10 @@ void CommandManager::Redo()
         // Execute commands in reverse order.
         for (IndexT i = stack.Size() - 1; i >= 0; i--)
         {
-            Command& command = stack[i];
-            if (command.Execute())
+            Command* command = stack[i];
+            if (command->Execute())
             {
+                command->executed = true;
                 AddUndo(command);
             }
         }
@@ -239,11 +262,14 @@ void CommandManager::SetClean()
 //------------------------------------------------------------------------------
 /**
 */
-void CommandManager::AddUndo(const Command& command)
+void CommandManager::AddUndo(Command* command)
 {
     if (undoListSize >= undoLevel)
     {
-        undoList.RemoveFront();
+        // history limit reached, start popping
+        CommandStack stack = undoList.RemoveFront();
+        for (Command* cmd : stack)
+            n_delete(cmd);
         undoListSize--;
     }
 
@@ -254,8 +280,8 @@ void CommandManager::AddUndo(const Command& command)
     else
     {
         undoList.AddBack({ command });
+        undoListSize++;
     }
-    undoListSize++;
     if (cleanCount < 0 && redoListSize > 0)
     {
         cleanCount = undoListSize + redoListSize + 1;
@@ -269,7 +295,7 @@ void CommandManager::AddUndo(const Command& command)
 //------------------------------------------------------------------------------
 /**
 */
-void CommandManager::AddRedo(const Command& command)
+void CommandManager::AddRedo(Command* command)
 {
     if (macroMode)
     {
@@ -278,8 +304,8 @@ void CommandManager::AddRedo(const Command& command)
     else
     {
         redoList.AddBack({ command });
+        redoListSize++;
     }
-    redoListSize++;
 }
 
 //------------------------------------------------------------------------------
@@ -287,6 +313,11 @@ void CommandManager::AddRedo(const Command& command)
 */
 void CommandManager::ClearUndoList()
 {
+    for (CommandList::Iterator it = undoList.Begin(); it != undoList.End(); it++)
+    {
+        for (Command* cmd : (*it))
+            n_delete(cmd);
+    }
     undoList.Clear();
     undoListSize = 0;
 }
@@ -296,6 +327,11 @@ void CommandManager::ClearUndoList()
 */
 void CommandManager::ClearRedoList()
 {
+    for (CommandList::Iterator it = redoList.Begin(); it != redoList.End(); it++)
+    {
+        for (Command* cmd : (*it))
+            n_delete(cmd);
+    }
     redoList.Clear();
     redoListSize = 0;
 }

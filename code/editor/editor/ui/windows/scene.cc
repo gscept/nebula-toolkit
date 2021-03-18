@@ -22,7 +22,9 @@ Scene::Scene()
 {
     viewPort.Init(GraphicsFeature::GraphicsFeatureUnit::Instance()->GetDefaultView());
     viewPort.SetStage(GraphicsFeature::GraphicsFeatureUnit::Instance()->GetDefaultStage());
-    viewPort.SetFrameBuffer("LightBuffer");
+    viewPort.SetFrameBuffer("ColorBufferNoGUI");
+
+    this->additionalFlags = ImGuiWindowFlags_MenuBar;
 }
 
 //------------------------------------------------------------------------------

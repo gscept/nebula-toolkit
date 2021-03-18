@@ -19,16 +19,22 @@
 namespace Edit
 {
 
+struct CommandManager;
+
 struct Command
 {
-    const char* name;
-    std::function<bool()> Execute;
-    std::function<bool()> Unexecute;
+    virtual ~Command() {};
+    virtual const char* Name() = 0;
+    virtual bool Execute() = 0;
+    virtual bool Unexecute() = 0;
+protected:
+    friend CommandManager;
+    bool executed = false;
 };
 
 struct CommandManager
 {
-    typedef Util::ArrayStack<Command, 1> CommandStack;
+    typedef Util::ArrayStack<Command*, 1> CommandStack;
     typedef Util::List<CommandStack> CommandList;
 
     /// Init singleton
@@ -49,8 +55,12 @@ struct CommandManager
     static CommandStack GetLastUndoCommand();
     /// Peeks at the last redo command
     static CommandStack GetLastRedoCommand();
-    /// Execute command and add to stack
-    static bool Execute(const Command& command);
+    /// Get a read only copy of the undo list
+    static CommandList const& GetUndoList();
+    /// Get a read only copy of the redo list
+    static CommandList const& GetRedoList();
+    /// Execute command and add to stack. Hands over ownership of the memory to the command manager.
+    static bool Execute(Command* command);
     /// Begin macro. Subsequent commands will be bundled as one undo list entry
     static void BeginMacro();
     /// End macro.
@@ -63,14 +73,15 @@ struct CommandManager
     static void Clear();
     /// Sets the command manager to a clean state
     static void SetClean();
-    /// Adds a command to the undo stack. Does not execute it.
-    static void AddUndo(const Command& command);
-    /// Adds a command to the redo stack. Does not execute it.
-    static void AddRedo(const Command& command);
     /// Clear the undo list
     static void ClearUndoList();
     /// Clear the redo list
     static void ClearRedoList();
+private:
+    /// Adds a command to the undo stack. Does not execute it.
+    static void AddUndo(Command* command);
+    /// Adds a command to the redo stack. Does not execute it.
+    static void AddRedo(Command* command);
 };
 
 } // namespace Edit

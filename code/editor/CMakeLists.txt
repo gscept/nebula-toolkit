@@ -33,8 +33,8 @@ fips_dir(editor)
     fips_files(
         editor.cc
         editor.h
-        entityfactory.h
-        entityfactory.cc
+        cmds.cc
+        cmds.h
         command.h
         command.cc
         commandmanager.h
@@ -67,6 +67,8 @@ fips_dir(editor)
                 scriptedwindow.h
                 scene.cc
                 scene.h
+                history.cc
+                history.h
                 outline.cc
                 outline.h
                 styleeditor.cc
@@ -83,6 +85,8 @@ fips_dir(editor)
         fips_files(
             camera.cc
             camera.h
+            selectiontool.cc
+            selectiontool.h
         )
 fips_deps(foundation application audio)
 fips_end_lib()

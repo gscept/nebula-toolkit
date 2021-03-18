@@ -7,6 +7,8 @@
 #include "editor/editor.h"
 #include "editor/commandmanager.h"
 #include "editor/ui/uimanager.h"
+#include "editor/tools/selectiontool.h"
+#include "editor/cmds.h"
 
 using namespace Editor;
 
@@ -68,7 +70,6 @@ Outline::Run()
     filtering = false;
     // set filtering to true if any filter is active
     filtering |= nameFilter.IsActive();
-    filtering |= guidFilter.IsActive();
     filtering |= tagFilter.IsActive();
     filtering |= blueprintFilter.IsActive();
     filtering |= filterDistance != 0.0f;
@@ -81,7 +82,6 @@ Outline::Run()
         ImGui::Text("Filter outline");
         ImGui::Separator();
         nameFilter.Draw("Name", 180);
-        guidFilter.Draw("Guid", 180);
         tagFilter.Draw("Tag", 180);
         blueprintFilter.Draw("Blueprint", 180);
 
@@ -95,6 +95,7 @@ Outline::Run()
 
     ImGui::Separator();
 
+    // @todo:   The order of the entites is arbitrary. We should allow the user to move and sort the entities as they like.
     ImGui::BeginChild("ScrollingRegion", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()), false, ImGuiWindowFlags_HorizontalScrollbar);
     {
         Game::FilterCreateInfo filterInfo;
@@ -105,6 +106,12 @@ Outline::Run()
         Game::Filter filter = Game::CreateFilter(filterInfo);
         Game::Dataset data = Game::Query(state.editorWorld, filter);
         
+        bool contextMenuOpened = false;
+        ImGui::NewLine();
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0, 0});
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, {0, 0});
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {4, 0});
+
         for (int v = 0; v < data.numViews; v++)
         {
             Game::Dataset::CategoryTableView const& view = data.views[v];
@@ -120,31 +127,70 @@ Outline::Run()
 
                 if (!nameFilter.PassFilter(edit.name.AsCharPtr()))
                     continue;
-                if (!guidFilter.PassFilter(edit.guid.AsString().AsCharPtr()))
-                    continue;
                 
                 ImGui::BeginGroup();
                 {
+                    bool selected = Tools::SelectionTool::Selection().BinarySearchIndex(entity) != InvalidIndex;
+                    ImGui::BeginGroup();
+                    // FIXME: rightclicking a selectable when another is selected does not bring up the context menu for the correct entity
+                    ImGui::PushID(entity.HashCode());
+                    float const xPos = ImGui::GetCursorPosX();
+                    float const yPos = ImGui::GetCursorPosY();
+                    ImGui::Selectable(
+                        "##entityselect",
+                        selected,
+                        //ImGuiSelectableFlags_::ImGuiSelectableFlags_AllowDoubleClick |
+                        ImGuiSelectableFlags_::ImGuiSelectableFlags_SpanAllColumns |
+                        ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups,
+                        {ImGui::GetColumnWidth(), 20}
+                    );
+                    ImGui::SameLine();
+                    ImGui::SetCursorPosX(xPos);
                     ImGui::TextDisabled("|-");
                     ImGui::SameLine();
                     ImGui::Image(&UIManager::Icons::game, {20,20});
                     ImGui::SameLine();
-                    ImGui::Selectable(
-                        edit.name.AsCharPtr(),
-                        state.selected == entity,
-                        ImGuiSelectableFlags_::ImGuiSelectableFlags_AllowDoubleClick |
-                        ImGuiSelectableFlags_::ImGuiSelectableFlags_SpanAllColumns |
-                        ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups
-                    );
-                    ImGui::SameLine();
-                    ImGui::TextColored({ 0,0,0.6f,1 }, state.editables[entity.index].guid.AsString().AsCharPtr());
+                    ImGui::SetCursorPosY(yPos + 3);
+                    ImGui::Text(edit.name.AsCharPtr());
+                    ImGui::SetCursorPosY(yPos);
+                    ImGui::PopID();
+                    ImGui::EndGroup();
 
                     if (ImGui::IsItemClicked(0) || ImGui::IsItemClicked(1))
                     {
-                        state.selected = entity;
+                        Util::Array<Editor::Entity> selection;
+                        if (ImGui::GetIO().KeyCtrl)
+                        {
+                            selection = Tools::SelectionTool::Selection();
+                            if (selected)
+                            {
+                                if (!ImGui::IsItemClicked(1))
+                                {
+                                    IndexT index = selection.BinarySearchIndex(entity);
+                                    selection.EraseIndex(index);
+                                    selected = false;
+                                }
+                            }
+                            else
+                            {
+                                selection.InsertSorted(entity);
+                                selected = true;
+                            }
+                        }
+                        else if (!selected || (Tools::SelectionTool::Selection().Size() > 1 && !ImGui::IsItemClicked(1)))
+                        {
+                            selection.InsertSorted(entity);
+                            selected = true;
+                        }
+                        if (!selection.IsEmpty())
+                        {
+                            Edit::SetSelection(selection);
+                        }
                     }
-                    if (state.selected == entity && ImGui::BeginPopupContextWindow())
+                    if (!contextMenuOpened && selected && ImGui::BeginPopupContextWindow())
                     {
+                        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {4, 5});
+                        contextMenuOpened = true;
                         if (ImGui::Selectable("Copy"))
                         {
                             // TODO: implement
@@ -166,16 +212,26 @@ Outline::Run()
                         ImGui::Separator();
                         if (ImGui::Selectable("Delete"))
                         {
-                            CmdDestroyEntity(state.editables[entity.index].guid);
-                            state.selected = Editor::Entity::Invalid();
+                            auto selection = Tools::SelectionTool::Selection();
+                            Edit::CommandManager::BeginMacro();
+                            Util::Array<Editor::Entity> emptySelection;
+                            Edit::SetSelection(emptySelection);
+                            for (auto e : selection)
+                            {
+                                Edit::DeleteEntity(e);
+                            }
+                            Edit::CommandManager::EndMacro();
+                            
                         }
-
+                        ImGui::PopStyleVar();
                         ImGui::EndPopup();
                     }
                 }
                 ImGui::EndGroup();
             }
         }
+
+        ImGui::PopStyleVar(3);
 
         Game::DestroyFilter(filter);
     }

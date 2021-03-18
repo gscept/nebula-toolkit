@@ -75,6 +75,8 @@ fips_dir(editor)
                 styleeditor.h
                 toolbar.cc
                 toolbar.h
+                inspector.cc
+                inspector.h
             )
         fips_dir(editor/ui/modules)
             fips_files(

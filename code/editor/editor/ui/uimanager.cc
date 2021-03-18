@@ -12,6 +12,7 @@
 #include "windows/toolbar.h"
 #include "windows/scene.h"
 #include "windows/history.h"
+#include "windows/inspector.h"
 #include "coregraphics/texture.h"
 #include "resources/resourceserver.h"
 #include "editor/commandmanager.h"
@@ -50,10 +51,11 @@ OnActivate()
 
     windowServer->RegisterWindow("Presentation::Console", "Console", "Debug");
     windowServer->RegisterWindow("Presentation::Outline", "Outline");
+    windowServer->RegisterWindow("Presentation::History", "History", "Editor");
     windowServer->RegisterWindow("Presentation::StyleEditor", "Style Editor", "Editor");
     windowServer->RegisterWindow("Presentation::Toolbar", "Toolbar");
     windowServer->RegisterWindow("Presentation::Scene", "Scene View");
-    windowServer->RegisterWindow("Presentation::History", "History");
+    windowServer->RegisterWindow("Presentation::Inspector", "Inspector");
     
     Icons::play          = LoadIcon("tex:system/icon_play.dds");
     Icons::pause         = LoadIcon("tex:system/icon_pause.dds");

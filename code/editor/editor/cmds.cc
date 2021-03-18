@@ -147,7 +147,6 @@ InternalSetProperty(Editor::Entity editorEntity, Game::PropertyId pid, void* val
     return true;
 }
 
-
 //------------------------------------------------------------------------------
 /**
 */
@@ -235,44 +234,57 @@ private:
 //------------------------------------------------------------------------------
 /**
 */
-void
-SetSelection(Util::Array<Editor::Entity> const& entities)
+struct CMDSetProperty : public Edit::Command
 {
-	CMDSetSelection* cmd = n_new(CMDSetSelection);
-    cmd->newSelection = entities;
-    CommandManager::Execute(cmd);
-}
+    ~CMDSetProperty() {};
+    const char* Name() override { return "Set property"; };
+    bool Execute() override
+    {
+        if (!newValue.IsValid()) return false;
+        if (!oldValue.IsValid())
+        {
+            Game::EntityMapping const mapping = Game::GetEntityMapping(Editor::state.editorWorld, id);
+            MemDb::TableId const tid = mapping.category;
+            void* oldValuePtr = Editor::state.editorWorld->db->GetValuePointer(tid, Editor::state.editorWorld->db->GetColumnId(tid, pid), mapping.instance);
+            oldValue.Set(oldValuePtr, newValue.Size());
+        }
+        return InternalSetProperty(id, pid, newValue.GetPtr(), newValue.Size());
+    };
+    bool Unexecute() override
+    {
+        return InternalSetProperty(id, pid, oldValue.GetPtr(), oldValue.Size());
+    };
+    Editor::Entity id;
+    Game::PropertyId pid;
+    Util::Blob newValue;
+private:
+    Util::Blob oldValue;
+};
 
+//------------------------------------------------------------------------------
+/**
+*/
+struct CMDSetEntityName : public Edit::Command
+{
+    const char* Name() override { return "Set entity name"; };
+    bool Execute() override
+    {
+        if (oldName.IsEmpty())
+            oldName = Editor::state.editables[id.index].name;
 
-////------------------------------------------------------------------------------
-///**
-//*/
-//void
-//CmdSetPropertyValue(EntityGuid entity, Game::PropertyId pid, void* value, size_t size)
-//{
-//    Edit::Command cmd;
-//    cmd.name = "Set property value";
-//    Util::Blob newData = Util::Blob(value, size);
-//    cmd.Execute = [entity, pid, newData]()
-//    {
-//        SetProperty(entity, pid, newData.GetPtr(), newData.Size());
-//        return true;
-//    };
-//
-//    Editor::Entity e = state.guidMap[entity];
-//    Game::EntityMapping mapping = Game::GetEntityMapping(state.editorWorld, e);
-//    MemDb::TableId tid = mapping.category;
-//    void* oldValuePtr = state.editorWorld->db->GetValuePointer(tid, state.editorWorld->db->GetColumnId(tid, pid), mapping.instance);
-//    
-//    Util::Blob oldData = Util::Blob(oldValuePtr, size);
-//    cmd.Unexecute = [entity, pid, oldData]()
-//    {
-//        SetProperty(entity, pid, oldData.GetPtr(), oldData.Size());
-//        return true;
-//    };
-//
-//    Edit::CommandManager::Execute(cmd);
-//}
+        Editor::state.editables[id.index].name = newName;
+        return true;
+    };
+    bool Unexecute() override
+    {
+        Editor::state.editables[id.index].name = oldName;
+        return true;
+    };
+    Editor::Entity id;
+    Util::String newName;
+private:
+    Util::String oldName;
+};
 
 //------------------------------------------------------------------------------
 /**
@@ -296,6 +308,42 @@ DeleteEntity(Editor::Entity entity)
 {
     CMDDeleteEntity* cmd = n_new(CMDDeleteEntity);
     cmd->id = entity;
+    CommandManager::Execute(cmd);
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+void
+SetSelection(Util::Array<Editor::Entity> const& entities)
+{
+	CMDSetSelection* cmd = n_new(CMDSetSelection);
+    cmd->newSelection = entities;
+    CommandManager::Execute(cmd);
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+void
+SetProperty(Editor::Entity entity, Game::PropertyId pid, void* value)
+{
+    CMDSetProperty* cmd = n_new(CMDSetProperty);
+    cmd->id = entity;
+    cmd->pid = pid;
+    cmd->newValue.Set(value, MemDb::TypeRegistry::TypeSize(pid));
+    CommandManager::Execute(cmd);
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+void
+SetEntityName(Editor::Entity entity, Util::String const& name)
+{
+    CMDSetEntityName* cmd = n_new(CMDSetEntityName);
+    cmd->id = entity;
+    cmd->newName = name;
     CommandManager::Execute(cmd);
 }
 

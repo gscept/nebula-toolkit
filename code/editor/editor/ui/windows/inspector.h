@@ -10,6 +10,7 @@
 //------------------------------------------------------------------------------
 #include "core/refcounted.h"
 #include "editor/ui/window.h"
+#include "editor/editor.h"
 
 namespace Presentation
 {
@@ -25,8 +26,14 @@ public:
     void Run();
 
 private:
-    void* tempBuffer;
-    SizeT tempBufferSize;
+    struct IntermediateProperties
+    {
+        bool isDirty = false;
+        void* buffer = nullptr;
+        SizeT bufferSize = 0;
+    };
+    Util::Array<IntermediateProperties> tempProperties;
+    Editor::Entity latestInspectedEntity;
 };
 __RegisterClass(Inspector)
 

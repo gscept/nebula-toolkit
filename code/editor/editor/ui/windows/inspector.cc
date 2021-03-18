@@ -10,6 +10,7 @@
 #include "graphicsfeature/graphicsfeatureunit.h"
 #include "editor/tools/selectiontool.h"
 #include "game/propertyinspection.h"
+#include "editor/cmds.h"
 
 using namespace Editor;
 
@@ -22,8 +23,7 @@ __ImplementClass(Presentation::Inspector, 'InWn', Presentation::BaseWindow);
 */
 Inspector::Inspector()
 {
-	this->tempBufferSize = 64;
-    this->tempBuffer = Memory::Alloc(Memory::HeapType::DefaultHeap, this->tempBufferSize);
+	// empty
 }
 
 //------------------------------------------------------------------------------
@@ -31,7 +31,11 @@ Inspector::Inspector()
 */
 Inspector::~Inspector()
 {
-    Memory::Free(Memory::HeapType::DefaultHeap, this->tempBuffer);
+	for (auto const& p : this->tempProperties)
+	{
+		if (p.buffer != nullptr)
+    		Memory::Free(Memory::HeapType::DefaultHeap, p.buffer);
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -54,27 +58,25 @@ Inspector::Run()
 	if (selection.Size() != 1)
 		return;
 	
-
 	Editor::Entity const entity = selection[0];
 
-	if (!Game::IsActive(Editor::state.editorWorld, entity))
+	if (!Game::IsValid(Editor::state.editorWorld, entity) || !Game::IsActive(Editor::state.editorWorld, entity))
 		return;
 
 	Editor::Editable& edit = Editor::state.editables[entity.index];
 
-	//TODO: This "name part" is obviously retarded. Functionality needs to be implemented too.
-    char name[128];
-	edit.name.CopyToBuffer(name, 128);
-
-	//Active checkbox
-	//if(ImGui::Checkbox("##EntityEnabled", &enabled))
-	//{}
-	//// Name on the same line as checkbox
-	//ImGui::SameLine();
-
+    static char name[128];
+	if (this->latestInspectedEntity != entity)
+	{
+		edit.name.CopyToBuffer(name, 128);
+		for (auto& p : this->tempProperties)
+			p.isDirty = false; // reset dirty status if we switch entity
+		this->latestInspectedEntity = entity;
+	}
+	
 	if (ImGui::InputText("##EntityName", name, 128, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
-		// TODO
+		Edit::SetEntityName(entity, name);
 	}
 
     ImGui::Separator();
@@ -84,25 +86,37 @@ Inspector::Run()
 	MemDb::TableId const category = Game::GetEntityMapping(Editor::state.editorWorld, entity).category;
 	MemDb::Row const row = Game::GetEntityMapping(Editor::state.editorWorld, entity).instance;
 
-    auto const& properties = Game::GetWorldDatabase(Editor::state.editorWorld)->GetTable(category).properties;
-    for (auto property : properties)
+	auto const& properties = Game::GetWorldDatabase(Editor::state.editorWorld)->GetTable(category).properties;
+	while (this->tempProperties.Size() < properties.Size())
+		this->tempProperties.Append({}); // fill up with empty intermediates
+
+    for (int i = 0; i < properties.Size(); i++)
     {
+		auto property = properties[i];
+		auto& tempProperty = this->tempProperties[i];
 		SizeT const typeSize = MemDb::TypeRegistry::TypeSize(property);
 		void* data = Game::GetInstanceBuffer(Editor::state.editorWorld, category, property);
 		data = (byte*)data + (row * typeSize);
-		if (typeSize > this->tempBufferSize)
+		if (typeSize > tempProperty.bufferSize)
 		{
-			Memory::Free(Memory::HeapType::DefaultHeap, this->tempBuffer);
-			this->tempBufferSize = typeSize;
-			this->tempBuffer = Memory::Alloc(Memory::HeapType::DefaultHeap, this->tempBufferSize);
+			if (tempProperty.buffer != nullptr)
+				Memory::Free(Memory::HeapType::DefaultHeap, tempProperty.buffer);
+			tempProperty.bufferSize = typeSize;
+			tempProperty.buffer = Memory::Alloc(Memory::HeapType::DefaultHeap, tempProperty.bufferSize);
 		}
-		Memory::Copy(data, this->tempBuffer, typeSize);
+		if (!tempProperty.isDirty)
+		{
+			Memory::Copy(data, tempProperty.buffer, typeSize);
+			tempProperty.isDirty = true;
+		}
+
 		bool commitChange = false;
-		Game::PropertyInspection::DrawInspector(property, this->tempBuffer, &commitChange);
+		Game::PropertyInspection::DrawInspector(property, tempProperty.buffer, &commitChange);
 
 		if (commitChange)
 		{
-			//Edit::SetProperty(entity, property, this->tempBuffer);
+			Edit::SetProperty(entity, property, tempProperty.buffer);
+			tempProperty.isDirty = false;
 		}
 		ImGui::Separator();
     }

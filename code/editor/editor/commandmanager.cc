@@ -142,6 +142,7 @@ CommandManager::Execute(Command* command)
         return true;
     }
 
+    n_delete(command);
     return false;
 }
 

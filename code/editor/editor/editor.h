@@ -20,12 +20,13 @@ namespace Editor
 
 constexpr uint32_t WORLD_EDITOR = uint32_t('EWLD');
 
-//typedef Util::Guid EntityGuid;
-
 typedef Game::Entity Entity;
 
 struct Editable
 {
+    /// guid
+    Util::Guid guid;
+    /// name
     Util::String name;
     /// which game entity in the game database the editable is associated with
     Game::Entity gameEntity = Game::Entity::Invalid();

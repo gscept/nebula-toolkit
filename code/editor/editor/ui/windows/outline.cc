@@ -136,6 +136,7 @@ Outline::Run()
                     ImGui::PushID(entity.HashCode());
                     float const xPos = ImGui::GetCursorPosX();
                     float const yPos = ImGui::GetCursorPosY();
+                    // TODO: We should probably switch to TreeNodes. See here: https://github.com/ocornut/imgui/issues/1861 
                     ImGui::Selectable(
                         "##entityselect",
                         selected,
@@ -152,6 +153,8 @@ Outline::Run()
                     ImGui::SameLine();
                     ImGui::SetCursorPosY(yPos + 3);
                     ImGui::Text(edit.name.AsCharPtr());
+                    ImGui::SameLine();
+                    ImGui::TextColored({0,0.4f,0.1f,0.3f}, edit.guid.AsString().AsCharPtr());
                     ImGui::SetCursorPosY(yPos);
                     ImGui::PopID();
                     ImGui::EndGroup();

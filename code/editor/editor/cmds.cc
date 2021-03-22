@@ -150,6 +150,57 @@ InternalSetProperty(Editor::Entity editorEntity, Game::PropertyId pid, void* val
 //------------------------------------------------------------------------------
 /**
 */
+bool
+InternalAddProperty(Editor::Entity editorEntity, Game::PropertyId pid, void* value)
+{
+    n_assert(Game::IsValid(Editor::state.editorWorld, editorEntity));
+    
+    Editor::Editable& edit = Editor::state.editables[editorEntity.index];
+
+    if (Game::HasProperty(Editor::state.editorWorld, editorEntity, pid))
+        return false;
+
+    Game::Op::RegisterProperty regOp;
+    regOp.pid = pid;
+    regOp.value = value;
+    
+    regOp.entity = editorEntity;
+    Game::Execute(Editor::state.editorWorld, regOp);
+    
+    regOp.entity = edit.gameEntity;
+    Game::Execute(Game::GetWorld(WORLD_DEFAULT), regOp);
+
+    return true;
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+bool
+InternalRemoveProperty(Editor::Entity editorEntity, Game::PropertyId pid)
+{
+    n_assert(Game::IsValid(Editor::state.editorWorld, editorEntity));
+    
+    Editor::Editable& edit = Editor::state.editables[editorEntity.index];
+
+    if (!Game::HasProperty(Editor::state.editorWorld, editorEntity, pid))
+        return false;
+
+    Game::Op::DeregisterProperty deregOp;
+    deregOp.pid = pid;
+    
+    deregOp.entity = editorEntity;
+    Game::Execute(Editor::state.editorWorld, deregOp);
+    
+    deregOp.entity = edit.gameEntity;
+    Game::Execute(Game::GetWorld(WORLD_DEFAULT), deregOp);
+
+    return true;
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
 struct CMDCreateEntity : public Edit::Command
 {
     ~CMDCreateEntity() { if (!executed) Game::DeallocateEntity(Editor::state.editorWorld, this->id); };
@@ -157,7 +208,12 @@ struct CMDCreateEntity : public Edit::Command
     bool Execute() override
     {
         if (this->id == Editor::Entity::Invalid())
+        {
             this->id = Game::AllocateEntity(Editor::state.editorWorld);
+            if (Editor::state.editables.Size() >= id.index)
+                Editor::state.editables.Append({});
+            Editor::state.editables[this->id.index].guid.Generate();
+        }
         return InternalCreateEntity(id, templateName);
     };
     bool Unexecute() override
@@ -264,6 +320,53 @@ private:
 //------------------------------------------------------------------------------
 /**
 */
+struct CMDAddProperty : public Edit::Command
+{
+    ~CMDAddProperty() {};
+    const char* Name() override { return "Add property"; };
+    bool Execute() override
+    {
+        return InternalAddProperty(id, pid, nullptr);
+    };
+    bool Unexecute() override
+    {
+        return InternalRemoveProperty(id, pid);
+    };
+    Editor::Entity id;
+    Game::PropertyId pid;
+};
+
+//------------------------------------------------------------------------------
+/**
+*/
+struct CMDRemoveProperty : public Edit::Command
+{
+    ~CMDRemoveProperty() {};
+    const char* Name() override { return "Remove property"; };
+    bool Execute() override
+    {
+        if (!value.IsValid())
+        {
+            Game::EntityMapping const mapping = Game::GetEntityMapping(Editor::state.editorWorld, id);
+            MemDb::TableId const tid = mapping.category;
+            void* valuePtr = Editor::state.editorWorld->db->GetValuePointer(tid, Editor::state.editorWorld->db->GetColumnId(tid, pid), mapping.instance);
+            value.Set(valuePtr, MemDb::TypeRegistry::TypeSize(pid));
+        }
+        return InternalRemoveProperty(id, pid);
+    };
+    bool Unexecute() override
+    {
+        return InternalAddProperty(id, pid, value.GetPtr());
+    };
+    Editor::Entity id;
+    Game::PropertyId pid;
+private:
+    Util::Blob value;
+};
+
+//------------------------------------------------------------------------------
+/**
+*/
 struct CMDSetEntityName : public Edit::Command
 {
     const char* Name() override { return "Set entity name"; };
@@ -332,6 +435,30 @@ SetProperty(Editor::Entity entity, Game::PropertyId pid, void* value)
     cmd->id = entity;
     cmd->pid = pid;
     cmd->newValue.Set(value, MemDb::TypeRegistry::TypeSize(pid));
+    CommandManager::Execute(cmd);
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+void
+AddProperty(Editor::Entity entity, Game::PropertyId pid)
+{
+    CMDAddProperty* cmd = n_new(CMDAddProperty);
+    cmd->id = entity;
+    cmd->pid = pid;
+    CommandManager::Execute(cmd);
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+void
+RemoveProperty(Editor::Entity entity, Game::PropertyId pid)
+{
+    CMDRemoveProperty* cmd = n_new(CMDRemoveProperty);
+    cmd->id = entity;
+    cmd->pid = pid;
     CommandManager::Execute(cmd);
 }
 

@@ -1,40 +1,28 @@
 #pragma once
 //------------------------------------------------------------------------------
 /**
-    BaseCommand
+    @class Edit::Command
 
     Baseclass for actions.
 
     (C) 2021 Individual contributors, see AUTHORS file
 */
 //------------------------------------------------------------------------------
-#include "core/refcounted.h"
-#include "util/bitfield.h"
 
 namespace Edit
 {
 
-class BaseCommand : public Core::RefCounted
+struct CommandManager;
+
+struct Command
 {
-    __DeclareClass(BaseCommand)
-public:
-    /// Constructor. Make sure to set undoable to true if wanted
-    BaseCommand(bool undoable = false);
-    
-    /// Destructor. Remember to free any resources if neccessary!
-    virtual ~BaseCommand();
-
-    /// do the command
-    virtual bool Execute();
-
-    /// undo the command
-    virtual bool Unexecute();
-
-    /// Returns whether this command is undoable.
-    bool IsUndoable() const;
-
+    virtual ~Command() {};
+    virtual const char* Name() = 0;
+    virtual bool Execute() = 0;
+    virtual bool Unexecute() = 0;
 protected:
-    const bool undoable = false;
+    friend CommandManager;
+    bool executed = false;
 };
 
 } // namespace Edit

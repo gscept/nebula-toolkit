@@ -208,13 +208,9 @@ struct CMDCreateEntity : public Edit::Command
     bool Execute() override
     {
         if (this->id == Editor::Entity::Invalid())
-        {
             this->id = Game::AllocateEntity(Editor::state.editorWorld);
-        } 
-        if (Editor::state.editables.Size() >= id.index)
-        {
+        if (Editor::state.editables.Size() >= this->id.index)
             Editor::state.editables.Append({});
-        }
         if (!initialized)
         {
             Editor::state.editables[this->id.index].guid.Generate();

@@ -54,8 +54,9 @@ LoadEntities(const char* filePath)
 	reader->SetStream(IO::IoServer::Instance()->CreateStream(file));
 	if (reader->Open())
     {
+		reader->SetToFirstChild("entities");
 		Util::Blob scratchBuffer = Util::Blob(128);
-		Edit::CommandManager::BeginMacro();
+		Edit::CommandManager::BeginMacro("Load entities", false);
 		reader->SetToFirstChild();
 		do
 		{
@@ -132,8 +133,64 @@ LoadEntities(const char* filePath)
 /**
 */
 bool
-SaveEntities(const char* uri)
+SaveEntities(const char* filePath)
 {
+    IO::URI const file = filePath;
+    Ptr<IO::JsonWriter> writer = IO::JsonWriter::Create();
+    writer->SetStream(IO::IoServer::Instance()->CreateStream(file));
+    if (writer->Open())
+    {
+        writer->BeginObject("entities");
+
+		Game::FilterCreateInfo filterInfo;
+		filterInfo.inclusive[0] = Game::GetPropertyId("Owner"_atm);
+		filterInfo.access[0] = Game::AccessMode::READ;
+		filterInfo.numInclusive = 1;
+
+		Game::Filter filter = Game::CreateFilter(filterInfo);
+		Game::Dataset data = Game::Query(state.editorWorld, filter);
+		Game::PropertyId ownerPid = Game::GetPropertyId("Owner"_atm);
+
+		for (int v = 0; v < data.numViews; v++)
+		{
+			Game::Dataset::CategoryTableView const& view = data.views[v];
+			Editor::Entity const* const entities = (Editor::Entity*)view.buffers[0];
+
+			for (IndexT i = 0; i < view.numInstances; ++i)
+			{
+				Editor::Entity const& editorEntity = entities[i];
+				Editable& edit = state.editables[editorEntity.index];
+				Game::EntityMapping const mapping = Game::GetEntityMapping(Editor::state.editorWorld, editorEntity);
+				writer->BeginObject(edit.guid.AsString().AsCharPtr());
+				writer->Add(edit.name, "name");
+				writer->Add("MovingEntity/cube", "template"); // FIXME
+				MemDb::Table const& table = Game::GetWorldDatabase(Editor::state.editorWorld)->GetTable(view.cid);
+				IndexT col = 0;
+				writer->BeginObject("properties");
+				for (auto pid : table.properties)
+				{
+					if (pid != ownerPid)
+					{
+						void* buffer = Game::GetInstanceBuffer(Editor::state.editorWorld, table.tid, pid);
+						if (buffer != nullptr)
+							Game::PropertySerialization::Serialize(writer, pid, ((byte*)buffer) + MemDb::TypeRegistry::TypeSize(pid) * mapping.instance);
+						else
+							n_printf("FIXME: Serialization of flag type properties not implemented yet!\n");
+					}
+
+					col++;
+				}
+				writer->End();
+				writer->End();
+			}
+		}
+
+		Game::DestroyFilter(filter);
+
+		writer->End();
+        return true;
+    }
+
     return false;
 }
 } // namespace Editor

@@ -150,7 +150,7 @@ CommandManager::Execute(Command* command)
 /**
 */
 void
-CommandManager::BeginMacro()
+CommandManager::BeginMacro(const char* name, bool fullHistory)
 {
     if (macroMode)
     {
@@ -160,6 +160,9 @@ CommandManager::BeginMacro()
 
     macroMode = true;
     undoList.AddBack({});
+    if (name != nullptr)
+        undoList.Back().name = name;
+    undoList.Back().listAll = fullHistory;
     undoListSize++;
 }
 
@@ -183,21 +186,23 @@ void CommandManager::Undo()
         CommandStack stack = undoList.RemoveBack();
         undoListSize--;
         
-        if (stack.Size() == 0)
+        if (stack.commands.Size() == 0)
             return;
         
-        if (stack.Size() > 1)
+        if (stack.commands.Size() > 1)
         {
             // Enable macro mode since the cmd is a macro
             macroMode = true;
             redoList.AddBack({});
+            redoList.Back().name = stack.name;
+            redoList.Back().listAll = stack.listAll;
             redoListSize++;
         }
 
         // Execute commands in reverse order.
-        for (IndexT i = stack.Size() - 1; i >= 0; i--)
+        for (IndexT i = stack.commands.Size() - 1; i >= 0; i--)
         {
-            Command* command = stack[i];
+            Command* command = stack.commands[i];
             if (command->Unexecute())
             {
                 command->executed = false;
@@ -219,19 +224,19 @@ void CommandManager::Redo()
         cleanCount++;
         CommandStack stack = redoList.RemoveBack();
         redoListSize--;
-        if (stack.Size() == 0)
+        if (stack.commands.Size() == 0)
             return;
         
-        if (stack.Size() > 1)
+        if (stack.commands.Size() > 1)
         {
             // Enable macro mode since the cmd is a macro
-            BeginMacro();
+            BeginMacro(stack.name.AsCharPtr(), stack.listAll);
         }
 
         // Execute commands in reverse order.
-        for (IndexT i = stack.Size() - 1; i >= 0; i--)
+        for (IndexT i = stack.commands.Size() - 1; i >= 0; i--)
         {
-            Command* command = stack[i];
+            Command* command = stack.commands[i];
             if (command->Execute())
             {
                 command->executed = true;
@@ -269,18 +274,19 @@ void CommandManager::AddUndo(Command* command)
     {
         // history limit reached, start popping
         CommandStack stack = undoList.RemoveFront();
-        for (Command* cmd : stack)
+        for (Command* cmd : stack.commands)
             n_delete(cmd);
         undoListSize--;
     }
 
     if (macroMode)
     {
-        undoList.Back().Append(command);
+        undoList.Back().commands.Append(command);
     }
     else
     {
-        undoList.AddBack({ command });
+        undoList.AddBack({});
+        undoList.Back().commands.Append(command);
         undoListSize++;
     }
     if (cleanCount < 0 && redoListSize > 0)
@@ -300,11 +306,12 @@ void CommandManager::AddRedo(Command* command)
 {
     if (macroMode)
     {
-        redoList.Back().Append(command);
+        redoList.Back().commands.Append(command);
     }
     else
     {
-        redoList.AddBack({ command });
+        redoList.AddBack({});
+        redoList.Back().commands.Append(command);
         redoListSize++;
     }
 }
@@ -316,7 +323,7 @@ void CommandManager::ClearUndoList()
 {
     for (CommandList::Iterator it = undoList.Begin(); it != undoList.End(); it++)
     {
-        for (Command* cmd : (*it))
+        for (Command* cmd : (it->commands))
             n_delete(cmd);
     }
     undoList.Clear();
@@ -330,7 +337,7 @@ void CommandManager::ClearRedoList()
 {
     for (CommandList::Iterator it = redoList.Begin(); it != redoList.End(); it++)
     {
-        for (Command* cmd : (*it))
+        for (Command* cmd : it->commands)
             n_delete(cmd);
     }
     redoList.Clear();

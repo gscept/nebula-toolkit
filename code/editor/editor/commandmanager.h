@@ -34,7 +34,13 @@ protected:
 
 struct CommandManager
 {
-    typedef Util::ArrayStack<Command*, 1> CommandStack;
+    struct CommandStack
+    {
+        Util::String name;
+        bool listAll = true;
+        Util::ArrayStack<Command*, 1> commands;
+    };
+    //typedef Util::ArrayStack<Command*, 1> CommandStack;
     typedef Util::List<CommandStack> CommandList;
 
     /// Init singleton
@@ -62,7 +68,7 @@ struct CommandManager
     /// Execute command and add to stack. Hands over ownership of the memory to the command manager.
     static bool Execute(Command* command);
     /// Begin macro. Subsequent commands will be bundled as one undo list entry
-    static void BeginMacro();
+    static void BeginMacro(const char* name = nullptr, bool fullHistory = true);
     /// End macro.
     static void EndMacro();
     /// Undo last command

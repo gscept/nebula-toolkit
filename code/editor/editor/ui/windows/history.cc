@@ -49,20 +49,28 @@ History::Run()
 	uint uniqueId = 0x2f3dd2dau;
 	for (Edit::CommandManager::CommandList::Iterator it = undoList.Begin(); it != undoList.End(); it++)
 	{
-		if (it->Size() > 1)
+		bool const macro = it->commands.Size() > 1;
+		if (macro)
 		{
 			ImGui::PushID(uniqueId++);
-			ImGui::BeginChild("macro", {0, (it->Size() + 1) * ImGui::GetTextLineHeightWithSpacing()});
-			ImGui::Text("[MACRO]");
+			ImGui::BeginChild("macro", {0, (it->commands.Size() + 1) * ImGui::GetTextLineHeightWithSpacing()});
+			if (it->name == nullptr)
+				ImGui::Text("[MACRO]");
+			else
+				ImGui::Text("[%s]", it->name.AsCharPtr());
+		
 			ImGui::Indent();
 		}
 
-		for (Edit::Command* cmd : *it)
+		if (!macro || it->listAll)
 		{
-			ImGui::Text("%s", cmd->Name());
+			for (Edit::Command* cmd : it->commands)
+			{
+				ImGui::Text("%s", cmd->Name());
+			}
 		}
 
-		if (it->Size() > 1)
+		if (macro)
 		{
 			ImGui::Unindent();
 			ImGui::EndChild();
@@ -74,21 +82,29 @@ History::Run()
 	{
 		for (Edit::CommandManager::CommandList::Iterator it = redoList.Last();; it--)
 		{	
-			if (it->Size() > 1)
+			bool const macro = it->commands.Size() > 1;
+			if (macro)
 			{
 				ImGui::PushID(uniqueId++);
-				ImGui::BeginChild("macro", {0, (it->Size() + 1) * ImGui::GetTextLineHeightWithSpacing()});
-				ImGui::TextDisabled("[MACRO]");
+				ImGui::BeginChild("macro", {0, (it->commands.Size() + 1) * ImGui::GetTextLineHeightWithSpacing()});
+				if (it->name == nullptr)
+					ImGui::TextDisabled("[MACRO]");
+				else
+					ImGui::TextDisabled("[%s]", it->name.AsCharPtr());
+			
 				ImGui::Indent();
 			}
 
-			for (int i = (*it).Size() - 1; i >= 0; i-- )
+			if (!macro || it->listAll)
 			{
-				Edit::Command* cmd = (*it)[i];
-				ImGui::TextDisabled("%s", cmd->Name());
+				for (int i = (*it).commands.Size() - 1; i >= 0; i-- )
+				{
+					Edit::Command* cmd = it->commands[i];
+					ImGui::TextDisabled("%s", cmd->Name());
+				}
 			}
 
-			if (it->Size() > 1)
+			if (macro)
 			{
 				ImGui::Unindent();
 				ImGui::EndChild();

@@ -53,7 +53,8 @@ History::Run()
 		if (macro)
 		{
 			ImGui::PushID(uniqueId++);
-			ImGui::BeginChild("macro", {0, (it->commands.Size() + 1) * ImGui::GetTextLineHeightWithSpacing()});
+			int const numLines = it->listAll ? it->commands.Size() + 1 : 1;
+			ImGui::BeginChild("macro", {0, numLines * ImGui::GetTextLineHeightWithSpacing()});
 			if (it->name == nullptr)
 				ImGui::Text("[MACRO]");
 			else
@@ -86,7 +87,8 @@ History::Run()
 			if (macro)
 			{
 				ImGui::PushID(uniqueId++);
-				ImGui::BeginChild("macro", {0, (it->commands.Size() + 1) * ImGui::GetTextLineHeightWithSpacing()});
+				int const numLines = it->listAll ? it->commands.Size() + 1 : 1;
+				ImGui::BeginChild("macro", {0, numLines * ImGui::GetTextLineHeightWithSpacing()});
 				if (it->name == nullptr)
 					ImGui::TextDisabled("[MACRO]");
 				else

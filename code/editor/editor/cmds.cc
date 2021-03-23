@@ -210,10 +210,17 @@ struct CMDCreateEntity : public Edit::Command
         if (this->id == Editor::Entity::Invalid())
         {
             this->id = Game::AllocateEntity(Editor::state.editorWorld);
-            if (Editor::state.editables.Size() >= id.index)
-                Editor::state.editables.Append({});
-            Editor::state.editables[this->id.index].guid.Generate();
+        } 
+        if (Editor::state.editables.Size() >= id.index)
+        {
+            Editor::state.editables.Append({});
         }
+        if (!initialized)
+        {
+            Editor::state.editables[this->id.index].guid.Generate();
+            initialized = true;
+        }
+
         return InternalCreateEntity(id, templateName);
     };
     bool Unexecute() override
@@ -223,6 +230,8 @@ struct CMDCreateEntity : public Edit::Command
     };
     Editor::Entity id;
     Util::StringAtom templateName;
+private:
+    bool initialized = false;
 };
 
 //------------------------------------------------------------------------------

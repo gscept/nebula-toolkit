@@ -8,6 +8,7 @@
 #include "editor/commandmanager.h"
 #include "editor/ui/uimanager.h"
 #include "graphicsfeature/graphicsfeatureunit.h"
+#include "editor/tools/selectiontool.h"
 
 using namespace Editor;
 
@@ -51,6 +52,7 @@ void
 Scene::Run()
 {
    viewPort.Render();
+   Tools::SelectionTool::RenderGizmo();
 }
 
 } // namespace Presentation

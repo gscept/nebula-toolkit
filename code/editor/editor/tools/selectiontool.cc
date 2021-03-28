@@ -7,6 +7,10 @@
 #include "selectiontool.h"
 #include "dynui/im3d/im3d.h"
 #include "editor/commandmanager.h"
+#include "editor/cmds.h"
+#include "models/modelcontext.h"
+#include "graphicsfeature/managers/graphicsmanager.h"
+#include "dynui/im3d/im3dcontext.h"
 
 Util::Array<Editor::Entity> Tools::SelectionTool::selection = {};
 static bool isDirty = false;
@@ -30,40 +34,46 @@ SelectionTool::Selection()
 void
 SelectionTool::RenderGizmo()
 {
-    /*
-    if (selectedEntity == Editor::InvalidEntityId)
+    if (selection.IsEmpty())
 		return;
 	
-	auto entity = Editor::EntityFactory::GetEntity(selectedEntity);
-	
-	if (!entity.isvalid())
-		return;
+	Game::PropertyId const transformPid = Game::GetPropertyId("WorldTransform");
+	Game::PropertyId const mdlPid = Game::GetPropertyId("ModelEntityData");
 
-	if (!entity.IsTransformable())
-		return;
+	if (Game::HasProperty(Editor::state.editorWorld, selection[0], transformPid))
+	{
+		if (!isDirty)
+		{
+			tempTransform = Game::GetProperty<Math::mat4>(Editor::state.editorWorld, selection[0], transformPid);
+		}
 
-	if (!isDirty)
-	{
-		tempTransform = entity.GetTransform();
+		bool isTransforming = Im3d::Gizmo("GizmoEntity", tempTransform);
+		if (isTransforming)
+		{
+			isDirty = true;
+			Game::SetProperty(Game::GetWorld(WORLD_DEFAULT), Editor::state.editables[selection[0].index].gameEntity, transformPid, tempTransform);
+		}
+		else if(isDirty)
+		{
+			// User has release gizmo, we can set real transform and add to undo queue
+			Edit::SetProperty(selection[0], transformPid, &tempTransform);
+			isTransforming = false;
+			isDirty = false;
+		}
 	}
-	
-    bool isTransforming = Im3d::Gizmo("GizmoEntity", tempTransform);
-	if (isTransforming)
+
+	for (auto const editorEntity : selection)
 	{
-		isDirty = true;
-		Editor::SetLocalTransformMsg::Send(entity.GetEntityGuid(), tempTransform);
+		Game::Entity const gameEntity = Editor::state.editables[editorEntity.index].gameEntity;
+		if (Game::HasProperty(Game::GetWorld(WORLD_DEFAULT), gameEntity, mdlPid))
+		{
+			Graphics::GraphicsEntityId const gfxEntity = Game::GetProperty<GraphicsFeature::ModelEntityData>(Game::GetWorld(WORLD_DEFAULT), gameEntity, mdlPid).gid;
+			Math::bbox const bbox = Models::ModelContext::GetBoundingBox(gfxEntity);
+			Math::mat4 const transform = Models::ModelContext::GetTransform(gfxEntity);
+			Im3d::Im3dContext::DrawOrientedBox(Math::mat4::identity, bbox, {1.0f, 0.30f, 0.0f, 1.0f});
+		}
 	}
-	else if(isDirty)
-	{
-		// User has release gizmo, we can set real transform and add to undo queue
-		Ptr<Command::SetTransform> cmd = Command::SetTransform::Create();
-		cmd->SetGuid(entity.GetEntityGuid());
-		cmd->SetValue(tempTransform);
-		Edit::CommandManager::Execute(cmd);
-		isTransforming = false;
-		isDirty = false;
-	}
-    */
+
 }
 
 } // namespace Tools

@@ -47,6 +47,8 @@ History::Run()
 {
 	Edit::CommandManager::CommandList const& undoList = Edit::CommandManager::GetUndoList();
 	uint uniqueId = 0x2f3dd2dau;
+	static uint lastHistorySize = 0;
+	uint historySize = 0;
 	for (Edit::CommandManager::CommandList::Iterator it = undoList.Begin(); it != undoList.End(); it++)
 	{
 		bool const macro = it->commands.Size() > 1;
@@ -77,6 +79,7 @@ History::Run()
 			ImGui::EndChild();
 			ImGui::PopID();
 		}
+		historySize++;
 	}
 	Edit::CommandManager::CommandList const& redoList = Edit::CommandManager::GetRedoList();
 	if (redoList.Begin() != nullptr)
@@ -112,11 +115,15 @@ History::Run()
 				ImGui::EndChild();
 				ImGui::PopID();
 			}
+			historySize++;
+
 			if (it == redoList.Begin())
 				break;
 		}
 	}
-	
+	if (lastHistorySize != historySize)
+		ImGui::SetScrollHereY(1.0f);
+	lastHistorySize = historySize;
 }
 
 } // namespace Presentation

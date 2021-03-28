@@ -140,7 +140,6 @@ StopGame()
     Game::GameServer::Instance()->CleanupWorld(gameWorld);
     Game::GameServer::Instance()->SetupEmptyWorld(gameWorld);
     
-    gameWorld->categoryDecayMap = state.editorWorld->categoryDecayMap;
     gameWorld->blueprintCatMap = state.editorWorld->blueprintCatMap;
     gameWorld->entityMap = state.editorWorld->entityMap;
     gameWorld->numEntities = state.editorWorld->numEntities;

@@ -11,6 +11,7 @@
 #include "editor/tools/selectiontool.h"
 #include "game/propertyinspection.h"
 #include "editor/cmds.h"
+#include "imgui_internal.h"
 
 using namespace Editor;
 
@@ -59,6 +60,8 @@ Inspector::Run()
 		return;
 	
 	Editor::Entity const entity = selection[0];
+	static Game::EntityMapping lastEntityMapping;
+	Game::EntityMapping const entityMapping = Game::GetEntityMapping(Editor::state.editorWorld, entity);
 
 	if (!Game::IsValid(Editor::state.editorWorld, entity) || !Game::IsActive(Editor::state.editorWorld, entity))
 		return;
@@ -81,20 +84,56 @@ Inspector::Run()
 
     ImGui::Separator();
 	ImGui::NewLine();
-	//this->ShowAddPropertyMenu();
+	this->ShowAddPropertyMenu();
 
-	MemDb::TableId const category = Game::GetEntityMapping(Editor::state.editorWorld, entity).category;
-	MemDb::Row const row = Game::GetEntityMapping(Editor::state.editorWorld, entity).instance;
+	MemDb::TableId const category = entityMapping.category;
+	MemDb::Row const row = entityMapping.instance;
 
 	auto const& properties = Game::GetWorldDatabase(Editor::state.editorWorld)->GetTable(category).properties;
 	while (this->tempProperties.Size() < properties.Size())
 		this->tempProperties.Append({}); // fill up with empty intermediates
 
+	bool const entityChanged = (entityMapping.category != lastEntityMapping.category || entityMapping.instance != lastEntityMapping.instance);
+	lastEntityMapping = Game::GetEntityMapping(Editor::state.editorWorld, entity);
+
+	Util::StringAtom const ownerAtom = "Owner"_atm;
     for (int i = 0; i < properties.Size(); i++)
     {
 		auto property = properties[i];
+		
+		if (MemDb::TypeRegistry::GetDescription(property)->name == ownerAtom)
+		{
+			continue;
+		}
+
+		ImGui::PushID(property.id);
+		ImGui::Text(MemDb::TypeRegistry::GetDescription(property)->name.Value());
+		ImGui::SameLine();
+		
+		if (ImGui::Button("Remove"))
+		{
+			Edit::RemoveProperty(entity, property);
+			ImGui::PopID();
+			return; // return, otherwise we're reading stale data.
+		}
+		
+
 		auto& tempProperty = this->tempProperties[i];
 		SizeT const typeSize = MemDb::TypeRegistry::TypeSize(property);
+		if (typeSize == 0)
+		{
+			// Type is flag type, just continue to the next one
+			ImGui::Separator();
+			ImGui::PopID();
+			continue;
+		}
+
+		if (entityChanged)
+		{
+			// reload the entity data if we've changed the selected entity
+			tempProperty.isDirty = false;
+		}
+
 		void* data = Game::GetInstanceBuffer(Editor::state.editorWorld, category, property);
 		data = (byte*)data + (row * typeSize);
 		if (typeSize > tempProperty.bufferSize)
@@ -119,8 +158,90 @@ Inspector::Run()
 			tempProperty.isDirty = false;
 		}
 		ImGui::Separator();
+		ImGui::PopID();
     }
 
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+void
+Inspector::ShowAddPropertyMenu()
+{
+	ImGui::SameLine(0.f, 0.f);
+
+	ImGuiWindow* window = ImGui::GetCurrentWindow();
+	const ImGuiStyle& style = ImGui::GetStyle();
+
+	float x = ImGui::GetCursorPosX();
+	float y = ImGui::GetCursorPosY();
+
+	auto buttonSize = ImVec2(-1, 28);
+	auto label = "Add Property...";
+
+	ImVec2 size(buttonSize.x, buttonSize.y);
+	bool pressed = ImGui::Button("Add Property", size);
+
+	// Popup
+
+	ImVec2 popupPos;
+
+	popupPos.x = window->Pos.x + x - buttonSize.x;
+	popupPos.y = window->Pos.y + y + buttonSize.y;
+
+	ImGui::SetNextWindowPos(popupPos);
+
+	if (pressed)
+	{
+		ImGui::OpenPopup(label);
+	}
+
+	if (ImGui::BeginPopup(label))
+	{
+		ImGui::PushStyleColor(ImGuiCol_FrameBg, style.Colors[ImGuiCol_Button]);
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, style.Colors[ImGuiCol_Button]);
+		ImGui::PushStyleColor(ImGuiCol_ChildBg, style.Colors[ImGuiCol_Button]);
+		
+		// filter 
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+		static ImGuiTextFilter filter;
+		filter.Draw("Filter", window->Size.x - 100);
+		ImGui::PopStyleVar();
+		ImGui::Separator();
+
+		Util::Array<const char *> cStrArray;
+
+		Util::Array<MemDb::PropertyDescription*> const& properties = MemDb::TypeRegistry::GetAllProperties();
+		SizeT const numProperties = properties.Size();
+		Util::StringAtom const ownerAtom = "Owner"_atm;
+		for (SizeT i = 0; i < numProperties; i++)
+		{
+			MemDb::PropertyDescription* property = properties[i];
+			if (property->name == ownerAtom || (property->externalFlags & Game::PROPERTYFLAG_MANAGED))
+				continue;
+
+			const char* name = property->name.Value();
+
+			if (!filter.PassFilter(name))
+				continue;
+
+			if (ImGui::Button(name))
+			{
+				Editor::Entity const selectedEntity = Tools::SelectionTool::Selection()[0];
+				if (!Game::IsValid(Editor::state.editorWorld, selectedEntity))
+				{
+					return;
+				}
+
+				Edit::AddProperty(selectedEntity, i);
+				ImGui::CloseCurrentPopup();
+			}
+		}
+
+		ImGui::PopStyleColor(3);
+		ImGui::EndPopup();
+	}
 }
 
 } // namespace Presentation

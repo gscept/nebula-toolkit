@@ -25,6 +25,8 @@ public:
     void Update();
     void Run();
 
+    void ShowAddPropertyMenu();
+
 private:
     struct IntermediateProperties
     {

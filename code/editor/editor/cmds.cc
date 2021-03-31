@@ -340,7 +340,7 @@ struct CMDRemoveProperty : public Edit::Command
     const char* Name() override { return "Remove property"; };
     bool Execute() override
     {
-        if (!value.IsValid())
+        if (!value.IsValid() && MemDb::TypeRegistry::TypeSize(pid) != 0)
         {
             Game::EntityMapping const mapping = Game::GetEntityMapping(Editor::state.editorWorld, id);
             MemDb::TableId const tid = mapping.category;
@@ -351,7 +351,7 @@ struct CMDRemoveProperty : public Edit::Command
     };
     bool Unexecute() override
     {
-        return InternalAddProperty(id, pid, value.GetPtr());
+        return InternalAddProperty(id, pid, value.IsValid() ? value.GetPtr() : nullptr);
     };
     Editor::Entity id;
     Game::PropertyId pid;

@@ -12,7 +12,7 @@ namespace Edit
 
 static CommandManager::CommandList undoList;
 static CommandManager::CommandList redoList;
-static SizeT undoLevel = 100;
+static SizeT undoLevel = 8096;
 static SizeT cleanCount;
 static SizeT undoListSize;
 static SizeT redoListSize;

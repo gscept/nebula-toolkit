@@ -40,8 +40,6 @@ struct EditorState
     bool isPlayingGame = false;
     /// contains the world state for the editor
     Game::World* editorWorld;
-    /// @temp
-    Editor::Entity selected = Editor::Entity::Invalid();
     /// maps from editor entity index to editable
     Util::Array<Editable> editables;
 };
@@ -66,9 +64,6 @@ void PauseGame();
 
 /// Stop the game
 void StopGame();
-
-/// set the value of a property
-//void CmdSetPropertyValue(EntityGuid entity, Game::PropertyId pid, void* value, size_t size);
 
 /// global editor state
 extern EditorState state;

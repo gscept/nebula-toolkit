@@ -216,7 +216,7 @@ Outline::Run()
                         if (ImGui::Selectable("Delete"))
                         {
                             auto selection = Tools::SelectionTool::Selection();
-                            Edit::CommandManager::BeginMacro();
+                            Edit::CommandManager::BeginMacro("Delete entities", false);
                             Util::Array<Editor::Entity> emptySelection;
                             Edit::SetSelection(emptySelection);
                             for (auto e : selection)

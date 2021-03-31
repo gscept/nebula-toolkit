@@ -93,6 +93,7 @@ Inspector::Run()
 	while (this->tempProperties.Size() < properties.Size())
 		this->tempProperties.Append({}); // fill up with empty intermediates
 
+	// We need to double check the entity again here, since the add property function will change the entitys signature
 	bool const entityChanged = (entityMapping.category != lastEntityMapping.category || entityMapping.instance != lastEntityMapping.instance);
 	lastEntityMapping = Game::GetEntityMapping(Editor::state.editorWorld, entity);
 
@@ -105,8 +106,7 @@ Inspector::Run()
 		{
 			continue;
 		}
-
-		ImGui::PushID(property.id);
+		ImGui::PushID(0xA3FC + (int)property.id); // offset the ids with some magic number
 		ImGui::Text(MemDb::TypeRegistry::GetDescription(property)->name.Value());
 		ImGui::SameLine();
 		
@@ -117,7 +117,6 @@ Inspector::Run()
 			return; // return, otherwise we're reading stale data.
 		}
 		
-
 		auto& tempProperty = this->tempProperties[i];
 		SizeT const typeSize = MemDb::TypeRegistry::TypeSize(property);
 		if (typeSize == 0)

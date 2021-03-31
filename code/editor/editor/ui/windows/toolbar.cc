@@ -8,6 +8,7 @@
 #include "editor/commandmanager.h"
 #include "editor/ui/uimanager.h"
 #include "editor/cmds.h"
+#include "editor/entityloader.h"
 
 using namespace Editor;
 
@@ -44,6 +45,11 @@ Toolbar::Run()
 {
     const ImVec2 buttonSize = {32,32};
 
+    if (ImGui::Button("Save")) { Editor::SaveEntities("bin:test2.json"); }
+    ImGui::SameLine();
+    if (ImGui::Button("Load")) { Editor::LoadEntities("bin:test2.json"); }
+    IMGUI_VERTICAL_SEPARATOR;
+
     if (ImGui::Button("Undo")) { Edit::CommandManager::Undo(); }
     ImGui::SameLine();
     if (ImGui::Button("Redo")) { Edit::CommandManager::Redo(); }
@@ -52,7 +58,7 @@ Toolbar::Run()
     
     if (ImGui::ImageButton(&UIManager::Icons::game, buttonSize, {0,0}, {1,1}, 0, ImVec4(0,0,0,0), ImVec4(1,1,1,1)))
     {
-        Edit::CreateEntity("MovingEntity/cube");
+        Edit::CreateEntity("Empty/empty");
     }
     
     IMGUI_VERTICAL_SEPARATOR;

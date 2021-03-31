@@ -32,11 +32,6 @@ InternalCreateEntity(Editor::Entity id, Util::StringAtom templateName)
 
     Game::TemplateId const tid = Game::GetTemplateId(templateName);
 
-    if (tid == Game::InvalidTemplateId)
-    {
-        return false;
-    }
-
     if (Game::IsActive(Editor::state.editorWorld, id))
     {
         n_warning("Entity already has an instance!\n");
@@ -48,9 +43,7 @@ InternalCreateEntity(Editor::Entity id, Util::StringAtom templateName)
     createInfo.immediate = true;
     createInfo.templateId = tid;
     Game::Entity const entity = Game::CreateEntity(gameWorld, createInfo);
-    Math::mat4 t = Math::translation({ Util::RandomFloatNTP() * 10.0f, 0, Util::RandomFloatNTP() * 10.0f });
-    Game::SetProperty(gameWorld, entity, Game::GetPropertyId("WorldTransform"_atm), t);
-
+    
     if (Editor::state.editables.Size() >= id.index)
         Editor::state.editables.Append({});
     Game::AllocateInstance(Editor::state.editorWorld, id, tid);
@@ -58,9 +51,6 @@ InternalCreateEntity(Editor::Entity id, Util::StringAtom templateName)
     Editor::Editable& edit = Editor::state.editables[id.index];
     edit.gameEntity = entity;
     edit.name = templateName.AsString().ExtractFileName();
-
-    Math::mat4& et = *(Math::mat4*)InternalGetValuePointer(id, Game::GetPropertyId("WorldTransform"_atm));
-    et = t;
 
     return true;
 }

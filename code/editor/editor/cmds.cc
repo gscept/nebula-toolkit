@@ -51,6 +51,7 @@ InternalCreateEntity(Editor::Entity id, Util::StringAtom templateName)
     Editor::Editable& edit = Editor::state.editables[id.index];
     edit.gameEntity = entity;
     edit.name = templateName.AsString().ExtractFileName();
+    edit.templateId = tid;
 
     return true;
 }
@@ -88,6 +89,7 @@ InternalCreateEntity(Editor::Entity editorEntity, MemDb::TableId editorTable, Ut
 
     Editor::Editable& edit = Editor::state.editables[editorEntity.index];
     edit.gameEntity = entity;
+    
 
     return true;
 }

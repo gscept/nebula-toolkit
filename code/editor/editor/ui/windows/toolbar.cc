@@ -71,7 +71,7 @@ Toolbar::Run()
     }
     ImGui::PopItemWidth();
     ImGui::SameLine();
-    if (ImGui::ImageButton(&UIManager::Icons::game, buttonSize, {0,0}, {1,1}, 0, ImVec4(0,0,0,0), ImVec4(1,1,1,1)))
+    if (ImGui::Button("Create"))
     {
         if (selected != nullptr)
             Edit::CreateEntity(selected);

@@ -9,6 +9,7 @@
 #include "editor/ui/uimanager.h"
 #include "editor/cmds.h"
 #include "editor/entityloader.h"
+#include "basegamefeature/managers/blueprintmanager.h"
 
 using namespace Editor;
 
@@ -56,9 +57,24 @@ Toolbar::Run()
     
     IMGUI_VERTICAL_SEPARATOR;
     
+    static const char* selected = "Empty";
+    ImGui::PushItemWidth(300);
+    if (ImGui::BeginCombo("##Template", selected))
+    {
+        auto const& templates = Game::BlueprintManager::ListTemplates();
+        for (auto const& tmpl : templates)
+        {
+            if (ImGui::Selectable(tmpl.name.Value(), selected == tmpl.name.Value()))
+                selected = tmpl.name.Value();
+        }
+        ImGui::EndCombo();
+    }
+    ImGui::PopItemWidth();
+    ImGui::SameLine();
     if (ImGui::ImageButton(&UIManager::Icons::game, buttonSize, {0,0}, {1,1}, 0, ImVec4(0,0,0,0), ImVec4(1,1,1,1)))
     {
-        Edit::CreateEntity("Empty/empty");
+        if (selected != nullptr)
+            Edit::CreateEntity(selected);
     }
     
     IMGUI_VERTICAL_SEPARATOR;

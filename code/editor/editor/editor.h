@@ -28,6 +28,8 @@ struct Editable
     Util::Guid guid;
     /// name
     Util::String name;
+    /// template, if any
+    Game::TemplateId templateId;
     /// which game entity in the game database the editable is associated with
     Game::Entity gameEntity = Game::Entity::Invalid();
 };

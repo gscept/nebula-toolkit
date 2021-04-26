@@ -118,6 +118,14 @@ Inspector::Run()
 		}
 		
 		auto& tempProperty = this->tempProperties[i];
+		if (entityChanged)
+		{
+			// reload the entity data if we've changed the selected entity
+			tempProperty.isDirty = false;
+			ImGui::PopID();
+			continue;
+		}
+
 		SizeT const typeSize = MemDb::TypeRegistry::TypeSize(property);
 		if (typeSize == 0)
 		{
@@ -125,12 +133,6 @@ Inspector::Run()
 			ImGui::Separator();
 			ImGui::PopID();
 			continue;
-		}
-
-		if (entityChanged)
-		{
-			// reload the entity data if we've changed the selected entity
-			tempProperty.isDirty = false;
 		}
 
 		void* data = Game::GetInstanceBuffer(Editor::state.editorWorld, category, property);

@@ -14,6 +14,7 @@
 #include "windows/history.h"
 #include "windows/inspector.h"
 #include "windows/assetbrowser.h"
+#include "windows/previewer.h"
 #include "coregraphics/texture.h"
 #include "resources/resourceserver.h"
 #include "editor/commandmanager.h"
@@ -58,6 +59,7 @@ OnActivate()
     windowServer->RegisterWindow("Presentation::Scene", "Scene View");
     windowServer->RegisterWindow("Presentation::Inspector", "Inspector");
     windowServer->RegisterWindow("Presentation::AssetBrowser", "Asset Browser");
+    windowServer->RegisterWindow("Presentation::Previewer", "Previewer");
     
     Icons::play          = LoadIcon("tex:system/icon_play.dds");
     Icons::pause         = LoadIcon("tex:system/icon_pause.dds");

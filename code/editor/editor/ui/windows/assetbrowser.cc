@@ -9,7 +9,6 @@
 #include "editor/ui/uimanager.h"
 #include "io/ioserver.h"
 #include "io/fswrapper.h"
-#include "editor/ui/uimanager.h"
 
 using namespace Editor;
 

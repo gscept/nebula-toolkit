@@ -75,6 +75,8 @@ fips_dir(editor)
                 history.h
                 outline.cc
                 outline.h
+                previewer.cc
+                previewer.h
                 styleeditor.cc
                 styleeditor.h
                 toolbar.cc

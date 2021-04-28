@@ -63,6 +63,8 @@ fips_dir(editor)
             )
         fips_dir(editor/ui/windows)
             fips_files(
+                assetbrowser.cc
+                assetbrowser.h
                 console.cc
                 console.h
                 scriptedwindow.cc

@@ -16,8 +16,6 @@
 #include "util/random.h"
 #include "commandmanager.h"
 
-using namespace Net;
-
 namespace Editor
 {
 
@@ -52,48 +50,10 @@ Create()
 //------------------------------------------------------------------------------
 /**
 */
-bool
-ConnectToBackend(Util::String const& hostname)
-{
-    if (!state.client.isvalid())
-        state.client = TcpClient::Create();
-
-    state.client->SetServerAddress(IpAddress(hostname, 2102));
-    TcpClient::Result res = state.client->Connect();
-
-    if (res == TcpClient::Connecting)
-    {
-        // FIXME: should move this to a separate thread
-        Core::SysFunc::Sleep(0.1);
-    };
-
-    if (state.client->IsConnected())
-    {
-        n_printf("Successfully connected to backend!\n");
-        return true;
-    }
-
-    n_warning("Could not open EditorFeatureUnit's TcpServer!\n");
-    return false;
-}
-
-//------------------------------------------------------------------------------
-/**
-*/
-void
-SpawnLocalBackend()
-{
-    n_error("FIXME");
-}
-
-//------------------------------------------------------------------------------
-/**
-*/
 void
 Destroy()
 {
-    if (state.client.isvalid() && state.client->IsConnected())
-        state.client->Disconnect();
+    // empty
 }
 
 //------------------------------------------------------------------------------
@@ -102,10 +62,6 @@ Destroy()
 void
 PlayGame()
 {
-    if (!state.isPlayingGame)
-    {
-        
-    }
     Game::TimeManager::SetGlobalTimeFactor(1.0f);
 }
 

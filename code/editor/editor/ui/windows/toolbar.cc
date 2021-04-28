@@ -10,6 +10,7 @@
 #include "editor/cmds.h"
 #include "editor/entityloader.h"
 #include "basegamefeature/managers/blueprintmanager.h"
+#include "io/filedialog.h"
 
 using namespace Editor;
 
@@ -46,9 +47,21 @@ Toolbar::Run()
 {
     const ImVec2 buttonSize = {32,32};
 
-    if (ImGui::Button("Save")) { Editor::SaveEntities("bin:test2.json"); }
+    if (ImGui::Button("Save")) 
+    {
+        static Util::String localpath = IO::URI("bin:").LocalPath();
+        Util::String path;
+        if (IO::FileDialog::SaveFile("Select Nebula Level", localpath, { "*.json" }, path))
+            Editor::SaveEntities(path.AsCharPtr());
+    }
     ImGui::SameLine();
-    if (ImGui::Button("Load")) { Editor::LoadEntities("bin:test2.json"); }
+    if (ImGui::Button("Load"))
+    {
+        static Util::String localpath = IO::URI("bin:").LocalPath();
+        Util::String path;
+        if (IO::FileDialog::OpenFile("Select Nebula Level", localpath, { "*.json" }, path))
+            Editor::LoadEntities(path.AsCharPtr());
+    }
     IMGUI_VERTICAL_SEPARATOR;
 
     if (ImGui::Button("Undo")) { Edit::CommandManager::Undo(); }

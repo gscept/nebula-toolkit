@@ -12,8 +12,6 @@
 #include "util/guid.h"
 #include "game/category.h"
 #include "game/gameserver.h"
-#include "net/tcpclient.h"
-#include "net/messageclientconnection.h"
 
 namespace Editor
 {
@@ -36,8 +34,6 @@ struct Editable
 
 struct EditorState
 {
-    /// TCP network connection
-    Ptr<Net::TcpClient> client;
     /// is set to true if the game is currently playing
     bool isPlayingGame = false;
     /// contains the world state for the editor
@@ -48,12 +44,6 @@ struct EditorState
 
 /// Create the editor
 void Create();
-
-/// Connect to a backend
-bool ConnectToBackend(Util::String const& hostname);
-
-/// Spawn a local backend
-void SpawnLocalBackend();
 
 /// Destroy the editor
 void Destroy();

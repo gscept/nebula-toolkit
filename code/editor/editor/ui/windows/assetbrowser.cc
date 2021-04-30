@@ -60,7 +60,7 @@ AssetBrowser::DisplayFileTree()
     static int selected = 0;
     static bool isInputtingPath = false;
     static char inputPath[NEBULA_MAXPATH];
-    static Util::String outpath = "bin:";
+    static Util::String outpath = IO::URI("export:").LocalPath();
     static Util::String pattern = "*.*";
     static bool once = true;
 
@@ -214,6 +214,12 @@ AssetBrowser::DisplayFileTree()
             }
             ImGui::EndChild();
             ImGui::EndGroup();
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+            {
+                Util::String filePath = outpath + "/" + name;
+                ImGui::SetDragDropPayload("resource", filePath.AsCharPtr(), sizeof(char) * filePath.Length() + 1);
+                ImGui::EndDragDropSource();
+            }
 
             float lastButtonX = ImGui::GetItemRectMax().x;
             float nextButtonX = lastButtonX + style.ItemSpacing.x + (float)itemSize + 30.0f; // Expected position if next button was on same line

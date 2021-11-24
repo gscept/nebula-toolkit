@@ -100,11 +100,13 @@ LoadEntities(const char* filePath)
                             Edit::AddProperty(editorEntity, descriptor);
                         }
 
-                        if (scratchBuffer.Size() < MemDb::TypeRegistry::TypeSize(descriptor))
-                            scratchBuffer.Reserve(MemDb::TypeRegistry::TypeSize(descriptor));
-
-                        Game::PropertySerialization::Deserialize(reader, descriptor, scratchBuffer.GetPtr());
-                        Edit::SetProperty(editorEntity, descriptor, scratchBuffer.GetPtr());
+                        if (MemDb::TypeRegistry::TypeSize(descriptor) > 0)
+                        {
+                            if (scratchBuffer.Size() < MemDb::TypeRegistry::TypeSize(descriptor))
+                                scratchBuffer.Reserve(MemDb::TypeRegistry::TypeSize(descriptor));
+                            Game::PropertySerialization::Deserialize(reader, descriptor, scratchBuffer.GetPtr());
+                            Edit::SetProperty(editorEntity, descriptor, scratchBuffer.GetPtr());
+                        }
                     } while (reader->SetToNextChild());
                 }
                 reader->SetToParent();

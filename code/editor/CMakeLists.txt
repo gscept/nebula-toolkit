@@ -96,5 +96,5 @@ fips_dir(editor)
             selectiontool.cc
             selectiontool.h
         )
-fips_deps(foundation application audio)
+fips_deps(foundation application graphicsfeature physicsfeature audio)
 fips_end_lib()

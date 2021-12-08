@@ -181,7 +181,7 @@ AssetBrowser::DisplayFileTree()
                     {
                         IO::URI uri = outpath;
                         uri.AppendLocalPath(fileList[i]);
-                        outpath = uri.LocalPath();
+                        //outpath = uri.LocalPath();
                         // TODO: Open file event
                     }
                 }

@@ -100,15 +100,8 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
         console->Clear();
         // export GLTF sources
 
-        // TEMP
-        {
-            Array<String> glbs = IoServer::Instance()->ListFiles(assetPath, "*.glb");
-            if (!glbs.IsEmpty())
-                n_warning("Warning: .GLB files are not yet supported!\n");
-        }
-
         Array<String> files = IoServer::Instance()->ListFiles(assetPath, "*.gltf");
-        //files.AppendArray(IoServer::Instance()->ListFiles(assetPath, "*.glb"));
+        files.AppendArray(IoServer::Instance()->ListFiles(assetPath, "*.glb"));
         this->gltfExporter = ToolkitUtil::NglTFExporter::Create();
         this->gltfExporter->SetTextureConverter(&this->textureExporter);
         this->gltfExporter->Open();

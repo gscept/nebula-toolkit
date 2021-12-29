@@ -14,9 +14,7 @@
 #include "core/refcounted.h"
 #include "modelattributes.h"
 #include "modelconstants.h"
-#if PHYSEXPORT
 #include "modelphysics.h"
-#endif
 
 namespace ToolkitUtil
 {
@@ -49,14 +47,12 @@ public:
     /// gets name of model attributes pointer
     const Util::String& GetAttributesName(const Ptr<ModelAttributes>& attrs);
 
-#if PHYSEXPORT
     /// performs lookup on physics attributes, loads from file if it doesn't exist
     Ptr<ModelPhysics> LookupPhysics(const Util::String& name, bool reload = false);
     /// checks if attributes exist
     bool PhysicsExist(const Util::String& name);
     /// gets name of model attributes pointer
     const Util::String& GetPhysicsName(const Ptr<ModelPhysics>& attrs);
-#endif
 
     /// performs lookup on model constants, loads from file if it doesn't exist
     Ptr<ModelConstants> LookupConstants(const Util::String& name, bool reload = false);
@@ -69,9 +65,7 @@ private:
     bool isOpen;
     Util::Dictionary<Util::String, Ptr<ModelAttributes>> modelAttributes;
     Util::Dictionary<Util::String, Ptr<ModelConstants>> modelConstants;
-#if PHYSEXPORT
     Util::Dictionary<Util::String, Ptr<ModelPhysics>> modelPhysics;
-#endif
 };
 
 //------------------------------------------------------------------------------

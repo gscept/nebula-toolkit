@@ -45,10 +45,9 @@ private:
     void UpdateConstants(const Util::String& file, const Ptr<ToolkitUtil::ModelConstants>& constants);
     /// convenience function for writing attributes-files
     void UpdateAttributes(const Util::String& file, const Ptr<ToolkitUtil::ModelAttributes>& attributes);
-#if PHYSEXPORT
     /// convenience function for writing physics-files
     void UpdatePhysics(const Util::String& file, const Ptr<ToolkitUtil::ModelPhysics>& physics);
-#endif
+
     ToolkitUtil::Platform::Code platform;
     Ptr<NFbxScene> scene;   
 }; 

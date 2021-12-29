@@ -3,6 +3,7 @@
 //  (C) 2012-2016 Individual contributors, see AUTHORS file
 //------------------------------------------------------------------------------
 #include "stdneb.h"
+#include "modelutil/modelphysics.h"
 #include "nfbxscenewriter.h"
 #include "xmlmodelwriter.h"
 #include "io/ioserver.h"
@@ -87,7 +88,6 @@ NFbxSceneWriter::CreateStaticModel( const Ptr<ToolkitUtil::N3Writer>& modelWrite
     // get model attributes
     Ptr<ModelAttributes> attributes = ModelDatabase::Instance()->LookupAttributes(fileCat);
 
-#if PHYSEXPORT
     // get physics
     Ptr<ModelPhysics> physics = ModelDatabase::Instance()->LookupPhysics(fileCat);
     
@@ -97,7 +97,7 @@ NFbxSceneWriter::CreateStaticModel( const Ptr<ToolkitUtil::N3Writer>& modelWrite
         phname.Format("phymsh:%s_ph.nvx2", fileCat.AsCharPtr());
         physics->SetPhysicsMesh(phname);
     }
-#endif
+
     // clear constants
     constants->Clear();
 
@@ -236,10 +236,8 @@ NFbxSceneWriter::CreateStaticModel( const Ptr<ToolkitUtil::N3Writer>& modelWrite
     String physicsFile;
     physicsFile.Format("src:assets/%s/%s.physics", category.AsCharPtr(), file.AsCharPtr());
 
-#if PHYSEXPORT
     // update
     this->UpdatePhysics(physicsFile, physics);
-#endif
 
     // create model builder
     Ptr<ModelBuilder> modelBuilder = ModelBuilder::Create();
@@ -247,9 +245,8 @@ NFbxSceneWriter::CreateStaticModel( const Ptr<ToolkitUtil::N3Writer>& modelWrite
     // set constants and attributes
     modelBuilder->SetConstants(constants);
     modelBuilder->SetAttributes(attributes);
-#if PHYSEXPORT  
     modelBuilder->SetPhysics(physics);
-#endif
+
     // format name of model
     String destination;
     destination.Format("mdl:%s/%s.n3", category.AsCharPtr(), file.AsCharPtr());
@@ -257,11 +254,9 @@ NFbxSceneWriter::CreateStaticModel( const Ptr<ToolkitUtil::N3Writer>& modelWrite
     // save file
     modelBuilder->SaveN3(destination, this->platform);
 
-#if PHYSEXPORT
     // save physics
-    destination.Format("phys:%s/%s.np3",category.AsCharPtr(), file.AsCharPtr());
+    destination.Format("phys:%s/%s.actor",category.AsCharPtr(), file.AsCharPtr());
     modelBuilder->SaveN3Physics(destination,this->platform);
-#endif  
 }
 
 //------------------------------------------------------------------------------
@@ -283,7 +278,7 @@ NFbxSceneWriter::CreateSkeletalModel( const Ptr<N3Writer>& modelWriter,  const U
 
     // get model attributes
     Ptr<ModelAttributes> attributes = ModelDatabase::Instance()->LookupAttributes(fileCat);
-#if PHYSEXPORT
+
     // get physics
     Ptr<ModelPhysics> physics = ModelDatabase::Instance()->LookupPhysics(fileCat);
 
@@ -293,7 +288,7 @@ NFbxSceneWriter::CreateSkeletalModel( const Ptr<N3Writer>& modelWriter,  const U
         phname.Format("phymsh:%s_ph.nvx2", fileCat.AsCharPtr());
         physics->SetPhysicsMesh(phname);
     }
-#endif
+
     // clear constants
     constants->Clear();
 
@@ -444,7 +439,7 @@ NFbxSceneWriter::CreateSkeletalModel( const Ptr<N3Writer>& modelWriter,  const U
         // now add skin to constants
         constants->AddSkin(mesh->GetName(), skin);
     }
-#if PHYSEXPORT
+
     const Util::Array<Ptr<NFbxMeshNode> >& physicsNodes = scene->GetPhysicsNodes();
     IndexT i;
     for (i = 0; i < physicsNodes.Size(); i++)
@@ -466,14 +461,14 @@ NFbxSceneWriter::CreateSkeletalModel( const Ptr<N3Writer>& modelWriter,  const U
         node.path = nodePath;
         node.transform.position = mesh->GetInitialPosition();
         node.transform.rotation = mesh->GetInitialRotation();
-        node.transform.scale = mesh->GetInitialScale();
+        node.transform.scale = mesh->GetInitialScale().vec;
         node.primitiveGroupIndex = mesh->GetGroupId();
         node.name = mesh->GetName();
 
         // add to constants
         constants->AddPhysicsNode(mesh->GetName(), node);
     }
-#endif
+
     String constantsFile;
     constantsFile.Format("src:assets/%s/%s.constants", category.AsCharPtr(), file.AsCharPtr());
 
@@ -487,14 +482,12 @@ NFbxSceneWriter::CreateSkeletalModel( const Ptr<N3Writer>& modelWriter,  const U
     // update
     this->UpdateAttributes(attributesFile, attributes);
 
-#if PHYSEXPORT
     // format attributes file
     String physicsFile;
     physicsFile.Format("src:assets/%s/%s.physics", category.AsCharPtr(), file.AsCharPtr());
 
     // update
     this->UpdatePhysics(physicsFile, physics);
-#endif
 
     // create model builder
     Ptr<ModelBuilder> modelBuilder = ModelBuilder::Create();
@@ -502,9 +495,8 @@ NFbxSceneWriter::CreateSkeletalModel( const Ptr<N3Writer>& modelWriter,  const U
     // set constants and attributes
     modelBuilder->SetConstants(constants);
     modelBuilder->SetAttributes(attributes);
-#if PHYSEXPORT  
     modelBuilder->SetPhysics(physics);
-#endif
+
     // format name of model
     String destination;
     destination.Format("mdl:%s/%s.n3", category.AsCharPtr(), file.AsCharPtr());
@@ -512,10 +504,8 @@ NFbxSceneWriter::CreateSkeletalModel( const Ptr<N3Writer>& modelWriter,  const U
     // save file
     modelBuilder->SaveN3(destination, this->platform);
 
-#if PHYSEXPORT
-    destination.Format("phys:%s/%s.np3",category.AsCharPtr(), file.AsCharPtr());
+    destination.Format("phys:%s/%s.actor", category.AsCharPtr(), file.AsCharPtr());
     modelBuilder->SaveN3Physics(destination,this->platform);
-#endif
 }
 
 
@@ -657,7 +647,6 @@ NFbxSceneWriter::UpdateAttributes( const Util::String& file, const Ptr<ModelAttr
     }
 }
 
-#if PHYSEXPORT
 //------------------------------------------------------------------------------
 /**
 */
@@ -721,5 +710,4 @@ NFbxSceneWriter::UpdatePhysics( const Util::String& file, const Ptr<ModelPhysics
         physics->Save(stream);
     }
 }
-#endif
 } // namespace ToolkitUtil

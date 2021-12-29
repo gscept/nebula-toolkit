@@ -12,7 +12,7 @@
 #include "core/refcounted.h"
 #include "toolkit-common/base/exporttypes.h"
 #include "io/stream.h"
-#include "physics/model/templates.h"
+#include "flat/physics/material.h"
 
 
 namespace ToolkitUtil
@@ -32,9 +32,9 @@ public:
     const Util::String& GetName() const;
 
     /// sets mesh node
-    void SetMeshMode(Physics::MeshTopologyType flags);
+    void SetMeshMode(Physics::MeshTopology flags);
     /// gets mesh node
-    Physics::MeshTopologyType GetMeshMode();
+    Physics::MeshTopology GetMeshMode();
 
     /// sets export mode
     void SetExportMode(PhysicsExportMode flags);
@@ -46,6 +46,10 @@ public:
     /// gets physics mesh
     const Util::String& GetPhysicsMesh() const;
 
+    /// get global material
+    const Util::String& GetMaterial() const;
+    /// set global material
+    void SetMaterial(const Util::String& material);
     
     /// clears attributes
     void Clear();
@@ -58,8 +62,9 @@ public:
 
 private:
     PhysicsExportMode physicsMode;
-    Physics::MeshTopologyType meshMode; 
+    Physics::MeshTopology meshMode;
     Util::String name;
+    Util::String material;
     Util::String checksum;
     Util::String physicsMesh;
 
@@ -103,5 +108,25 @@ ModelPhysics::GetPhysicsMesh() const
 {
     return this->physicsMesh;
 }
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline void
+ModelPhysics::SetMaterial(const Util::String& material)
+{
+    n_assert(material.IsValid());
+    this->material = material;
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline const Util::String&
+ModelPhysics::GetMaterial() const
+{
+    return this->material;
+}
+
 } // namespace ToolkitUtil
 //------------------------------------------------------------------------------

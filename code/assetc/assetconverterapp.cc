@@ -10,6 +10,7 @@
 #include "io/textreader.h"
 #include "asset/assetexporter.h"
 #include "io/console.h"
+#include "nflatbuffer/flatbufferinterface.h"
 #ifdef WIN32
 #include "io/win32/win32consolehandler.h"
 #else
@@ -69,6 +70,8 @@ AssetConverterApp::Run()
         this->SetReturnCode(-1);
     }
 
+    Flat::FlatbufferInterface::Init();
+
     this->modelDatabase = ToolkitUtil::ModelDatabase::Create();
     this->modelDatabase->Open();
 
@@ -87,6 +90,8 @@ AssetConverterApp::Run()
         if (modeFlags.Find("model")) mode |= AssetExporter::Models;
         if (modeFlags.Find("surface")) mode |= AssetExporter::Surfaces;
         if (modeFlags.Find("texture")) mode |= AssetExporter::Textures;
+        if (modeFlags.Find("physics")) mode |= AssetExporter::Physics;
+        if (modeFlags.Find("gltf")) mode |= AssetExporter::GLTF;
     }
     
     IO::AssignRegistry::Instance()->SetAssign(Assign("home","proj:"));
@@ -119,7 +124,7 @@ AssetConverterApp::ShowHelp()
         "(C) 2020 Individual contributors, see AUTHORS file.\n");
     n_printf("Usage assetc [args] -dir [path to assetsfolder]\n"
             "-help         --display this help\n"
-             "-mode         --selects type to batch (fbx,model,texture,surface) defaults to all");
+             "-mode         --selects type to batch (fbx,model,texture,surface,physics,gltf) defaults to all");
 }
 
 } // namespace Toolkit

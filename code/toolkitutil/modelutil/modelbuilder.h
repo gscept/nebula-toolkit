@@ -9,9 +9,7 @@
 */
 //------------------------------------------------------------------------------
 #include "core/refcounted.h"
-#if PHYSEXPORT
 #include "modelphysics.h"
-#endif
 #include "modelconstants.h"
 #include "modelattributes.h"
 #include "n3util/n3writer.h"
@@ -34,14 +32,12 @@ public:
     void SetAttributes(const Ptr<ModelAttributes>& attributes);
     /// get attributes
     const Ptr<ModelAttributes>& GetAttributes() const;
-#if PHYSEXPORT
     /// set physics pointer
     void SetPhysics(const Ptr<ModelPhysics>& physics);
     /// get physics
     const Ptr<ModelPhysics>& GetPhysics() const;
     /// saves physics model to np3
     bool SaveN3Physics(const IO::URI& uri, Platform::Code platform);
-#endif
 
     /// saves model to N3
     bool SaveN3(const IO::URI& uri, Platform::Code platform);
@@ -55,10 +51,9 @@ private:
     void WriteCharacter(const Ptr<N3Writer>& writer);
     /// writes skins
     void WriteSkins(const Ptr<N3Writer>& writer);
-#if PHYSEXPORT
     /// writes physics
-    void WritePhysics(const Ptr<N3Writer>& writer);
-#endif
+    Util::Blob WritePhysics();
+
     /// writes particles
     void WriteParticles(const Ptr<N3Writer>& writer);
     /// write appendix nodes
@@ -67,9 +62,7 @@ private:
 
     Ptr<ModelConstants> constants;
     Ptr<ModelAttributes> attributes;
-#if PHYSEXPORT    
     Ptr<ModelPhysics> physics;
-#endif    
 }; 
 
 //------------------------------------------------------------------------------
@@ -109,7 +102,7 @@ ModelBuilder::GetAttributes() const
 {
     return this->attributes;
 }
-#if PHYSEXPORT
+
 //------------------------------------------------------------------------------
 /**
 */
@@ -128,6 +121,5 @@ ModelBuilder::GetPhysics() const
 {
     return this->physics;
 }
-#endif
 } // namespace ToolkitUtil
 //------------------------------------------------------------------------------

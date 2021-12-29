@@ -12,6 +12,7 @@
 #include "modelutil/modeldatabase.h"
 #include "modelutil/modelattributes.h"
 
+
 using namespace Util;
 using namespace IO;
 using namespace ToolkitUtil;
@@ -412,12 +413,8 @@ NFbxExporter::NeedsConversion(const Util::String& path)
 
     // and if the .attributes is older than the n3 (attributes controls both model, and animation resource)
     bool attributesNewer = ExporterBase::NeedsConversion(attributes, model);
-#if PHYSEXPORT
     // ...and if the .physics is older than the n3
     bool physicsNewer = ExporterBase::NeedsConversion(physics, physModel);
-#else
-    bool physicsNewer = false;
-#endif
 
     // ...if the mesh is newer
     bool meshNewer = ExporterBase::NeedsConversion(path, mesh);

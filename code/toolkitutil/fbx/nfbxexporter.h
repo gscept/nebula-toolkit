@@ -10,6 +10,7 @@
 #include "toolkit-common/base/exporterbase.h"
 #include "node/nfbxscene.h"
 #include "toolkit-common/base/exporttypes.h"
+#include "modelutil/modelphysics.h"
 #include "nfbxscenewriter.h"
 
 

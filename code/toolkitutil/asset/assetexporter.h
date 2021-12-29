@@ -28,19 +28,21 @@ public:
 
     enum ExportModes
     {
-        FBX = 1 << 0,                                       // checking this will cause FBXes to get exported
-        Models = 1 << 1,                                    // checking this will cause models to get exported
-        Textures = 1 << 2,                                  // checking this will cause textures to get exported
-        Surfaces = 1 << 3,                                  // checking this will cause surfaces to get exported
-        GLTF = 1 << 4,                                      // checking this will cause FBXes to get exported
-        All = FBX + Models + Textures + Surfaces + GLTF,    // shortcut for exporting everything
+        FBX = 1 << 0,                                                 // checking this will cause FBXes to get exported
+        Models = 1 << 1,                                              // checking this will cause models to get exported
+        Textures = 1 << 2,                                            // checking this will cause textures to get exported
+        Surfaces = 1 << 3,                                            // checking this will cause surfaces to get exported
+        GLTF = 1 << 4,                                                // checking this will cause GLTFs to get exported
+        Physics = 1 << 5,                                             // checking this will cause physics to get exported
+        All = FBX + Models + Textures + Surfaces + GLTF + Physics,    // shortcut for exporting everything
 
-        ForceFBX = 1 << 5,              // will force the FBX batcher to update meshes and characters despite time stamps
-        ForceModels = 1 << 6,           // will force the model builder to create models despite time stamps
-        ForceTextures = 1 << 7,         // will force the texture converter to convert textures despite time stamps
-        ForceSurfaces = 1 << 8,         // will force the surface exporter to convert surfaces despite time stamps
-        ForceGLTF = 1 << 9,             // will force the gltf exporter to convert meshes, textures and characters despite time stamps
-        ForceAll = ForceFBX + ForceModels + ForceTextures + ForceGLTF
+        ForceFBX = 1 << 6,              // will force the FBX batcher to update meshes and characters despite time stamps
+        ForceModels = 1 << 7,           // will force the model builder to create models despite time stamps
+        ForceTextures = 1 << 8,         // will force the texture converter to convert textures despite time stamps
+        ForceSurfaces = 1 << 9,         // will force the surface exporter to convert surfaces despite time stamps
+        ForceGLTF = 1 << 10,            // will force the gltf exporter to convert meshes, textures and characters despite time stamps
+        ForcePhysics = 1 << 11,         // will force the physics exporter to export physics assets despite time stamps
+        ForceAll = ForceFBX + ForceModels + ForceTextures + ForceGLTF + ForcePhysics
     };
 
     /// constructor

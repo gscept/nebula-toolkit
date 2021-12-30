@@ -168,7 +168,7 @@ ModelBuilder::WritePhysics()
                     colBox.transform(nodetrans);
 
                     newShape->material = this->physics->GetMaterial();
-                    newShape->transform = nodetrans;
+                    newShape->transform = Math::translation(colBox.center().vec);
 
                     switch (this->physics->GetExportMode())
                     {

@@ -287,7 +287,7 @@ ModelBuilder::WritePhysics()
                     
                     PhysicsResource::MeshColliderT newColl;
                     newColl.file = shapes[i].mesh;
-                    newColl.primGroup = shapes[i].primitiveGroupIndex;
+                    newColl.prim_group = shapes[i].primitiveGroupIndex;
                     newColl.type = this->physics->GetMeshMode();
                     newShape->collider->type = Physics::ColliderType_Mesh;
                     newShape->collider->name = shapes[i].name;
@@ -319,7 +319,7 @@ ModelBuilder::WritePhysics()
                         newShape->collider = std::make_unique<PhysicsResource::ColliderT>();
                         PhysicsResource::MeshColliderT newColl;
                         newColl.file = shapes[i].mesh;
-                        newColl.primGroup = shapes[i].primitiveGroupIndex;
+                        newColl.prim_group = shapes[i].primitiveGroupIndex;
                         newColl.type = this->physics->GetMeshMode();
                         newShape->collider->type = Physics::ColliderType_Mesh;
                         newShape->collider->name = shapes[i].name;
@@ -344,7 +344,7 @@ ModelBuilder::WritePhysics()
                                         
                     newColl.type = this->physics->GetMeshMode();
                     newColl.file = this->physics->GetPhysicsMesh();
-                    newColl.primGroup = 0;
+                    newColl.prim_group = 0;
                     newShape->collider->data.Set(newColl);
                     actor.shapes.push_back(std::move(newShape));
                 }               
@@ -353,8 +353,6 @@ ModelBuilder::WritePhysics()
         default:
             n_error("not implemented");
     }
-    Util::String Dbg = SerializeFlatbufferText(PhysicsResource::Actor, actor);
-    n_printf("\n\n\n%s\n\n\n", Dbg.AsCharPtr());
     return Flat::FlatbufferInterface::SerializeFlatbuffer<PhysicsResource::Actor>(actor);
 }
 

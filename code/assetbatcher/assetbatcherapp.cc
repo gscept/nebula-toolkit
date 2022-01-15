@@ -11,6 +11,7 @@
 #include "asset/assetexporter.h"
 #include "io/console.h"
 #include "profiling/profiling.h"
+#include "nflatbuffer/flatbufferinterface.h"
 #ifdef WIN32
 #include "io/win32/win32consolehandler.h"
 #else
@@ -51,7 +52,6 @@ AssetBatcherApp::Open()
 #if NEBULA_ENABLE_PROFILING
     Profiling::ProfilingRegisterThread();
 #endif
-
     if (DistributedToolkitApp::Open())
     {
         Ptr<IO::Console> console = IO::Console::Instance();
@@ -67,6 +67,7 @@ AssetBatcherApp::Open()
 #endif
         this->modelDatabase = ToolkitUtil::ModelDatabase::Create();
         this->modelDatabase->Open();
+        Flat::FlatbufferInterface::Init();
         return true;
     }
     return false;

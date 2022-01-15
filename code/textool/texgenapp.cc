@@ -344,7 +344,7 @@ bool TexGenApp::ParseCmdLineArgs()
             }
         }
 
-        constexpr char* bgra = "bgra";
+        constexpr const char* bgra = "bgra";
         for (int i = 0; i < 4; i++)
         {
             Util::String arg;

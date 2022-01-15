@@ -90,7 +90,7 @@ ModelPhysics::Save(const Ptr<IO::Stream>& stream)
         writer->Open();
 
         // first write enclosing tag
-        writer->BeginNode("Nebula3");
+        writer->BeginNode("Nebula");
 
         // set version
         writer->SetInt("version", ModelPhysics::Version);

@@ -58,6 +58,7 @@ public:
     struct PhysicsNode : public TransformNode
     {
         Util::String mesh;
+        Util::String material;
         IndexT primitiveGroupIndex;
     };
 

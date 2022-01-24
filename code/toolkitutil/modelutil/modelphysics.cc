@@ -23,7 +23,7 @@ __ImplementClass(ToolkitUtil::ModelPhysics, 'MDPH', Core::RefCounted);
 */
 ModelPhysics::ModelPhysics() : 
     physicsMode(ToolkitUtil::UseBoundingBox),
-    meshMode(Physics::MeshConvex)   
+    meshMode(Physics::MeshTopology_Convex)
 {
     // empty
 }
@@ -40,7 +40,7 @@ ModelPhysics::~ModelPhysics()
 /**
 */
 void 
-ModelPhysics::SetMeshMode(Physics::MeshTopologyType flags)
+ModelPhysics::SetMeshMode(Physics::MeshTopology flags)
 {
     this->meshMode = flags;
 }
@@ -48,7 +48,7 @@ ModelPhysics::SetMeshMode(Physics::MeshTopologyType flags)
 //------------------------------------------------------------------------------
 /**
 */
-Physics::MeshTopologyType 
+Physics::MeshTopology
 ModelPhysics::GetMeshMode()
 {
     return this->meshMode;
@@ -101,6 +101,7 @@ ModelPhysics::Save(const Ptr<IO::Stream>& stream)
         // write options        
         writer->SetInt("exportMode", this->physicsMode);
         writer->SetInt("meshMode", this->meshMode); 
+        writer->SetString("material", this->material);
 
         if(this->GetExportMode() == UsePhysics)
         {
@@ -151,7 +152,8 @@ ModelPhysics::Load(const Ptr<IO::Stream>& stream)
 
         // now load options
         this->physicsMode = (ToolkitUtil::PhysicsExportMode)reader->GetInt("exportMode");
-        this->meshMode = (Physics::MeshTopologyType)reader->GetInt("meshMode");
+        this->meshMode = (Physics::MeshTopology)reader->GetInt("meshMode");
+        this->material = reader->GetOptString("material", "default");
 
         if(this->GetExportMode() == UsePhysics)
         {

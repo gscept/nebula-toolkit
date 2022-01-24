@@ -152,21 +152,19 @@ AssetExporter::ExportFolder(const Util::String& assetPath, const Util::String& c
             modelName = category + "/" + modelName;
             Ptr<ModelConstants> constants = ModelDatabase::Instance()->LookupConstants(modelName, true);
             Ptr<ModelAttributes> attributes = ModelDatabase::Instance()->LookupAttributes(modelName, true);
-#if PHYSEXPORT
             Ptr<ModelPhysics> physics = ModelDatabase::Instance()->LookupPhysics(modelName, true);
-#endif
+
             this->modelBuilder->SetConstants(constants);
             this->modelBuilder->SetAttributes(attributes);
-#if PHYSEXPORT            
             this->modelBuilder->SetPhysics(physics);
-#endif
+
             // save models and physics
             String modelPath = String::Sprintf("mdl:%s.n3", modelName.AsCharPtr());
             this->modelBuilder->SaveN3(modelPath, this->platform);
-#if PHYSEXPORT
-            String physicsPath = String::Sprintf("phys:%s.np3", modelName.AsCharPtr());
+
+            String physicsPath = String::Sprintf("phys:%s.actor", modelName.AsCharPtr());
             this->modelBuilder->SaveN3Physics(physicsPath, this->platform);
-#endif            
+
             log.AddEntry(console, "Model", files[fileIndex]);
     }
 }

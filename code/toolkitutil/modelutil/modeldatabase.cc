@@ -61,13 +61,11 @@ ModelDatabase::Close()
         this->modelConstants.ValueAtIndex(i)->Clear();
     }
     this->modelConstants.Clear();
-#if PHYSEXPORT
     for (i = 0; i < this->modelPhysics.Size(); i++)
     {
         this->modelPhysics.ValueAtIndex(i)->Clear();
     }
     this->modelPhysics.Clear();
-#endif
     this->isOpen = false;
 }
 
@@ -224,7 +222,6 @@ ModelDatabase::GetAttributesName(const Ptr<ModelAttributes>& attrs)
     return this->modelAttributes.KeysAsArray()[index];
 }
 
-#if PHYSEXPORT
 //------------------------------------------------------------------------------
 /**
 */
@@ -313,7 +310,6 @@ ModelDatabase::GetPhysicsName(const Ptr<ModelPhysics>& attrs)
     n_assert(index != InvalidIndex);
     return this->modelPhysics.KeysAsArray()[index];
 }
-#endif
 
 //------------------------------------------------------------------------------
 /**

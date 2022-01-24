@@ -7,13 +7,12 @@
 #include "io/stream.h"
 #include "io/ioserver.h"
 #include "binarymodelwriter.h"
+#include "io/filestream.h"
 #include "modelconstants.h"
 #include "math/transform44.h"
-#if PHYSEXPORT
-#include "physics/model/templates.h"
-#include "physics/staticobject.h"
-#include "physics/physicsbody.h"
-#endif
+#include "nflatbuffer/flatbufferinterface.h"
+#include "nflatbuffer/nebula_flat.h"
+#include "flat/physics/actor.h"
 
 using namespace Util;
 using namespace IO;
@@ -28,9 +27,7 @@ __ImplementClass(ToolkitUtil::ModelBuilder, 'MDBU', Core::RefCounted);
 ModelBuilder::ModelBuilder() : 
     constants(nullptr),
     attributes(nullptr)
-#if PHYSEXPORT
     ,physics(nullptr)
-#endif
 {
     // empty
 }
@@ -42,9 +39,7 @@ ModelBuilder::~ModelBuilder()
 {
     this->constants = nullptr;
     this->attributes = nullptr;
-#if PHYSEXPORT
     this->physics = nullptr;
-#endif  
 }
 
 //------------------------------------------------------------------------------
@@ -110,7 +105,6 @@ ModelBuilder::SaveN3( const IO::URI& uri, Platform::Code platform )
 
     return false;
 }
-#if PHYSEXPORT
 //------------------------------------------------------------------------------
 /**
 */
@@ -121,34 +115,18 @@ ModelBuilder::SaveN3Physics( const IO::URI& uri, Platform::Code platform )
     // make sure the target directory exists
     IoServer::Instance()->CreateDirectory(uri.LocalPath().ExtractDirName());
 
+    Util::Blob target = this->WritePhysics();
+    if (!target.IsValid())
+    {
+        return false;
+    }
+
     // create stream
-    Ptr<Stream> stream = IoServer::Instance()->CreateStream(uri);
+    Ptr<IO::FileStream> stream = IO::IoServer::Instance()->CreateStream(uri).downcast<IO::FileStream>();
     stream->SetAccessMode(Stream::WriteAccess);
     if (stream->Open())
     {
-        // create binary writer
-        Ptr<BinaryModelWriter> binaryWriter = BinaryModelWriter::Create();
-        binaryWriter->SetPlatform(platform);
-
-        // create N3 writer
-        Ptr<N3Writer> n3Writer = N3Writer::Create();
-        n3Writer->SetModelWriter(binaryWriter.upcast<ModelWriter>());
-
-        // open writer
-        n3Writer->Open(stream);
-
-        // begin model
-        n3Writer->BeginModel(this->constants->GetName());       
-
-        // write physics
-        this->WritePhysics(n3Writer);
-
-        // end name
-        n3Writer->EndModel();
-
-        // close writer
-        n3Writer->Close();
-
+        stream->Write(target.GetPtr(), target.Size());
         stream->Close();
         return true;
     }
@@ -159,27 +137,28 @@ ModelBuilder::SaveN3Physics( const IO::URI& uri, Platform::Code platform )
 //------------------------------------------------------------------------------
 /**
 */
-void 
-ModelBuilder::WritePhysics( const Ptr<N3Writer>& writer )
+Util::Blob
+ModelBuilder::WritePhysics()
 {
-    writer->BeginPhysicsNode("physics");    
-    writer->BeginColliders();
+    
+    PhysicsResource::ActorT actor;
     switch(this->physics->GetExportMode())
     {
         case UseBoundingBox:
         case UseBoundingSphere:
         case UseBoundingCapsule:
             {
-                Array<Physics::ColliderDescription> colls;
                 const Array<ModelConstants::ShapeNode> & nodes = this->constants->GetShapeNodes();
                 for(Array<ModelConstants::ShapeNode>::Iterator iter = nodes.Begin();iter != nodes.End();iter++)
                 {
+                    auto newShape = std::make_unique<PhysicsResource::ShapeT>();
+                    newShape->collider = std::make_unique<PhysicsResource::ColliderT>();
                     Math::transform44 t;
                     t.setposition(iter->transform.position);
                     t.setrotate(iter->transform.rotation);
                     t.setscale(iter->transform.scale);
-                    t.setrotatepivot(iter->transform.rotatePivot);
-                    t.setscalepivot(iter->transform.scalePivot);
+                    t.setrotatepivot(iter->transform.rotatePivot.vec);
+                    t.setscalepivot(iter->transform.scalePivot.vec);
                     
                     Math::mat4 nodetrans = t.getmatrix();                   
 
@@ -188,46 +167,57 @@ ModelBuilder::WritePhysics( const Ptr<N3Writer>& writer )
                     
                     colBox.transform(nodetrans);
 
-                    nodetrans.translate(Math::vector(iter->boundingBox.center()));
+                    newShape->material = this->physics->GetMaterial();
+                    newShape->transform = Math::translation(colBox.center().vec);
 
-                    Physics::ColliderDescription col;
-                    col.name = iter->name;
-                    col.transform = nodetrans;
                     switch (this->physics->GetExportMode())
                     {
                     case UseBoundingBox:
-                        col.type = Physics::ColliderCube;
-                        col.box.halfWidth = colBox.extents();
-                        break;
+                    {
+                        PhysicsResource::BoxColliderT col;
+                        col.extents = colBox.extents();
+                        newShape->collider->data.Set(col);
+                        newShape->collider->name = iter->name;
+                        newShape->collider->type = Physics::ColliderType_Cube;
+                    }
+                    break;
                     case UseBoundingSphere:
                     {
-                        col.type = Physics::ColliderSphere;
+                        PhysicsResource::SphereColliderT col;
                         Math::vector v = colBox.size();
-                        col.sphere.radius = 0.5f * Math::min(v.x, Math::min(v.y, v.z));
+                        col.radius = 0.5f * Math::min(v.x, Math::min(v.y, v.z));
+                        newShape->collider->data.Set(col);
+                        newShape->collider->name = iter->name;
+                        newShape->collider->type = Physics::ColliderType_Sphere;
                     }
                     break;
                     case UseBoundingCapsule:
                     {
-                        col.type = Physics::ColliderCapsule;
+                        PhysicsResource::CapsuleColliderT col;
                         Math::vector v = colBox.size();
-                        col.capsule.height = v.y;
-                        col.capsule.radius = Math::min(v.z, v.x);                     
+                        col.halfheight = v.y;
+                        col.radius = Math::min(v.z, v.x);
+                        newShape->collider->data.Set(col);
+                        newShape->collider->name = iter->name;
+                        newShape->collider->type = Physics::ColliderType_Capsule;
                     }
                     break;
                     default:
                         break;
                     }
-                    colls.Append(col);
+                    actor.shapes.push_back(std::move(newShape));
                 }
                 const Array<ModelConstants::ParticleNode> & particleNodes = this->constants->GetParticleNodes();
                 for(Array<ModelConstants::ParticleNode>::Iterator iter = particleNodes.Begin();iter != particleNodes.End();iter++)
                 {                   
-                    
+                    auto newShape = std::make_unique<PhysicsResource::ShapeT>();
+                    newShape->collider = std::make_unique<PhysicsResource::ColliderT>();
+                    newShape->material = this->physics->GetMaterial();
                     Math::transform44 t;
                     t.setposition(iter->transform.position);
                     t.setrotate(iter->transform.rotation);                  
                     // particles have fairly bogus values, ignore scale if zero
-                    if(iter->transform.scale.lengthsq()<0.001f)
+                    if(lengthsq(iter->transform.scale)<0.001f)
                     {
                         t.setscale(Math::vector(1,1,1));
                     }
@@ -235,8 +225,8 @@ ModelBuilder::WritePhysics( const Ptr<N3Writer>& writer )
                     {
                         t.setscale(iter->transform.scale);
                     }                   
-                    t.setrotatepivot(iter->transform.rotatePivot);
-                    t.setscalepivot(iter->transform.scalePivot);
+                    t.setrotatepivot(iter->transform.rotatePivot.vec);
+                    t.setscalepivot(iter->transform.scalePivot.vec);
 
                     Math::mat4 nodetrans = t.getmatrix();                   
 
@@ -244,45 +234,44 @@ ModelBuilder::WritePhysics( const Ptr<N3Writer>& writer )
                     Math::mat4 newtrans;
 
                     colBox.transform(nodetrans);
+                    newShape->transform = nodetrans;
 
-                    nodetrans.translate(Math::vector(iter->boundingBox.center()));
+                    PhysicsResource::BoxColliderT col;
 
-                    Physics::ColliderDescription col;
-                    col.name = iter->name;
-                    col.transform = nodetrans;
-                    col.type = Physics::ColliderCube;
-                    col.box.halfWidth = colBox.extents();
-                    colls.Append(col);
+                    col.extents = colBox.extents();
+                    newShape->collider->data.Set(col);
+                    newShape->collider->name = iter->name;
+                    newShape->collider->type = Physics::ColliderType_Cube;
+                    actor.shapes.push_back(std::move(newShape));
                 }
 
                 const Array<ModelConstants::Skin >& skins = this->constants->GetSkins();
                 for (Array<ModelConstants::Skin>::Iterator iter = skins.Begin(); iter != skins.End(); iter++)
                 {
+                    auto newShape = std::make_unique<PhysicsResource::ShapeT>();
+                    newShape->collider = std::make_unique<PhysicsResource::ColliderT>();
+                    newShape->material = this->physics->GetMaterial();
                     Math::transform44 t;
                     t.setposition(iter->transform.position);
                     t.setrotate(iter->transform.rotation);
                     t.setscale(iter->transform.scale);
-                    t.setrotatepivot(iter->transform.rotatePivot);
-                    t.setscalepivot(iter->transform.scalePivot);        
-
+                    t.setrotatepivot(iter->transform.rotatePivot.vec);
+                    t.setscalepivot(iter->transform.scalePivot.vec);
 
                     Math::mat4 nodetrans = t.getmatrix();                   
-
                     Math::bbox colBox = iter->boundingBox;
-                    Math::mat4 newtrans;
+                    
+                    colBox.transform(nodetrans);                   
+                    newShape->transform = nodetrans;
 
-                    colBox.transform(nodetrans);
+                    PhysicsResource::BoxColliderT col;
 
-                    nodetrans.translate(Math::vector(iter->boundingBox.center()));
-
-                    Physics::ColliderDescription col;
-                    col.name = iter->name;
-                    col.transform = nodetrans;
-                    col.type = Physics::ColliderCube;
-                    col.box.halfWidth = colBox.extents();
-                    colls.Append(col);
+                    col.extents = colBox.extents();
+                    newShape->collider->data.Set(col);
+                    newShape->collider->name = iter->name;
+                    newShape->collider->type = Physics::ColliderType_Cube;
+                    actor.shapes.push_back(std::move(newShape));
                 }
-                writer->WritePhysicsColliders("DefaultCollider",colls); 
             }
             break;
         case UseGraphicsMesh:
@@ -292,26 +281,30 @@ ModelBuilder::WritePhysics( const Ptr<N3Writer>& writer )
                 
                 for(int i=0;i<shapes.Size();i++)
                 {
-                    Array<Physics::ColliderDescription> colls;                              
-                    Physics::ColliderDescription coll;
-                    coll.type = Physics::ColliderMesh;
-                    String temp = shapes[i].mesh;
-                    temp.SubstituteString("msh", "phymsh");
-                    coll.mesh.meshResource = temp;
-                    coll.mesh.primGroup = shapes[i].primitiveGroupIndex;
-                    coll.mesh.meshType = this->physics->GetMeshMode();
+                    auto newShape = std::make_unique<PhysicsResource::ShapeT>();
+                    newShape->material = this->physics->GetMaterial();
+                    newShape->collider = std::make_unique<PhysicsResource::ColliderT>();
+                    
+                    PhysicsResource::MeshColliderT newColl;
+                    newColl.file = shapes[i].mesh;
+                    newColl.primGroup = shapes[i].primitiveGroupIndex;
+                    newColl.type = this->physics->GetMeshMode();
+                    newShape->collider->type = Physics::ColliderType_Mesh;
+                    newShape->collider->name = shapes[i].name;
+
                     Math::transform44 t;
                     t.setposition(shapes[i].transform.position);
                     t.setrotate(shapes[i].transform.rotation);
                     t.setscale(shapes[i].transform.scale);
-                    t.setrotatepivot(shapes[i].transform.rotatePivot);
-                    t.setscalepivot(shapes[i].transform.scalePivot);
-                    coll.transform = t.getmatrix();
-                    colls.Append(coll);
-                    writer->WritePhysicsColliders(shapes[i].name,colls);                    
+                    t.setrotatepivot(shapes[i].transform.rotatePivot.vec);
+                    t.setscalepivot(shapes[i].transform.scalePivot.vec);
+                    newShape->transform = t.getmatrix();
+                    newShape->collider->data.Set(newColl);
+                    actor.shapes.push_back(std::move(newShape));
                 }                                                                       
             }
             break;
+            
         case UsePhysics:
             {
                 if(this->constants->GetPhysicsNodes().Size()>0)
@@ -321,45 +314,50 @@ ModelBuilder::WritePhysics( const Ptr<N3Writer>& writer )
                                                 
                     for(int i=0;i<shapes.Size();i++)
                     {
-                        Array<Physics::ColliderDescription> colls;  
-                        Physics::ColliderDescription coll;
-                        coll.type = Physics::ColliderMesh;
-                        coll.mesh.meshResource = shapes[i].mesh;
-                        coll.mesh.primGroup = shapes[i].primitiveGroupIndex;
-                        coll.mesh.meshType = this->physics->GetMeshMode();
-                        coll.name = shapes[i].name;
+                        auto newShape = std::make_unique<PhysicsResource::ShapeT>();
+                        newShape->material = this->physics->GetMaterial();
+                        newShape->collider = std::make_unique<PhysicsResource::ColliderT>();
+                        PhysicsResource::MeshColliderT newColl;
+                        newColl.file = shapes[i].mesh;
+                        newColl.primGroup = shapes[i].primitiveGroupIndex;
+                        newColl.type = this->physics->GetMeshMode();
+                        newShape->collider->type = Physics::ColliderType_Mesh;
+                        newShape->collider->name = shapes[i].name;
+
                         Math::transform44 t;
                         t.setposition(shapes[i].transform.position);
                         t.setrotate(shapes[i].transform.rotation);
                         t.setscale(shapes[i].transform.scale);
-                        t.setrotatepivot(shapes[i].transform.rotatePivot);
-                        t.setscalepivot(shapes[i].transform.scalePivot);
-                        coll.transform = t.getmatrix();
-                        colls.Append(coll);
-                        writer->WritePhysicsColliders(shapes[i].name,colls);    
+                        t.setrotatepivot(shapes[i].transform.rotatePivot.vec);
+                        t.setscalepivot(shapes[i].transform.scalePivot.vec);
+                        newShape->transform = t.getmatrix();
+                        newShape->collider->data.Set(newColl);
+                        actor.shapes.push_back(std::move(newShape));
                     }                                                                           
                 }
                 else
                 {
-                    Array<Physics::ColliderDescription> colls;                              
-                    Physics::ColliderDescription coll;
-                    coll.type = Physics::ColliderMesh;
-                    coll.mesh.meshType =  this->physics->GetMeshMode();
-                    coll.mesh.meshResource = this->physics->GetPhysicsMesh();
-                    coll.mesh.primGroup = 0;
-                    colls.Append(coll);
-                    writer->WritePhysicsColliders(this->physics->GetName(),colls);
+                    auto newShape = std::make_unique<PhysicsResource::ShapeT>();
+                    newShape->material = this->physics->GetMaterial();
+                    newShape->collider = std::make_unique<PhysicsResource::ColliderT>();
+                    PhysicsResource::MeshColliderT newColl;
+                                        
+                    newColl.type = this->physics->GetMeshMode();
+                    newColl.file = this->physics->GetPhysicsMesh();
+                    newColl.primGroup = 0;
+                    newShape->collider->data.Set(newColl);
+                    actor.shapes.push_back(std::move(newShape));
                 }               
             }
             break;
         default:
             n_error("not implemented");
     }
-    writer->EndColliders();
-    writer->EndPhysicsNode();
+    Util::String Dbg = SerializeFlatbufferText(PhysicsResource::Actor, actor);
+    n_printf("\n\n\n%s\n\n\n", Dbg.AsCharPtr());
+    return Flat::FlatbufferInterface::SerializeFlatbuffer<PhysicsResource::Actor>(actor);
 }
 
-#endif
 //------------------------------------------------------------------------------
 /**
 */

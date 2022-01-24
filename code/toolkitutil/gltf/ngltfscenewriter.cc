@@ -208,7 +208,7 @@ NglTFSceneWriter::CreateStaticModel(const Ptr<ToolkitUtil::N3Writer>& modelWrite
 
 #if PHYSEXPORT
     // save physics
-    destination.Format("phys:%s/%s.np3", category.AsCharPtr(), file.AsCharPtr());
+    destination.Format("phys:%s/%s.actor", category.AsCharPtr(), file.AsCharPtr());
     modelBuilder->SaveN3Physics(destination, this->platform);
 #endif  
 }

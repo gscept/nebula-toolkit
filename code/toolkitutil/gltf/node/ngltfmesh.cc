@@ -130,7 +130,7 @@ NglTFMesh::ExtractMesh()
 
     // run job
     Jobs::JobSchedule(primitiveJobId, jobPort, primitiveJobContext);
-    Jobs::JobSyncSignal(jobInternalSync, jobPort);
+    Jobs::JobSyncThreadSignal(jobInternalSync, jobPort);
     Jobs::JobSyncHostWait(jobInternalSync);
     Jobs::DestroyJob(primitiveJobId);
     

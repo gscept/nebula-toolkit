@@ -42,7 +42,7 @@ Create()
 
     Game::WorldCreateInfo worldInfo;
     worldInfo.hash = WORLD_EDITOR;
-    state.editorWorld = Game::CreateWorld(worldInfo);
+    state.editorWorld = Game::GameServer::Instance()->CreateWorld(WORLD_EDITOR);
 
     Game::GameServer::Instance()->SetupEmptyWorld(state.editorWorld);
 }
@@ -96,16 +96,7 @@ StopGame()
     Game::GameServer::Instance()->CleanupWorld(gameWorld);
     Game::GameServer::Instance()->SetupEmptyWorld(gameWorld);
     
-    gameWorld->blueprintCatMap = state.editorWorld->blueprintCatMap;
-    gameWorld->entityMap = state.editorWorld->entityMap;
-    gameWorld->numEntities = state.editorWorld->numEntities;
-    gameWorld->pool = state.editorWorld->pool;
-    gameWorld->db = nullptr;
-    gameWorld->db = MemDb::Database::Create();
-    
-    state.editorWorld->db->Copy(gameWorld->db);
-    
-    Game::PrefilterProcessors(gameWorld);
+    Game::WorldOverride(state.editorWorld, gameWorld);
 
     // update the editables so that they point to the correct game entities.
     Game::FilterCreateInfo filterInfo;

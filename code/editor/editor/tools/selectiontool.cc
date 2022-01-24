@@ -67,10 +67,11 @@ SelectionTool::RenderGizmo()
 		Game::Entity const gameEntity = Editor::state.editables[editorEntity.index].gameEntity;
 		if (Game::HasProperty(Game::GetWorld(WORLD_DEFAULT), gameEntity, mdlPid))
 		{
-			Graphics::GraphicsEntityId const gfxEntity = Game::GetProperty<GraphicsFeature::ModelEntityData>(Game::GetWorld(WORLD_DEFAULT), gameEntity, mdlPid).gid;
-			Math::bbox const bbox = Models::ModelContext::GetBoundingBox(gfxEntity);
-			Math::mat4 const transform = Models::ModelContext::GetTransform(gfxEntity);
-			Im3d::Im3dContext::DrawOrientedBox(Math::mat4::identity, bbox, {1.0f, 0.30f, 0.0f, 1.0f});
+			// TODO: Fixme!
+			//Graphics::GraphicsEntityId const gfxEntity = Game::GetProperty<GraphicsFeature::ModelEntityData>(Game::GetWorld(WORLD_DEFAULT), gameEntity, mdlPid).gid;
+			//Math::bbox const bbox = Models::ModelContext::GetBoundingBox(gfxEntity);
+			//Math::mat4 const transform = Models::ModelContext::GetTransform(gfxEntity);
+			//Im3d::Im3dContext::DrawOrientedBox(Math::mat4::identity, bbox, {1.0f, 0.30f, 0.0f, 1.0f});
 		}
 	}
 

@@ -7,20 +7,10 @@
 #include "commandmanager.h"
 #include "util/random.h"
 #include "editor/tools/selectiontool.h"
+#include "graphicsfeature/managers/graphicsmanager.h"
 
 namespace Edit
 {
-
-//------------------------------------------------------------------------------
-/**
-*/
-void*
-InternalGetValuePointer(Editor::Entity entity, Game::PropertyId pid)
-{
-    Game::EntityMapping mapping = Editor::state.editorWorld->entityMap[entity.index];
-    byte* buf = (byte*)Editor::state.editorWorld->db->GetBuffer(mapping.category, Editor::state.editorWorld->db->GetColumnId(mapping.category, pid));
-    return buf + (mapping.instance * (uint64_t)MemDb::TypeRegistry::TypeSize(pid));
-}
 
 //------------------------------------------------------------------------------
 /**
@@ -66,13 +56,13 @@ InternalCreateEntity(Editor::Entity editorEntity, MemDb::TableId editorTable, Ut
 
     Game::World* gameWorld = Game::GetWorld(WORLD_DEFAULT);
 
-    MemDb::TableSignature const& signature = Editor::state.editorWorld->db->GetTableSignature(editorTable);
+    MemDb::TableSignature const& signature = Game::GetWorldDatabase(Editor::state.editorWorld)->GetTableSignature(editorTable);
 
     Game::Entity const entity = Game::AllocateEntity(gameWorld);
-    MemDb::TableId gameTable = gameWorld->db->FindTable(signature);
+    MemDb::TableId gameTable = Game::GetWorldDatabase(gameWorld)->FindTable(signature);
     n_assert(gameTable != MemDb::InvalidTableId);
     MemDb::Row instance = Game::AllocateInstance(gameWorld, entity, gameTable);
-    gameWorld->db->DeserializeInstance(entityState, gameTable, instance);
+    Game::GetWorldDatabase(gameWorld)->DeserializeInstance(entityState, gameTable, instance);
     Game::SetProperty<Game::Entity>(gameWorld, entity, Game::GetPropertyId("Owner"_atm), entity);
 
     if (Game::IsActive(Editor::state.editorWorld, editorEntity))
@@ -84,7 +74,7 @@ InternalCreateEntity(Editor::Entity editorEntity, MemDb::TableId editorTable, Ut
     if (Editor::state.editables.Size() >= editorEntity.index)
         Editor::state.editables.Append({});
     MemDb::Row editorInstance = Game::AllocateInstance(Editor::state.editorWorld, editorEntity, editorTable);
-    Editor::state.editorWorld->db->DeserializeInstance(entityState, editorTable, editorInstance);
+    Game::GetWorldDatabase(Editor::state.editorWorld)->DeserializeInstance(entityState, editorTable, editorInstance);
     Game::SetProperty<Editor::Entity>(Editor::state.editorWorld, editorEntity, Game::GetPropertyId("Owner"_atm), editorEntity);
 
     Editor::Editable& edit = Editor::state.editables[editorEntity.index];
@@ -113,8 +103,6 @@ InternalDestroyEntity(Editor::Entity editorEntity)
 
     Game::DeallocateInstance(Editor::state.editorWorld, editorEntity);
     
-    Editor::state.editorWorld->entityMap[editorEntity.index].instance = MemDb::InvalidRow;
-
     // Make sure the editor world is always defragged
     Game::Defragment(Editor::state.editorWorld, mapping.category);
 }
@@ -132,9 +120,22 @@ InternalSetProperty(Editor::Entity editorEntity, Game::PropertyId pid, void* val
     Editor::Editable& edit = Editor::state.editables[editorEntity.index];
 
     Game::SetProperty(Editor::state.editorWorld, editorEntity, pid, value, size);
-
-    if (Game::IsValid(Game::GetWorld(WORLD_DEFAULT), edit.gameEntity))
-        Game::SetProperty(Game::GetWorld(WORLD_DEFAULT), edit.gameEntity, pid, value, size);
+	Game::World* defaultWorld = Game::GetWorld(WORLD_DEFAULT);
+	if (Game::IsValid(defaultWorld, edit.gameEntity))
+	{
+        Game::SetProperty(defaultWorld, edit.gameEntity, pid, value, size);
+		if (pid == Game::GetPropertyId("ModelResource"))
+		{
+			auto modelEntityDataPid = Game::GetPropertyId("ModelEntityData");
+			if (Game::HasProperty(defaultWorld, edit.gameEntity, modelEntityDataPid))
+			{
+				Game::Op::DeregisterProperty deregOp;
+				deregOp.entity = edit.gameEntity;
+				deregOp.pid = modelEntityDataPid;
+				Game::Execute(defaultWorld, deregOp);
+			}
+		}
+	}
 
     return true;
 }
@@ -236,7 +237,7 @@ struct CMDDeleteEntity : public Edit::Command
         if (!this->initialized)
         {
             Game::EntityMapping mapping = Game::GetEntityMapping(Editor::state.editorWorld, this->id);
-            this->entityState = Editor::state.editorWorld->db->SerializeInstance(mapping.category, mapping.instance);
+            this->entityState = Game::GetWorldDatabase(Editor::state.editorWorld)->SerializeInstance(mapping.category, mapping.instance);
             this->tid = mapping.category;
             this->initialized = true;
         }
@@ -298,7 +299,8 @@ struct CMDSetProperty : public Edit::Command
         {
             Game::EntityMapping const mapping = Game::GetEntityMapping(Editor::state.editorWorld, id);
             MemDb::TableId const tid = mapping.category;
-            void* oldValuePtr = Editor::state.editorWorld->db->GetValuePointer(tid, Editor::state.editorWorld->db->GetColumnId(tid, pid), mapping.instance);
+            Ptr<MemDb::Database> editorWorldDB = Game::GetWorldDatabase(Editor::state.editorWorld);
+            void* oldValuePtr = editorWorldDB->GetValuePointer(tid, editorWorldDB->GetColumnId(tid, pid), mapping.instance);
             oldValue.Set(oldValuePtr, newValue.Size());
         }
         return InternalSetProperty(id, pid, newValue.GetPtr(), newValue.Size());
@@ -346,7 +348,8 @@ struct CMDRemoveProperty : public Edit::Command
         {
             Game::EntityMapping const mapping = Game::GetEntityMapping(Editor::state.editorWorld, id);
             MemDb::TableId const tid = mapping.category;
-            void* valuePtr = Editor::state.editorWorld->db->GetValuePointer(tid, Editor::state.editorWorld->db->GetColumnId(tid, pid), mapping.instance);
+            Ptr<MemDb::Database> editorWorldDB = Game::GetWorldDatabase(Editor::state.editorWorld);
+            void* valuePtr = editorWorldDB->GetValuePointer(tid, editorWorldDB->GetColumnId(tid, pid), mapping.instance);
             value.Set(valuePtr, MemDb::TypeRegistry::TypeSize(pid));
         }
         return InternalRemoveProperty(id, pid);

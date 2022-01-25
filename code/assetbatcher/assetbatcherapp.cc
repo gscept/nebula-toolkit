@@ -80,6 +80,7 @@ AssetBatcherApp::Open()
 void
 AssetBatcherApp::OnBeforeRunLocal()
 {
+    IO::IoServer::Instance()->CreateDirectory("phys:");
     Flat::FlatbufferInterface::LoadSchema("file:///work:data/flatbuffer/physics/material.fbs");
     IO::URI tablePath = "root:work/data/tables/physicsmaterials.json";
     CompileFlatbuffer(Physics::Materials, tablePath, "phys:");

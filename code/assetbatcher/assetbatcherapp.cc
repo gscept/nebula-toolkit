@@ -12,6 +12,7 @@
 #include "io/console.h"
 #include "profiling/profiling.h"
 #include "nflatbuffer/flatbufferinterface.h"
+#include "flat/physics/material.h"
 #ifdef WIN32
 #include "io/win32/win32consolehandler.h"
 #else
@@ -71,6 +72,17 @@ AssetBatcherApp::Open()
         return true;
     }
     return false;
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+void
+AssetBatcherApp::OnBeforeRunLocal()
+{
+    Flat::FlatbufferInterface::LoadSchema("file:///work:data/flatbuffer/physics/material.fbs");
+    IO::URI tablePath = "root:work/data/tables/physicsmaterials.json";
+    CompileFlatbuffer(Physics::Materials, tablePath, "phys:");
 }
 
 //------------------------------------------------------------------------------

@@ -32,6 +32,8 @@ public:
 protected:
     /// creates file list for job-driven exporting
     virtual Util::Array<Util::String> CreateFileList();
+    ///
+    virtual void OnBeforeRunLocal();
 
 private:
     /// parse command line arguments

@@ -23,7 +23,8 @@ __ImplementClass(ToolkitUtil::ModelPhysics, 'MDPH', Core::RefCounted);
 */
 ModelPhysics::ModelPhysics() : 
     physicsMode(ToolkitUtil::UseBoundingBox),
-    meshMode(Physics::MeshTopology_Convex)
+    meshMode(Physics::MeshTopology_Convex),
+    material("default")
 {
     // empty
 }
@@ -154,6 +155,10 @@ ModelPhysics::Load(const Ptr<IO::Stream>& stream)
         this->physicsMode = (ToolkitUtil::PhysicsExportMode)reader->GetInt("exportMode");
         this->meshMode = (Physics::MeshTopology)reader->GetInt("meshMode");
         this->material = reader->GetOptString("material", "default");
+        if (this->material.IsEmpty())
+        {
+            this->material = "default";
+        }
 
         if(this->GetExportMode() == UsePhysics)
         {

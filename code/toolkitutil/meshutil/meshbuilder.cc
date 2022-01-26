@@ -924,5 +924,4 @@ MeshBuilder::CalculateTangentsAndBinormals()
     delete[] tangents1;
 }
 
-
 } // namespace ToolkitUtil

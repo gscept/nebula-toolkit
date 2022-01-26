@@ -112,7 +112,7 @@ AssetBatcherApp::DoWork()
         source = this->args.GetString("-source");
         if (!sources.Contains(source))
         {
-            this->logger.Error("Unkown source: %s\n", source.AsCharPtr());
+            this->logger.Error("Unknown source: %s\n", source.AsCharPtr());
             return;
         }
     }
